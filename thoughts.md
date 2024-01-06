@@ -486,8 +486,8 @@ $(\neg x_1 \lor \neg x_3 \lor \neg x_7)$ <br>
 
 [1, 2, 4]
 [1, 2, -4]
-[1, 2, 5]
-[1, 2, -5]
+[1, -2, 5]
+[1, -2, -5]
 [-1, 3, 6]
 [-1, 3, -6]
 [-1, -3, 7]
@@ -675,7 +675,253 @@ Make ghost clauses based on this info (two assigned + one assigned = 1 clause)
 Keep repeating until no ghost clauses are made or the eight clause all blocking
 pattern is known
 
+### Idea number next:
+We know that if an instance is unsatisfiable, then it implies the existence
+of the eight clause pattern
+Let's just try all the clauses, see if they're implied and if the eight
+clause pattern exists in the new instance, then it's unstatisfiable
+
+Problem: show that the existence of an implied clause is solvable in poly time
+Given an instance and a potential implied clause, show whether or not all of
+the 2^{n-3} assignments that clause could block are already blocked by the 
+instance
+
+Let's say the clause is [1, 2, 3], just an arbitrary starting point,
+then in order for it to be implied, we would need 
+ - clauses that block all assignments where x_1 = x_2 = x_3 = 0
+
+Note that the clause could be implied without ever using one of its terminals
+Let's run through [1, 2, 4] with the nine clause instance:
+[1, 2, 3] 
+[-1, 4, 5],
+[-2, -4, 6],
+[-1, -4, -6],
+[-1, -5, 4],
+[-2, 1, 4],
+[-3, 1, 2]
+[1, -2, -4]
+[-1, 2, -4]
+
+This becomes a similar smaller "3SAT" problem with only 2^n-3 possible
+assignments, however there is no guaranteed number of assignments a clause
+could block
+
+ - any clause that contains a negated terminal from the potential clause
+will block 0 assignments
+ - any clause that does not share a terminal blocks at most 2^{n-6}
+ - any clause that has one shared terminal blocks at most 2^{n-5}
+ - any clause that has two shared terminals blocks at most 2^{n-4}
+
+How many clauses can we have that do not imply [1, 2, 4]?
+
+[3, 5, 6]
+[3, 5, -6]
+[3, -5, 6]
+[3, -5, -6]
+[1, 2, 3] <- blocks same ones as [3, 5, 6]'s
+
+How many clauses are there total?
+8 * (n C 3)
+
+idk, let's say the minimum number of clauses that force the implication is on
+the order of n^3, this doesn't help too much
+
+Work on overlap:
+the only clauses that overlap must not share a negated terminal, ie, 
+if [1, 2, 3] is a clause, then overlap will occur iff the other clause
+does not contain -1, -2, or -3
+This is just another search for the eight clause pattern, but we know values for
+three of the terminals.
+This doesn't matter too much as we can still possible have the clauses like
+[3, 5, 6]
+[3, 5, -6]
+[3, -5, 7]
+[3, -5, -7]
+[3, 8, 9]
+[3, 8, -9]
+[3, -8, 10]
+[3, -8, -10]
+
+What if we can force some information since we know we're searching all possible
+clauses, eventually we will come upon the seven clauses with which one of the 
+clauses from the instance would make the eight clause pattern
+
+Given the nine clause instance:
+[1, 2, 3] 
+[-1, 4, 5],
+[-2, -4, 6],
+[-1, -4, -6],
+[-1, -5, 4],
+[-2, 1, 4],
+[-3, 1, 2]
+[1, -2, -4]
+[-1, 2, -4]
+
+[1, 2, 4]
+| Blocked | $x_1$ | $x_2$ | $x_3$ | $x_4$ | $x_5$ | $x_6$ |
+|---|---|---|---|---|---|---|
+| 3 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 3 | 0 | 0 | 0 | 0 | 0 | 1 |
+| 3 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 3 | 0 | 0 | 0 | 0 | 1 | 1 |
+| 1 | 0 | 0 | 1 | 0 | 0 | 0 |
+| 1 | 0 | 0 | 1 | 0 | 0 | 1 |
+| 1 | 0 | 0 | 1 | 0 | 1 | 0 |
+| 1 | 0 | 0 | 1 | 0 | 1 | 1 |
+
+and we know half of the clauses are blocked by [1, 2, 3]
+so we only need to find clauses to block 2^{n-4} assignments
+
+Interesting, we only need to block four assignments, but we have eight clauses
+
+We can disregard any clauses with -1, -2, or -4, leaving us with
+[-3, 1, 2]
+
+hypothetically, we could've been left with 
+[-3, 5, 6]
+[-3, 1, -5]
+[-3, 2, -6]
+[-3, 2, 5]
+
+Since 2 is in the potential clause, [2, X, Y] will block [X, Y, Z] plus more
+so we can trim [X, Y, Z] which is [-3, 5, 6]
+
+WTS: you will always be able to trim, or, if you can't trim, then a single value
+will be implied
+
+hold on, if we add more terminals, this is still just searching for the eight
+clause pattern again, it's still blocking 2^{n-4} assignments which is exponential
+
+So it is just as hard as proving you will always be able to trim as in the
+original problem
+
+### Idea number next
+Consider an instance with two clauses
+[1, 2, 3]
+[1, 2, -3]
+
+Will there ever be an instance containing these clauses in which the value of
+x_3 determines if the problem is satisfiable or not?
+
+Consider the nine clause instance
+[1, 2, 3],
+[-1, 4, 5],
+[-2, -4, 6],
+[-1, -4, -6],
+[-1, -5, 4],
+[-2, 1, 4],
+[-3, 1, 2],
+[1, -2, -4],
+[-1, 2, -4]
+
+Look for all two terminal implications
+
+hmm... the only direct two terminal implications are
+[1, 2]
+[1, -2]
+[-1, 4]
+
+which come from
+[1, 2, 3]
+[1, 2, -3]
+
+[1, -2, 4]
+[1, -2, -4]
+
+[-1, 4, 5]
+[-1, 4, -5]
+
+but we need more information, we cannot imply unsatisfiability by just these
+six clauses, what do we get from
+
+[-2, -4, 6]
+[-1, -4, -6]
+[-1, 2, -4]
+
+[1, 2]
+[1, -2]
+[-1, 4]
+
+try the poly time 2SAT approach
+try x_1 = 0 -> x_2 = 1 -> x_1 = 1 X
+try x_2 = 0 -> x_1 = 1 -> x_4 = 1 -> fails on [-1, 2, -4] X
+try x_1 = 1 -> x_4 = 1 -> x_2 = 1 -> x_6 = 1 -> fails on [-1, -4, -6] X
+try x_2 = 1 -> x_1 = 1 -> x_4 = 1 -> x_6 = 1 -> X
+
+In this instance, it is proven in poly time
+[1, 2] implies x_1 == 1 OR x_2 == 1 and both assignments lead to
+a contradiction
+
+TODO: Find an algo that tries solutions based on a 2sat instance
+something like
+1. For each 2 clause implication, say [x_i, x_j]
+2. Try the assignment x_i = 1
+3. If contradicts, try the assignment x_j = 1
+4. If x_j = 1 leads to a contradiction, it is unsat
+5. - Do something where if it's not a contra, but there are 2 clause
+implications without an assignment, keep checking assignments
+
+  
+More low level algorithm:
+```
+Make an assignment to keep track of forced values, called known_assignments
+for each clause in implications (1-term, 2-term, 3-term implications):
+  process 1-term
+    if the 1-term clause causes a contradiction, return UNSAT
+    otherwise, update known_assignments
+  process 2-term
+    for each terminal in 2-term:
+      if the current terminal is forced, update known_assignments with the
+        other terminal
+      if the clause is True via an existing assignment, no more info can
+        be gained from this clause
+    if neither terminal's value can be assigned, try both assignments
+    ... how? Dangnabbit, recursion, call the function with (implications[cur:], known_assignments)
+
+  process 3-term
+```
+
+More more low level, more robust algo:
+```
+Input: the instance, optionally an assignment
+(0) if assignment is null, set X for each terminal to represent unknown
+(1) Scan three-terminal clauses for two-terminal implications
+(2) Scan two-terminal clauses for one-terminal implications
+(3) add the implications to the list and sort by length
+(4) Process the first implication
+  (4a) If it's a one-term implications
+      (1a) if the current assignment does not allow this assignment, return ""
+          to show this assignment is unsatisfiable
+      (1bi) otherwise, set the value of the terminal in the assignment
+      (1bii) call the function with removing the first implication
+             and the updated implications and return the output 
+  (4b) If it's a two-term implication
+    (1) For each terminal, 
+      (1a) if the terminal is consistent with the assignment, just call the
+          function with the same assignment, but remove the current clause
+          save this to a variable, assignment1
+      (1b) if the terminal is inconsistent with the assignment, add a new
+          one-terminal containing just the other terminal, then call the
+          function with the same assignment and updated implications (without
+          the current clause)
+      (1c) if the terminal is unknown, update the assignment and call the
+           function with the new assignment (and remove the current clause)
+  (4c) If it's a three-term implication
+    (1) For each terminal,
+      (1a) if it's consistent with the current assignment, just call the
+           function and remove the current clause
+      (1b) if it's inconsistent, add a new two-terminal implication with
+           the other two terminals then call the function with the same
+           assignment and updated implications
+      (1c) if the terminal's value is unknown, update the assignment and call
+           the function with the new assignment (removing the current clause)
+
+```
+
+
+
 # Proofs
 
 # Cleanup
 - assign a name for the clause in Lemma :)
+
