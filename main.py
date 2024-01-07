@@ -4,25 +4,29 @@ from tqdm import tqdm
 
 # Given an instance of 3SAT
 # Write to output file how many times each assignment is blocked
-def write_blockages(clauses, n):
-    
-  # Open output file
-  output_file = open('blockages.txt', 'w+')
+# Return True if satisfiable, false otherwise
+def write_blockages(clauses, n, write=True):
+  
+  # Only write if write is True
+  if write:
+      
+    # Open output file
+    output_file = open('blockages.txt', 'w+')
 
-  # Write data about the instance
-  output_file.write('Instance:\n')
-  output_file.write(f'n: {n}\n')
-  output_file.write(f'clauses:\n({len(clauses)})\n')
-  for clause in clauses:
-    output_file.writelines(f'{clause},\n')
+    # Write data about the instance
+    output_file.write('Instance:\n')
+    output_file.write(f'n: {n}\n')
+    output_file.write(f'clauses:\n({len(clauses)})\n')
+    for clause in clauses:
+      output_file.writelines(f'{clause},\n')
 
-  # Headers for table in markdown format
-  table_header = "| Blocked | " + " | ".join([f"$x_{i}$" for i in range(1, n + 1)]) + " |"
-  table_line = "|---" + "|---" * n + "|"
+    # Headers for table in markdown format
+    table_header = "| Blocked | " + " | ".join([f"$x_{i}$" for i in range(1, n + 1)]) + " |"
+    table_line = "|---" + "|---" * n + "|"
 
-  # Write table headers
-  output_file.write(f'{table_header}\n')
-  output_file.write(f'{table_line}\n')
+    # Write table headers
+    output_file.write(f'{table_header}\n')
+    output_file.write(f'{table_line}\n')
 
   # Count how many assignments are blocked
   blocked_assignments = 0
@@ -77,21 +81,28 @@ def write_blockages(clauses, n):
       fragile_assignments += 1
 
     # Print the row with the blocked indicator
-    output_file.write(f"| {blocking} | {' | '.join(list(assignment_str))} |\n")
+    if write:
+      output_file.write(f"| {blocking} | {' | '.join(list(assignment_str))} |\n")
     
   # Report satisfiability
   if blocked_assignments == 2**n:
     print('Unsatisfiable!')
-    output_file.write('Unsatisfiable!')
+    return False
+    if write:
+      output_file.write('Unsatisfiable!')
   else:
     print('Satisfiable!')
-    output_file.write('Satisfiable!')
+    return True
+    if write:
+      output_file.write('Satisfiable!')
 
-  # Write how many assignments are blocked by a single clause
-  output_file.write(f'There are {fragile_assignments} assignment(s) blocked by one clause')
-    
-  # Close the output file
-  output_file.close()
+  if write:
+
+    # Write how many assignments are blocked by a single clause
+    output_file.write(f'There are {fragile_assignments} assignment(s) blocked by one clause')
+      
+    # Close the output file
+    output_file.close()
 
 # Given a map of assign_str : blockage count
   # clauses and n
@@ -100,7 +111,6 @@ def check_redun(assignments, clauses, n):
   # TODO: implement me
   return
 
-n = 6
 
 # clauses = [
 #   [1,2,3],
@@ -161,21 +171,46 @@ n = 6
 # ]
 
 # Eleven clause unsatisfiable instance
-clauses = [
-  [1, 2, 3],
-  [1, 2, -3],
-  [1, -2, 3],
-  [-1, 2, 3],
-  [-1, 2, -3],
-  [-1, -2, 3],
-  [4, 5, 6],
-  [4, 5, -6],
-  [4, -5, 6],
-  [4, -5, -6],
-  [-2, -3, -4]
-]
+# clauses = [
+#   [1, 2, 3],
+#   [1, 2, -3],
+#   [1, -2, 3],
+#   [-1, 2, 3],
+#   [-1, 2, -3],
+#   [-1, -2, 3],
+#   [4, 5, 6],
+#   [4, 5, -6],
+#   [4, -5, 6],
+#   [4, -5, -6],
+#   [-2, -3, -4]
+# ]
 
-write_blockages(clauses, n)
+# n = 6
+
+# clauses = [
+#   [1, 2, 3],
+#   [1, 2, 4],
+#   [1, 2, 5], 
+#   [1, 2, 6],
+#   [-4, -5, -6],
+#   [4, -2, 5],
+#   [3, 4, -2],
+#   [-2, 3, -4],
+#   [-3, 4, -5],
+#   [1, -2, -3],
+#   [-1, 2, -3],
+#   []
+# ]
+# write_blockages(clauses, n)
+
+clauses = [[-1, 1, 3], [-6, -2, 4], [-3, 4, 6], [-6, 2, 3], [-5, -3, -2], [-4, 1, 6], [-5, -2, 4], [-3, 1, 4], [-6, -2, 2], [-3, 4, 5], [-3, 2, 4], [-4, 1, 5], [-6, -1, 1], [-4, -3, 1], [-4, 3, 6], [-3, 3, 5], [-4, -1, 2], [-1, 5, 6], [-6, -3, 4], [2, 3, 5], [-3, 2, 3], [-3, 1, 2], [-1, 2, 5], [-5, 5, 6], [1, 3, 5], [2, 4, 5], [-6, -3, 3], [-5, -2, -1], [-6, -3, 6], [-3, 2, 5], [-5, -3, -1], [-2, 2, 4], [-4, -1, 1], [-5, -4, 4], [-2, -1, 2], [-5, -4, 5], [-2, 4, 6], [-5, 3, 6], [-6, -5, 3], [-1, 3, 5], [-3, -2, 2], [-3, -1, 2], [-2, 1, 6], [-5, -4, 6], [-5, -2, 3], [-2, 3, 4], [-4, 4, 6], [-3, 5, 6], [-5, 2, 6], [-1, 3, 6]]
+
+for clause in clauses:
+  clause.sort()
+
+clauses.sort()
+
+write_blockages(clauses, 6)
 
 '''
 Notes
