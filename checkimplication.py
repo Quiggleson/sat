@@ -119,6 +119,32 @@ def get_contributing_clauses(clauses, implications):
     # return contributing clauses
     return contributing_clauses
 
+# Given a clause of length k and the number of terminals, n
+# return all clauses of length
+# k + 1 that are implied by the clause
+# example, given [1], return [1, 2], [1, -2], [1, 3], [1, -3]...
+def expand(clause, n):
+
+    # store clauses to return
+    clauses = []
+
+    # iterate terminals - do not include current terminal in any form
+    for terminal in [x for x in range(1, n+1) if x not in clause]:
+
+        # create clauses
+        new_clause1 = clause.copy()
+        new_clause2 = clause.copy()
+
+        # Add new terminals to clause
+        new_clause1.append(terminal)
+        new_clause2.append(-1 * terminal)
+        
+        # Add new clauses to clauses
+        clauses.append(new_clause1)
+        clauses.append(new_clause2)
+
+    return clauses
+
 # Return the satisfying assignment
 # Or "" if none exists
 def solve(instance, n, assignment=[]):
@@ -130,10 +156,6 @@ def solve(instance, n, assignment=[]):
     if len(assignment) == 0:
         assignment = ['Y']
         assignment.extend(['X' for _ in range(n)])
-
-    # If the instance is empty, return assignment
-    if len(instance) == 0:
-        return assignment
 
     # Get implications of length 2
     implications = get_implications([x for x in instance if len(x) == 3], 2)
@@ -178,6 +200,29 @@ def solve(instance, n, assignment=[]):
     # update instance
     instance = [x for x in instance if x not in clauses_to_remove]
 
+    # Remove clauses consistent with the assignment
+    clauses_to_remove = []
+
+    # Iterate terminals
+    for terminal in range(1,n+1):
+
+        # Iterate clauses in instance
+        for clause in instance:
+
+            # If terminal is consistent with clause
+            if assignment[terminal] == 0 and -1 * terminal in clause \
+            or assignment[terminal] == 1 and terminal in clause:
+                
+                # Add clause to removable clauses
+                clauses_to_remove.append(clause)
+
+    # Remove clauses
+    instance = [x for x in instance if x not in clauses_to_remove]
+
+    # If the instance is empty, return assignment
+    if len(instance) == 0:
+        return assignment
+    
     # Sort the implications
     instance.sort(key=lambda x: len(x))
 
@@ -308,18 +353,21 @@ def solve(instance, n, assignment=[]):
         # After checking each terminal, try each possible assignment
         for idx, terminal in enumerate(clause):
             
+            # copy assignment object
+            temp_assignment = assignment.copy()
+
             # Update assignment
-            assignment[abs(terminal)] = 1 if terminal > 0 else 0
+            temp_assignment[abs(terminal)] = 1 if terminal > 0 else 0
 
             # Consider a potential solution
-            potential = solve(instance[1:], n, assignment)
+            potential = solve(instance[1:], n, temp_assignment)
 
             # If the potential led to a complete solution, return solution
             if len(potential) > 0: 
                 return potential
             
             # otherwise, reset the assignment
-            assignment[abs(terminal)] = 'X'
+            # assignment[abs(terminal)] = 'X'
 
     # print('After processing clause, nothing returned')
     # print(f'assignment: {assignment}')
@@ -383,29 +431,29 @@ def gen_random_instance(n, instance_count, instance_length):
 
     return instances
 
-# n = 6
-# clauses = [[-6, -2, 6], [-3, -2, 1], [-6, -3, 6], [-6, -3, 5], [-2, 4, 5], [-3, 2, 3], [-6, -2, 1], [-4, -2, 3], [-6, -2, 4], [-1, 2, 6], [-4, 3, 5], [-1, 2, 5], [2, 3, 6], [-3, -1, 5], [-6, -3, 2], [-5, -3, -1], [-3, -2, 4], [-6, -3, -1], [-4, -2, 2], [-5, -4, 5], [-6, -4, 1], [-5, -1, 1], [-1, 1, 2], [-6, 1, 2], [-3, 5, 6], [-2, -1, 1], [-5, 4, 6], [-5, -2, 3], [-1, 5, 6], [-6, 3, 4], [-5, -3, 3], [-6, 2, 6], [-5, 2, 5], [1, 4, 6], [-6, -2, 2], [-4, 4, 5], [-6, -1, 4], [-1, 2, 3], [-5, 3, 5], [-4, 1, 2]]
+# n = 10
+# clauses = [[-1, 2, 3],[-7, -2, 10], [-1, 3, 7], [-9, 6, 8], [-6, -5, 10], [-3, 5, 7], [-7, 4, 10], [-10, -6, 8], [-10, -7, 1], [-2, 8, 9], [-6, 4, 10], [2, 4, 8], [-3, 1, 4], [-1, 8, 10], [-10, 2, 5], [-10, -3, 9], [-10, -5, 8], [-9, 6, 7], [-8, -4, 7], [-10, -7, -4], [-3, -2, 3], [-10, -4, -2], [-10, -9, -3], [-10, 1, 6], [-8, -6, -1], [3, 6, 8], [-7, -6, 2], [-7, -3, -2], [-8, -3, 4], [-7, -2, 6], [-7, 3, 10], [1, 3, 5], [-3, 3, 5], [-8, 1, 8], [-10, -6, 4], [-7, -1, 7], [-9, 4, 10], [-10, -7, 5], [-6, -5, 2], [1, 3, 10], [-10, 5, 8], [-10, -5, 7], [-7, -3, 9], [-5, -1, 9], [-8, 5, 8], [2, 6, 7], [-10, -9, -4], [2, 4, 7], [-8, -4, 6], [-10, -6, 2], [-6, -2, 5], [-10, -6, 5], [-8, -3, 9], [-10, -5, 9], [-5, 3, 8], [-3, 2, 5], [-8, 3, 9], [-9, 3, 7], [-7, -2, 7], [5, 8, 9], [-6, -3, 6]]
 # ans = solve(clauses, n)
 # if len(ans) == 0:
 #     print('unsatisfiable')
 # else:
 #     print(ans)
 
-instance_length = 40
-instance_count = 10
-n = 6
+# instance_length = 60
+# instance_count = 10
+# n = 10
 
-instances = gen_random_instance(n, instance_count, instance_length)
+# instances = gen_random_instance(n, instance_count, instance_length)
 
-# print(instances)
+# # print(instances)
 
-for instance in instances:
+# for instance in instances:
 
-    satisfiable = write_blockages(instance, n, False)
+#     satisfiable = write_blockages(instance, n, False)
 
-    assignment_str = solve(instance, n)
+#     assignment_str = solve(instance, n)
 
-    if len(assignment_str) == 0 and satisfiable:
-        print(f'False negative on instance {instance}')
-    elif len(assignment_str) > 0 and not satisfiable:
-        print(f'False positive on instance {instance}')
+#     if len(assignment_str) == 0 and satisfiable:
+#         print(f'False negative on instance {instance}')
+#     elif len(assignment_str) > 0 and not satisfiable:
+#         print(f'False positive on instance {instance}')
