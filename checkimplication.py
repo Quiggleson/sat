@@ -5,6 +5,7 @@ import itertools
 from tqdm import tqdm
 import random
 from main import write_blockages
+import time
 
 # Return clauses not contributing to implications
 def get_complete_data(instance, implications):
@@ -77,7 +78,7 @@ def get_implications(instance, k):
             if len(shared) == k and len(negated) == 1:
 
                 # sort implication
-                shared.sort()
+                shared.sort(key=lambda x: abs(x))
 
                 # add impliciation to the list
                 implications.append(shared)
@@ -136,7 +137,7 @@ def expand(clauses: list[list], n):
     for clause in clauses:
 
         # iterate terminals - do not include current terminal in any form
-        for terminal in [x for x in range(1, n+1) if x not in clause]:
+        for terminal in [x for x in range(1, n+1) if x not in clause and -1 * x not in clause]:
 
             # create clauses
             new_clause1 = clause.copy()
@@ -147,14 +148,58 @@ def expand(clauses: list[list], n):
             new_clause2.append(-1 * terminal)
 
             # Sort the clauses
-            new_clause1.sort()
-            new_clause2.sort()
+            new_clause1.sort(key=lambda x: abs(x))
+            new_clause2.sort(key=lambda x: abs(x))
             
             # Add new clauses to clauses
             expansions.append(new_clause1)
             expansions.append(new_clause2)
 
     return expansions
+
+# Get implications by Stronger Lemma I
+# Note: only gets clauses of length k +- 1
+# Loops through all given clauses, but only considers clauses shorter than 4
+def process_clauses(clauses: list[list], n):
+
+    implications = []
+
+    # don't want to imply clauses of length >= 4
+    for clause in [x for x in clauses if len(x) < 4]:
+
+        # Maybe doesn't need to be the same length?
+        for comp in [x for x in clauses if len(x) == len(clause)]:
+
+            # make new clause a set to avoid duplicates
+            new_clause = set()
+
+            # iterate terminals in clause
+            for terminal in clause:
+
+                # if the compared clause contains a negated term
+                if -1 * terminal in comp:
+
+                    # add all terminals in clause that are not the negated term
+                    for c in [x for x in clause if x != terminal]:
+                        new_clause.add(c)
+
+                    # add all terminals in comp that are not the negated term
+                    for c in [x for x in comp if -1 * x != terminal]:
+                        new_clause.add(c)
+
+            # if it's a valid clause
+            if len(new_clause):
+
+                # convert to list
+                new_clause = list(new_clause)
+
+                # sort
+                new_clause.sort(key=lambda x: abs(x))
+
+                # add to implications
+                implications.append(new_clause)
+                
+    return implications
 
 # Return the satisfying assignment
 # Or "" if none exists
@@ -473,211 +518,85 @@ def solve_expand(instance, n, assignment=[], processed=[]):
     # print(f'three term clauses: {[x for x in instance if len(x) == 3]}')
     # print(f'four term clauses: {[x for x in instance if len(x) == 4]}')
 
-    # Get list of one terminal clauses
-    one_term_clauses = [x for x in instance if len(x) == 1]
-    
-    # Add check to see if there are contradictions between the one-term clauses
-    for clause in one_term_clauses:
+        # Get list of one terminal clauses
+        one_term_clauses = [x for x in instance if len(x) == 1]
         
-        # clause containing the negated instance
-        negated_clause = [-1 * clause[0]]
-
-        # if the negation of the current clause is also implied
-        if negated_clause in one_term_clauses:
+        # Add check to see if there are contradictions between the one-term clauses
+        for clause in one_term_clauses:
             
-            # all assignments are blocked
-            return ""
+            # clause containing the negated instance
+            negated_clause = [-1 * clause[0]]
+
+            # if the negation of the current clause is also implied
+            if negated_clause in one_term_clauses:
+                
+                # all assignments are blocked
+                return ""
+            
+    print(f'instance from solve_expand: {instance}')
         
     # Ideally an unsat instance will always boil down to a one-terminal clause contradiction
     # So if it gets here, we can just return assignment to signify a satisfiable
     # assignment does exist, but it'll take longer to figure it out
     return assignment
 
-    # 6 Solve like before
+# Solve using Stronger Lemma I
+def solve_gen(instance, n, assignment=[]):
 
-    # Remember clauses to remove
-    clauses_to_remove = []
+    # Update assignment if it's the first call
+    if len(assignment) == 0:
+        assignment = ['Y']
+        assignment.extend(['X' for _ in range(n)])
 
-    # Remove clauses like [1, 2, -1] because 1 or -1 will be true in every instance
-    for clause in instance:
-        if len(clause) == 3:
-            for terminal in clause:
-                if -1 * terminal in clause:
-                    clauses_to_remove.append(clause)
-
-    # update instance
-    instance = [x for x in instance if x not in clauses_to_remove]
-
-    # NOTE: you may be able to remove clauses in which every terminal has an
-    # assigned value
-
-    # If the instance is empty, return assignment
-    if len(instance) == 0:
+    # If instance is empty, return assignment
+    if not len(instance):
         return assignment
-    
-    # Sort the implications
-    instance.sort(key=lambda x: len(x))
 
-    # Placeholder to check if everything has been processed
-    clause = []
+    # Bool to remember if anything's been changed
+    changed = True
 
-    # Look for the first unprocessed clause to process
-    for c in instance:
-        if not c in processed:
-            clause = c
-            break
+    # 5 Repeat until no new implications are added
+    while changed:
 
-    # If all clauses have been processed, return assignment
-    if len(clause) == 0:
-        print('all clauses have been processed')
-        return assignment
-    
-    # print(f'instance: {instance}')
-    # print(f'assignment: {assignment}')
-    # print(f'processed: {processed}')
-    # print(f'clause: {clause}')
+        # Changed is False until proven True
+        changed = False
 
-    # Process one term implications
-    if len(clause) == 1:
+        # get implications
+        implications = process_clauses(instance, n)
+
+        # add implications to instance, not adding duplicates
+        for implication in implications:
+            if implication not in instance:
+                instance.append(implication)
+                changed = True
+
+    # print('finished round of adding implications and expansions')
+    # print(f'one term clauses: {[x for x in instance if len(x) == 1]}')
+    # print(f'two term clauses: {[x for x in instance if len(x) == 2]}')
+    # print(f'three term clauses: {[x for x in instance if len(x) == 3]}')
+    # print(f'four term clauses: {[x for x in instance if len(x) == 4]}')
+
+        # Get list of one terminal clauses
+        one_term_clauses = [x for x in instance if len(x) == 1]
         
-        # int form of terminal
-        terminal = clause[0]
+        # Add check to see if there are contradictions between the one-term clauses
+        for clause in one_term_clauses:
+            
+            # clause containing the negated instance
+            negated_clause = [-1 * clause[0]]
 
-        # If the clause is inconsistent with the assignment, return ""
-        if terminal < 0 and assignment[abs(terminal)] == 1 \
-        or terminal > 0 and assignment[terminal] == 0:
-            return ""
+            # if the negation of the current clause is also implied
+            if negated_clause in one_term_clauses:
+                
+                # all assignments are blocked
+                return ""
+            
+    # print(f'instance from solve_gen: {instance}')
         
-        # Otherwise, set the terminal value in assignment
-        assignment[abs(terminal)] = 1 if terminal > 0 else 0
+    return assignment
 
-        # Append clause to processed
-        processed.append(clause)
 
-        # Return solution with new processed clause
-        return solve_expand(instance, n, assignment, processed)
 
-    # Process two terminal implications
-    elif len(clause) == 2:
-
-        # Iterate terminals
-        for terminal in clause:
-
-            # If the terminal is consistent, just call the function
-            if terminal < 0 and assignment[abs(terminal)] == 0 \
-            or terminal > 0 and assignment[terminal] == 1:
-                
-                # Append clause to processed
-                processed.append(clause)
-
-                # Recurse with newly processed clause
-                return solve_expand(instance, n, assignment, processed)
-            
-            # If the terminal is inconsistent, make a new one-term clause
-            # with the other terminal and recursively return
-            elif terminal < 0 and assignment[abs(terminal)] == 1 \
-              or terminal > 0 and assignment[abs(terminal)] == 0:
-                
-                # Get the other terminal
-                other_terminal = [x for x in clause if x != terminal]
-
-                # if other_terminal is not in instance, add it
-                if other_terminal not in instance:
-                    instance.append(other_terminal)
-
-                # Append clause to processed
-                processed.append(clause)
-
-                # Recurse with new processed list
-                return solve_expand(instance, n, assignment, processed)
-            
-        # After testing both terminals, try both assignments
-        for idx, terminal in enumerate(clause):
-
-            # copy assignment object
-            temp_assignment = assignment.copy()
-
-            # Update assignment
-            temp_assignment[abs(terminal)] = 1 if terminal > 0 else 0
-
-            # Copy processed object
-            temp_processed = processed.copy()
-
-            # Add clause to temp processed list
-            temp_processed.append(clause)
-
-            # consider the potential solution
-            potential = solve_expand(instance, n, temp_assignment, temp_processed)
-            
-            # If potential is not unsatisfiable, return potential
-            if len(potential) > 0:
-                return potential
-            
-            # otherwise, continue to next terminal
-
-        # If neither assignment returns a solution, this clause cannot be
-        # satisfied, so return "" to represent unsatisfiability
-        return ""
-
-    # Process three terminal clauses
-    elif len(clause) == 3:
-
-        # Iterate terminals
-        for terminal in clause:
-
-            # Check if the clause contains the same terminal in both forms
-            # FALSE: [-1, 2, 1] DOES NOT imply [2]
-            # if -1 * terminal in clause:
-
-            #     # Extract the other terminal
-            #     other_term = [x for x in clause if x != terminal and x != -1 * terminal]
-
-            #     # Add the other terminal if it does not exist in the list
-            #     if other_term not in instance:
-            #         instance.append(other_term)
-
-            #     # Recursively return - since it's forced
-            #     return solve(instance[1:], n, assignment)
-
-            # If the terminal is consistent, just call the function
-            if terminal < 0 and assignment[abs(terminal)] == 0 \
-            or terminal > 0 and assignment[terminal] == 1:
-
-                # Add clause to processed list
-                processed.append(clause)
-
-                # Recurse with new processed list
-                return solve_expand(instance, n, assignment, processed)
-            
-            # If the terminal is inconsistent, make a new clause
-            # with the other terminals and recursively return
-            elif terminal < 0 and assignment[abs(terminal)] == 1 \
-              or terminal > 0 and assignment[abs(terminal)] == 0:
-                
-                # Get the other terminals
-                other_terminal = [x for x in clause if x != terminal]
-
-                # if other_terminal not in instance, append it
-                if other_terminal not in instance:
-                    instance.append(other_terminal)
-
-                # Append clause to processed list
-                processed.append(clause)
-
-                # Recursively call - since the current terminal failed
-                # We know one of the other two have to be true, so we make
-                # a knew two terminal clause then continue the recursion
-                # ie the two clause is forced, so just return
-                return solve_expand(instance[1:], n, assignment, processed)
-            
-        # After checking each terminal, if nothing can be determined,
-        # there is no poly-time solution (with the current method)
-        # So return something signifying a solution
-        return assignment
-
-    # I do not think it should ever reach here
-    print(f'Something has gone wrong, maybe idk retrace with instance {instance}')
-    return ""
 
 def generate_all_clauses(n):
     terminals = [x for x in range(1,n+1)]
@@ -723,7 +642,7 @@ def gen_random_instance(n, instance_count, instance_length):
                 if terminal not in clause:
                     clause.append(terminal)
 
-            clause.sort()
+            clause.sort(key=lambda x: abs(x))
 
             if clause not in instance:
 
@@ -733,33 +652,64 @@ def gen_random_instance(n, instance_count, instance_length):
 
     return instances
 
-# n = 10
-# clauses = [[-7, 3, 9], [-5, -1, 10], [-7, 7, 8], [-4, -3, -2], [2, 3, 9], [-6, 3, 6], [1, 6, 9], [-7, 9, 10], [-9, -3, 8], [-10, 1, 2], [1, 3, 10], [-8, 1, 2], [5, 8, 9], [-9, 4, 7], [-4, -2, 2], [-3, 1, 3], [-9, -7, -5], [4, 5, 10], [-7, -2, -1], [-5, 1, 7], [-8, -1, 8], [-7, 3, 6], [2, 3, 5], [-5, -1, 4], [-8, -5, 10], [-6, 1, 8], [-2, -1, 6], [-2, 5, 10], [1, 3, 5], [-8, -7, 9], [-8, -6, -4], [3, 8, 10], [-10, 5, 10], [-9, -6, 3], [-10, 6, 9], [-7, -5, -2], [-10, -3, 1], [-8, -7, 10], [7, 8, 10], [-1, 1, 9], [-5, -2, 5], [-1, 3, 4], [-8, 2, 3], [-2, -1, 4], [-6, -2, 5], [-9, 4, 6], [-7, 2, 8], [-3, 2, 9], [-4, 4, 10], [-6, -1, 2], [-8, -1, 7], [-10, -8, -2], [-4, 1, 7], [-9, -1, 10], [-10, 2, 6], [-6, 3, 9], [-10, -3, 7], [3, 4, 10], [-1, 6, 8], [-9, 5, 8]]
-# ans = solve(clauses, n)
-# if len(ans) == 0:
-#     print('unsatisfiable')
-# else:
-#     print(ans)
 
+clauses = [
+    [1, 2, 3],
+[-1, 4, 5],
+[-2, -4, 6],
+[-1, -4, -6],
+[-1, -5, 4],
+[-2, 1, 4],
+[-3, 1, 2],
+[1, -2, -4],
+[-1, 2, -4]
+]
+n = 6
+expon_assign = write_blockages(clauses, n, False)
+expand_assign = solve_expand(clauses, n)
+gen_assign = solve_gen(clauses, n)
 
+print(f'2^n satisfiable? {expon_assign}')
+print(f'expand satisfiable? {bool(len(expand_assign))}')
+print(f'gen satisfiable? {bool(len(gen_assign))}')
 
 instance_length = 60
-instance_count = 1000
+instance_count = 100
 n = 10
 
 instances = gen_random_instance(n, instance_count, instance_length)
 
 # print(instances)
 
+sat_count = 0
+unsat_count = 0
+
 for instance in tqdm(instances):
 
     instance = instance.copy()
 
+    start = time.time()
     satisfiable = write_blockages(instance.copy(), n, False)
+    end = time.time()
+    # print(f'exponential solution: {end - start}')
 
-    assignment_str = solve_expand(instance.copy(), n)
+    start = time.time()
+    assignment_str = solve_gen(instance.copy(), n)
+    # assignment_str = optim_solve(instance.copy(), n)
+    # assignment_str = solve_expand(instance.copy(), n)
+    # assignment_str = solve(instance.copy(), n)
+    end = time.time()
+    # print(f'polytime solution: {end - start}')
 
     if len(assignment_str) == 0 and satisfiable:
         print(f'False negative on instance {instance}')
     elif len(assignment_str) > 0 and not satisfiable:
         print(f'False positive on instance {instance}')
+
+    if satisfiable:
+        sat_count += 1
+    else:
+        unsat_count += 1
+
+print(f'unsat count: {unsat_count}')
+print(f'sat count: {sat_count}')
