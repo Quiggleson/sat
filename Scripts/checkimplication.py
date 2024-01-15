@@ -675,7 +675,7 @@ print(f'gen satisfiable? {bool(len(gen_assign))}')
 
 instance_length = 60
 instance_count = 100
-n = 10
+n = 11
 
 instances = gen_random_instance(n, instance_count, instance_length)
 

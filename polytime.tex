@@ -1,0 +1,138 @@
+\documentclass[manuscript]{acmart}
+\begin{document}
+
+    \title{A Polynomial Time Algorithm for 3SAT} % Sets article title
+    \author{Robert Quigley}
+    % what should I do for \affiliation?
+    \email{robertquigley21@gmail.com}
+    % do not use \thanks for journals
+    % see the acks environment sec 2.13
+    % remember to put the CCS codes in!!
+    
+    \begin{abstract}
+        This paper includes the presentation of a polynomial time algorithm to
+        solve 3SAT. It begins with the problem definition and format of various
+        parts of the problem. It then offers various lemmas of important aspects of 
+        the 3SAT problem along with their corresponding proofs. Next, it describes
+        the algorithm that uses these lemmas to solve 3SAT. And finally, it proves
+        that the algorithm works for any general case of 3SAT. The algorithm relies
+        on the fact that an instance of 3SAT is unsatisfiable iff contradicting
+        1-terminal clauses can be derived in polynomial time.
+    \end{abstract}
+    
+    % TODO: google a list of keywords for ACM journals
+    \keywords{test1, test2}
+    
+    \maketitle % creates title using information in preamble (title, author, date)
+    
+    % \acmplain for theorem, conjecture, proposition, lemma, corollary, etc
+    % \acmdefinition for example and definition
+    % \acks for acknowledgements
+    % bibtex or biblatex for bibliography
+    
+    TODO: find who the heck wrote '3SAT is NP-complete'
+    read https://dl.acm.org/doi/10.1145/800157.805047
+    
+    \section{Definitions}
+
+    \begin{definition}
+        Terminals: symbols used in the 3SAT problem that can be assigned a value
+        of either 0 or 1, True or False, or any other binary assignment. They usually
+        take the form $x_i$ where $i$ is a natural number.
+    \end{definition}
+    \begin{definition}
+        Clauses: a set of terminals combined by logical or operators. Each 
+        terminal can also be negated. Clauses usually take the form 
+        $(x_i \lor \neg x_j \lor x_k)$ where $x_i \neq x_j \neq x_k$
+    \end{definition}
+    \begin{definition}
+        (3SAT) Instance: a set of any number of clauses combined by logical
+        and operators. Note that entire clauses may not be negated. Terminals may
+        not repeat within a clause, but they are free to repeat between clauses. 
+        Instances usually take the form:
+        $(x_i \lor \neg x_j \lor x_k) \land (x_l \lor x_m \lor x_n)$
+    \end{definition}
+    \begin{definition}
+        Assignment: A list of values in which each value represents either True
+        or False such that each item in the list corresponds to a terminal and 
+        all terminals are assigned a value.
+    \end{definition}
+    \begin{definition}
+        Satisfying Assignment: An assignment, $A$, is said to satisfy the instance, 
+        if applying $A$ will make the instance evaluate to True.
+    \end{definition}
+    \begin{definition}
+        The 3SAT Problem: Given a 3SAT instance, does there exist a satisfying assignment?
+    \end{definition}
+    \begin{definition}
+        Blocking an Assignment: An assignment, $A$, is said to be blocked if, given a
+        clause, $C$, there is no way that $A$ can satisfy the instance.
+    \end{definition}
+    \begin{definition}
+        TODO: define a more 'specifically in polytime' type of implication
+        Implication: A clause, $C$, is said to imply another clause, $D$, if all 
+        assignments blocked by $D$ are also blocked by $C$ 
+    \end{definition}
+    \begin{definition}
+        Given Clauses: clauses which were given in the original instance.
+    \end{definition}
+    \begin{definition}
+        Implied Clauses: clauses which are implied by the clauses in the original instance.
+    \end{definition}
+    \begin{definition}
+        k-terminal (k-t) clause: a clause is described as a k-terminal or a k-t clause
+        if there are $k$ terminals in the clause
+    \end{definition}
+
+    \section{Reformatting}
+
+    Since there are a lot of constant characteristics about an instance of 3SAT, 
+    we can remove most of them to allow ourselves to focus only on what changes
+    from instance to instance. A list of unchanging characteristics follows:
+    \begin{itemize}
+        \item the symbol $x$
+        \item logical and operators
+        \item logical or operators
+    \end{itemize}
+    
+    The only difference between instances, therefore, is the subscript of the terminal.
+    The following items will be changed to improve compatibility with python code:
+    *possible footnote to describe how to represent it as list of lists
+    \begin{itemize}
+        \item parentheses will become square brackets
+        \item negation symbols will become minus signs
+        \item an instance may be surrounded with square brackets to show it is a list of lists
+    \end{itemize}
+   
+    For example, the instance:
+    
+    $(\neg x_a \lor x_b \lor x_c) \land (x_a \lor x_d \lor x_e)$
+
+    will be written as:
+
+    $[[-a, b, c], [a, d, e]]$
+
+
+    \section{Lemmas}
+
+    \subsection{Lemma A}
+    \subsection{Lemma B}
+    \subsection{Lemma C}
+    \subsection{Lemma D}
+    \subsection{Lemma E}
+
+    \section{Algorithm}
+
+    \section{Time Complexity Analysis}
+
+    \section{Proof of Correctness}
+
+    \section{Conclusion}
+
+    TODO:
+    \begin{itemize}
+        \item reorder definitions 
+    \end{itemize}
+
+
+\end{document} % This is the end of the document

@@ -917,6 +917,69 @@ Input: the instance, optionally an assignment
            the function with the new assignment (removing the current clause)
 
 ```
+### Plan sort of number next - Plan Expansion
+
+Based on the idea that you can get a k-1 terminal implication from two clauses
+of length k <br>
+And then you can add 2(n-k) k-terminal expansions from those clauses <br>
+For example, if you have the clauses
+[1, 2, 3]
+[1, 2, -3]
+[-1, 2, -4]
+
+the first two clauses imply [1, 2] <br>
+[1, 2] expands to [1, 2, 4] and [1, 2, -4] <br>
+and [1, 2, -4] and [-1, 2, -4] implies [2, -4] <br>
+
+Thus we have a new two terminal clause that cannot be directly implied from two
+existing three terminal clauses
+
+Similarly, one terminal clauses like [1] expand to [1, 2, 3], [1, 2, -3], [1, 4, -5], ...
+
+The only thing that CANNOT be expanded is a negative terminal included in the
+current clause
+
+So [1, 2] can never expand to clauses that contain -1 or -2
+
+Note: this idea works for three or more terminal clauses, but if you expand
+until you cannot expand anymore, you will end up with an exponential number
+of expansions... idk there might be some value in expanding beyond three term clauses
+
+
+algo:
+```
+(1) Get all two-terminal implications
+(2) Get all one-terminal implications
+(3) Expand all one terminal implications
+(4) Expand all two terminal implications
+(5) Repeat 1-4 until you have no more implications
+(6) Solve like before, assigning values where they are forced from one-term
+    clauses, or trying both values from two-term clauses
+
+```
+
+algo 2:
+```
+(0) Get all three-terminal implications
+(1) Get all two-terminal implications
+(2) Get all one-terminal implications
+(3) Expand all one terminal implications
+(4) Expand all two terminal implications
+(TODO) expand all three terminal implications
+(5) Repeat 1-4 until you have no more implications
+(6) If there exists contradicting one-terminal implications, 
+    it is not satisfiable
+    Otherwise, it is satisfiable
+~~(6)~~ Solve like before, assigning values where they are forced from one-term
+    clauses, or trying both values from two-term clauses
+
+```
+
+### Plan to optimize solve_expand()
+instance - contain all clauses from which you can still get info
+processed - all clauses from which you gathered all information
+if a clause gets expanded to all possible forms, remove it from instance
+if a clause gets reduced, remove it from instance
 
 
 

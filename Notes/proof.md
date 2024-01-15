@@ -574,6 +574,165 @@ but if a bunch are the same, we can remove duplicates.
 For all practical purposes, this limits 3-t clauses to imply clauses of length
 2, 3, or 4. But does this solve the problem of needing a 5-t clause? yes
 
+Proof for Stronger Lemma I:
+Given two clauses of length k that share a negated term, this implies a new
+clause of at least length k-1 and at most length 2*(k-1) which is composed
+of all the terminals that are not the negated terminal.
+
+Suppose we have the clauses
+[1, 2, 3, ..., i]
+[a, b, c, ..., -i]
+where 1, 2, 3, ... i are any number of terminals in the instance
+and a, b, c are any number of terminals in the instance.
+Note that there could be overlap between the 1, 2, 3 ... and the a, b, c, ...
+but according to Lemma (the one where if a clause contains the same terminal
+twice but negated, it will always be satisfiable) the same terminal cannot 
+appear in either form more than twice in the same clause
+WTS it implies a clause like [1, 2, 3, ..., a, b, c, ...]
+
+What do we know about the clauses of length k?
+- they do not overlap
+- there is some subset action happening...
+
+assume for a moment the combined clause is larger than k
+we know we can expand [a, b, c, ...] (without i) to [a, b, c, ..., q, r, s...]
+because adding specifity (more terminals -> fewer blocked assignments) to a
+clause is always allowed as long as the larger clause contains all terminals
+in the smaller clause, the larger clause does not block any more assignments
+than the smaller clause
+but we cannot assume we have [a, b, c, ...] as we only have [a, b, c, ..., -i]
+so we can imply
+[a, b, c, ..., -i, q, r, s, ...] is blocked
+now replace q, r, s, ... with 1, 2, 3 ...
+[a, b, c, ..., -i, 1, 2, 3, ...]
+Similarly, expand [1, 2, 3, ... i] to 
+[1, 2, 3, ... i, a, b, c, ...]
+Now since we have two clauses of the same length sharing all terminals except
+for one negated terminl, we can make a new clause with just the shared terminals
+therefore, 
+[1, 2, 3, ..., a, b, c, ...] is implied by 
+[1, 2, 3, ..., i]
+[a, b, c, ..., -i]
+
+
+now consider where the combined clause is less than or equal to k
+the combined clause is less than k iff there is some overlap between
+1, 2, 3, ... and a, b, c, ...
+In this case, are all of the steps still valid?
+assume that 1, 2, 3, ... == a, b, c, ...
+then step 1, we expand
+[1, 2, 3, ..., -i, 1, 2, 3, ...]
+clearly this doesn't block any more assignments than the unexpanded version
+
+what about the lengths of the implied clause?
+Consider: all non-negated terms overlap
+then there are (k-1) overlapping terminals and there are (k-1) terminals
+in the new clause
+Consider: no non-negated terms overlap
+then there are (k-1) unique terminals in each clause so there are (k-1)*2
+terminals in the new clause 
+
+Since all steps are valid in both cases, we can say for certainty that if two
+clauses of length k have the same terminal, t,  where t is positive in one clause and negated in the other, then we can make a new clause between length 
+(k-1) and 2*(k-1) containing all the terminals that are not t
+
+Proof done for Stronger Lemma I
+
+Lemma J:
+Given an **implied** clause of length k, say C, any clause that C implies can
+be directly implied by the clauses that imply C
+
+Example with k = 4, n = 7.
+Given a 4-t clause, 
+C := [1, 2, 3, 4]
+WTS any 5-t clause that can be derived will already be derived by a 3-t clause
+To derive a new clause from C, we need something like
+[5, 6, 7, -4] or
+[1, 5, 6, -4] or
+[1, 2, 5, -4] or
+[1, 2, 3, -4]
+
+Consider D := [5, 6, 7, -4]
+
+Then these clauses imply a clause
+E := [1 2 3 5 6 7]
+
+The 3-t clauses implying C are:
+Below, parentheses mean everything in the () must exist and outside the 
+parentheses, at least one must exist
+a: ( 
+  [1 2 i],
+  [3 4 -i] 
+  where i is any number 5 to n
+)
+b: [1 2 3]
+c: [1 2 4]
+d: [1 3 4]
+e: [2 3 4]
+
+The 3-t clauses implying D are:
+f: (
+  [5 6 i]
+  [7 -4 -i]
+  where i is any number 1 <= i <=n that's not 5, 6, 7, 4 
+)
+g: [5 6 7]
+h: [5 7 -4]
+i: [5 6 -4]
+j: [6 7 -4]
+
+WTS all combinations of (a, ..., e) and (f, ..., j) already imply E.
+Welp clauses of length 3 can only imply clauses of length 4 so it doesn't work
+:(
+Clearly [1, 2, 3] [5, 6, 8], [-4, 7, -8] won't imply [1 2 3 4 5 6 7] immediately
+but what if it's just that it will imply it without expanding above a certain k?
+
+ie
+3-t clauses can directly imply all clauses of len (3-1)*2
+4-t clauses directly imply all clauses of len (4-1)*2
+
+not good enough. We have to prove the more general form:
+any two clauses that contain the same terminal, t, negated in one and positive in the other, will imply a new clause containing all terminals that are not t
+
+Then... we still need to derive [1 2 3 4] from [1 2 3] before [1 2 3 4 5 6 7]
+but maybe that's alright?
+
+shut up. It doesn't matter that we have to expand all the way up to k = 7, it
+matters that we have all possible combinations of 3-t clauses that imply
+C and D and there is no combination of these clauses that do not imply E.
+
+But what about the search time? To expand to k = 7?
+
+For a moment let's say we proved that all possible 3-t clauses that imply
+C and D also imply E without the need of directly making C and D, then what?
+
+I guess the plan was to say that n-t clauses are implied by n-1-t clauses
+are implied by ... are implied by 3-t clauses, but if you have to expand up to n-1 it defeats the purpose.
+
+UGH. MOST BASIC: wts that the clauses implied by Stronger Lemma I include
+all of the clauses that could possibly be implied.
+WTS the given clauses of length 3 can be processed to gain all of the possible
+clauses of length 3 that are implied.
+
+Hmm maybe: is there any clause of length 4/5 or more that can imply a clause of
+length 3 that cannot be directly implied by the given clauses? WTS there is 
+no such clause
+
+Suppose not. Then there is a clause of length 4, say D, that implies a clause
+of length 3, say C, that cannot be implied by the given clauses of length 3.
+
+We know by Stronger Lemma I that clauses of length 3 can only be implied by
+clauses of length 3 or 4. (or 1 or 2 by expansion).
+
+WTS that if a 4-t clause that would imply a new 3-t clause then the existing
+3-t clauses that imply that 4-t clause also imply the new 3-t clause
+
+WTS an unsatisfiable instance implies contradicting 1-t clauses. 
+Unsatisfiable -> all assignments are blocked
+Contradicting 1-t clauses -> 2-t clauses
+2-t clauses -> 2-t or 3-t clauses
+3-t clauses -> 3-t clauses or 4-t clauses, but all my homies hate 4-t clauses
+
 Intuitively, the final proof will be of the form:
 We can imply clauses according to Stronger Lemma I and
 all clauses of length 5 that are implied by clause(s) of length 4 are directly
@@ -581,3 +740,10 @@ implied by clause(s) of length 3.
 Expand on this to say all clauses of length n that are implied by clauses
 of length n-1 are directly implied by clauses of length n-2. Continue until
 you are considering clauses of length 3.
+Another useful lemma: you can add whatever terminals you want to a clause, 
+except for terminals already in the clause, and it will not block any
+assignments that are not already blocked
+Note that you actually can add terminals that are already in the clause
+because if a clause contains two terminals and one is negated and one is 
+positive, it will always be true and it will block 0 assignments which clearly
+shows it will not block more assignments than the original clause
