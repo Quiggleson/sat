@@ -569,13 +569,7 @@ def solve_gen(instance, n, assignment=[]):
             if implication not in instance:
                 instance.append(implication)
                 changed = True
-
-    # print('finished round of adding implications and expansions')
-    # print(f'one term clauses: {[x for x in instance if len(x) == 1]}')
-    # print(f'two term clauses: {[x for x in instance if len(x) == 2]}')
-    # print(f'three term clauses: {[x for x in instance if len(x) == 3]}')
-    # print(f'four term clauses: {[x for x in instance if len(x) == 4]}')
-
+                
         # Get list of one terminal clauses
         one_term_clauses = [x for x in instance if len(x) == 1]
         

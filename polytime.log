@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Debian) (preloaded format=pdflatex 2024.1.15)  15 JAN 2024 15:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Debian) (preloaded format=pdflatex 2024.1.15)  18 JAN 2024 15:02
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -462,7 +462,7 @@ Package: fancyhdr 2022/11/09 v4.1 Extensive control of page headers and footers
 \@folio@ht=\dimen193
 \@folio@voffset=\dimen194
  Special comment 'acks')
-Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 2.
+Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 6.
 \c@theorem=\count305
  Excluding comment 'screenonly' Include comment 'printonly' Include comment 'anonsuppress' (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2023-01-16 L3 backend support: PDF output (pdfTeX)
@@ -471,52 +471,52 @@ File: l3backend-pdftex.def 2023-01-16 L3 backend support: PDF output (pdfTeX)
 ) (./polytime.aux)
 \openout1 = `polytime.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
 <<ot1.cmap>><<oml.cmap>><<oms.cmap>><<omx.cmap>>
-LaTeX Font Info:    Trying to load font information for U+msa on input line 2.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 6.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 2.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 6.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Info: Redefining \microtypecontext on input line 2.
-Package microtype Info: Applying patch `item' on input line 2.
-Package microtype Info: Applying patch `toc' on input line 2.
-Package microtype Info: Applying patch `eqnum' on input line 2.
-Package microtype Info: Applying patch `footnote' on input line 2.
+LaTeX Info: Redefining \microtypecontext on input line 6.
+Package microtype Info: Applying patch `item' on input line 6.
+Package microtype Info: Applying patch `toc' on input line 6.
+Package microtype Info: Applying patch `eqnum' on input line 6.
+Package microtype Info: Applying patch `footnote' on input line 6.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 2.
+LaTeX Info: Redefining \showhyphens on input line 6.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
  (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
 )
-Package hyperref Info: Link coloring OFF on input line 2.
+Package hyperref Info: Link coloring OFF on input line 6.
  (./polytime.out) (./polytime.out)
 \@outlinefile=\write4
 \openout4 = `polytime.out'.
@@ -585,7 +585,45 @@ Package microtype Info: Loading generic protrusion settings for font family
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-) [1.1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (/usr/share/texlive/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
+) [1.1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2.2]
+
+Package amsmath Warning: Foreign command \atopwithdelims;
+(amsmath)                \frac or \genfrac should be used instead
+(amsmath)                 on input line 174.
+
+[3.3] [4.4] [5.5] [6.6] [7.7]
+<./Source//317.png, id=124, 347.2975pt x 237.88875pt>
+File: ./Source//317.png Graphic file (type png)
+<use ./Source//317.png>
+Package pdftex.def Info: ./Source//317.png  used on input line 615.
+(pdftex.def)             Requested size: 277.83836pt x 190.31123pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [8.8]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [9.9 <./Source//317.png>]
+<./Source//318.png, id=135, 307.1475pt x 71.26625pt>
+File: ./Source//318.png Graphic file (type png)
+<use ./Source//318.png>
+Package pdftex.def Info: ./Source//318.png  used on input line 719.
+(pdftex.def)             Requested size: 307.14674pt x 71.26605pt.
+ [10.10 <./Source//318.png>]
+<./Source//318b.png, id=142, 365.365pt x 71.26625pt>
+File: ./Source//318b.png Graphic file (type png)
+<use ./Source//318b.png>
+Package pdftex.def Info: ./Source//318b.png  used on input line 751.
+(pdftex.def)             Requested size: 292.29239pt x 57.01305pt.
+<./Source//318c.png, id=143, 365.365pt x 71.26625pt>
+File: ./Source//318c.png Graphic file (type png)
+<use ./Source//318c.png>
+Package pdftex.def Info: ./Source//318c.png  used on input line 799.
+(pdftex.def)             Requested size: 292.29239pt x 57.01305pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [11.11 <./Source//318b.png> <./Source//318c.png>] [12.12] [13.13] [14.14] [15.15] (/usr/share/texlive/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 ) (/usr/share/texlive/texmf-dist/tex/generic/stringenc/se-utf8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
@@ -593,23 +631,23 @@ File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
 
 Class acmart Warning: CCS concepts are mandatory for papers over two pages.
 
-[2.2] [3.3] (./polytime.aux)
+[16.16] (./polytime.aux)
 Package rerunfilecheck Info: File `polytime.out' has not changed.
-(rerunfilecheck)             Checksum: E1CFD763163E4737073F03331826E170;1542.
+(rerunfilecheck)             Checksum: 373EDBF770B2CDF4CF240A08F9C72D4C;948.
  ) 
 Here is how much of TeX's memory you used:
- 16949 strings out of 477975
- 275294 string characters out of 5839281
- 1867330 words of memory out of 5000000
- 36496 multiletter control sequences out of 15000+600000
- 524715 words of font info for 114 fonts, out of 8000000 for 9000
+ 17138 strings out of 477975
+ 277220 string characters out of 5839281
+ 1866330 words of memory out of 5000000
+ 36532 multiletter control sequences out of 15000+600000
+ 528256 words of font info for 163 fonts, out of 8000000 for 9000
  220 hyphenation exceptions out of 8191
- 85i,11n,131p,1025b,576s stack positions out of 10000i,1000n,20000p,200000b,200000s
- </home/rob/.texlive2022/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm0700.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on polytime.pdf (3 pages, 154840 bytes).
+ 85i,12n,131p,1025b,601s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ </home/rob/.texlive2022/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm0700.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
+Output written on polytime.pdf (16 pages, 247792 bytes).
 PDF statistics:
- 145 PDF objects out of 1000 (max. 8388607)
- 121 compressed objects within 2 object streams
- 28 named destinations out of 1000 (max. 500000)
- 32893 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 264 PDF objects out of 1000 (max. 8388607)
+ 212 compressed objects within 3 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 34921 words of extra memory for PDF output out of 35830 (max. 10000000)
 

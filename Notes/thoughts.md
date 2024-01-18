@@ -177,7 +177,7 @@ remaining. <br>
 It's polynomial to check that the instance falls under this case then it's
 polynomial time to check the remaining assignments. <br>
 
-The specific cause being an instance of 3SAT that is consistent with the 
+The specific case being an instance of 3SAT that is consistent with the 
 description in this Plan 1 <br>
 
 It is slightly more general. As long as the instance of 3SAT just *contains* the
