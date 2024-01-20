@@ -5,7 +5,7 @@
 
 \begin{document}
 
-    \title{A Polynomial Time Algorithm for 3SAT} % Sets article title
+    \title{A Polynomial Time Algorithm for 3SAT} 
     \author{Robert Quigley}
     % what should I do for \affiliation?
     \email{robertquigley21@gmail.com}
@@ -18,10 +18,12 @@
         solve 3SAT. It begins with the problem definition and format of various
         parts of the problem. It then offers lemmas of important aspects of 
         the 3SAT problem along with their corresponding proofs. Next, it describes
-        the algorithm that uses these lemmas to solve 3SAT in polynomial times. And finally, it proves
+        the algorithm that uses these lemmas to solve 3SAT in polynomial time. Next, it proves
         that the algorithm works for any general case of 3SAT. The algorithm relies
         on the fact that an instance of 3SAT is unsatisfiable iff contradicting
-        1-terminal clauses can be derived in polynomial time.
+        1-terminal clauses can be derived in polynomial time. Finally it shows that, 
+        because 3SAT is NP-Complete and 3SAT can be solved in polynomial time, 
+        P equals NP.
     \end{abstract}
     
     % TODO: google a list of keywords for ACM journals
@@ -36,8 +38,28 @@
     
     TODO: find who the heck wrote '3SAT is NP-complete'
     read https://dl.acm.org/doi/10.1145/800157.805047
-    
-    \section{Definitions}
+
+    \section{Introduction}
+
+        This section introduces the 3SAT problem and the implications of
+        solving it in polynomial time.
+
+        As seen in (Cook's Paper),
+        The boolean satisfiability problem is given as a set of terminals, $x_1, x_2, ..., x_n$,
+        each of which can be assigned a value of True or False,
+        combined by logical AND operators, logical OR operators, and negations.
+        The problem is to determine whether or not there exists an assignment
+        for each terminal that allows the instance to evaluate to True.
+        As seen in (Karp's 21 NP-Complete Problems), the satisfiability problem
+        with at most 3 literals per clause is NP-Complete. This is the same 
+        as the boolean satisfiability problem, but it is presented such that
+        a clause contains exactly three terminals combined with logical OR operators
+        and possbily negation, and each clause is combined with logical AND operators.
+        The idea of NP-completeness shows that if one NP-complete problem can be solved
+        in polynomial time, then all problems in the class NP can be solved in polynomial time.
+        In other words, P = NP.
+        
+    \section{Standard Definitions}
 
     \begin{definition}
         Terminals: symbols used in the 3SAT problem that can be assigned a value
@@ -45,21 +67,22 @@
         take the form $x_i$ where $i$ is a natural number.
     \end{definition}
     \begin{definition}
-        Terms: terminals in either the positive or negated form. If a term is positive, 
-        then the value of the terminal will be the same as the value of the term. If a
-        term is negated, then the value of the terminal will be the opposite of the 
-        value of the term.
+        Terms: terminals in either the positive or negated form that appear in a clause.
+        If a term is positive, then the value of the terminal will be the 
+        same as the value of the term. If a term is negated, then the value
+        of the terminal will be the opposite of the value of the term.
     \end{definition}
     \begin{definition}
-        Clauses: a set of terms combined by logical or operators.
+        Clauses: a set of terms combined by logical OR operators.
         Clauses usually take the form 
         $(x_i \lor \neg x_j \lor x_k)$ where $x_i \neq x_j \neq x_k$
     \end{definition}
     \begin{definition}
         (3SAT) Instance: a set of any number of clauses combined by logical
-        and operators. Note that entire clauses may not be negated. Terminals may
+        AND operators. Terminals may
         not repeat within a clause, but they are free to repeat between clauses. 
         Instances usually take the form:
+
         $(x_i \lor \neg x_j \lor x_k) \land (x_l \lor x_m \lor x_n)$
     \end{definition}
     \begin{definition}
@@ -72,20 +95,19 @@
         if applying $A$ will make the instance evaluate to True.
     \end{definition}
     \begin{definition}
-        The 3SAT Problem: Given a 3SAT instance, does there exist a satisfying assignment?
-    \end{definition}
-    \begin{definition}
         Satisfiable: an instance is satisfiable iff there exists a satisfying assignment.
     \end{definition}
     \begin{definition}
         Unsatisfiable: an instance is unsatisfiable iff there does not exist a satisfying assignment.
     \end{definition}
+
+    \section{Algorithm-Specific Definitions}
     \begin{definition}
-        Blocking an Assignment: An assignment, $A$, is said to be blocked if, given a
-        clause, $C$, there is no way that $A$ can satisfy the instance.
+        Blocking an Assignment: An assignment, $A$, is said to be blocked if, 
+        given an instance containg the clause $C$, there is no way that $A$ can 
+        satisfy the instance.
     \end{definition}
     \begin{definition}
-        TODO: define a more 'specifically in polytime' type of implication
         Implication: A clause, $C$, is said to imply another clause, $D$, if all 
         assignments blocked by $D$ are also blocked by $C$ 
     \end{definition}
@@ -97,7 +119,7 @@
     \end{definition}
     \begin{definition}
         k-terminal (k-t) clause: a clause is described as a k-terminal or a k-t clause
-        if there are $k$ terminals in the clause
+        if there are $k$ terminals in the clause.
     \end{definition}
     \begin{definition}
         Reduction: A special type of implication in which the implied 
@@ -109,7 +131,7 @@
     \end{definition}
     \begin{definition}
         Contradicting Clauses: A set of clauses is said to be contradicting if
-        they block every assignment
+        they block every assignment.
     \end{definition}
 
     \section{Reformatting}
@@ -119,13 +141,15 @@
     from instance to instance. A list of unchanging characteristics follows:
     \begin{itemize}
         \item the symbol $x$
-        \item logical and operators
-        \item logical or operators
+        \item logical AND operators
+        \item logical OR operators
     \end{itemize}
     
     The only difference between instances, therefore, is the subscript of the terminal.
-    The following items will be changed to improve compatibility with python code:
-    *possible footnote to describe how to represent it as list of lists
+    
+    Additionally, the following items will be changed to improve compatibility
+    with Python code (cite python docs?) wherein an instance is expressed as
+    a list of lists and each inner list represents a clause:
     \begin{itemize}
         \item parentheses will become square brackets
         \item negation symbols will become minus signs
@@ -142,60 +166,6 @@
 
 
     \section{Lemmas}
-
-    \begin{lemma}        
-        For a given instance with $n$ terminals, there are $2^n$ possible assignments.
-    \end{lemma}
-    \begin{proof}
-        An assignment for this instance consists of $n$ values, each with two possible
-        values, True or False.
-
-        Therefore, there are $2^n$ possible assignments.
-    \end{proof}
-
-    \begin{lemma}
-        If a clause contains the same terminal in its negated and positive form, it will
-        always be true.
-    \end{lemma}
-    \begin{proof}
-        Given: a clause containing the same terminal in both the positive and
-        negative form.
-
-        We know that terminal must either be True or False. Consider both cases:
-
-        That terminal's value is True:
-        The positive form of the terminal will be true and the clause will evaluate to true
-
-        That terminal's value is False:
-        The negative form of the terminal will be true and the clause will evaluate to true
-    \end{proof}
-
-    \begin{lemma}
-        For a given instance with $n$ terminals, there are $8 * {n \choose 3}$
-        possible 3-terminal clauses that block at least one instance.
-    \end{lemma}
-    \begin{proof}
-        Recall from Lemma 3.2 that a clause containing the same terminal in both
-        the positive and negated form will always be true.
-
-        Therefore, it will never block any assignments.
-
-        Recall also that an instance containing the same terminal in the same
-        form twice is not a valid 3SAT clause.
-
-        Therefore we do not have to consider clauses containing the same terminal
-        twice since we are concerned with clauses that block assignments.
-
-        Given an instance with $n$ terminals, choose three of them to make a clause
-        
-        Once the terminals are selected, each terminal can have one of two values, either
-        True or False
-
-        There are $2 * 2 * 2$ possible clauses based on these terminals
-
-        Since there are $8$ clauses for every selection of three terminals, there are
-        $8 * {n \choose 3}$ possible clauses
-    \end{proof}
 
     \begin{lemma}
         A clause can block an assignment    
@@ -220,36 +190,92 @@
 
         Since the instance evaluates to False, the assignment cannot satisfy
         the instance.
-
     \end{proof}
 
-
-    \begin{lemma}
-        Each assignment can be blocked by at most ${n \choose 3}$ 3-terminal clauses
+    \begin{lemma}        
+        For a given instance with $n$ terminals, there are $2^n$ possible assignments.
     \end{lemma}
     \begin{proof}
-        Consider an assignment, A. WTS it is blocked by ${n \choose 3}$ clauses.
+        An assignment for this instance consists of $n$ values, each with two possible
+        values, True or False.
 
-        Recall from Lemma 3.4 that an assignment is blocked based on values of
-        the three terminals in the clause blocking it.
-
-        Notice also that each of these values only has one possible option since
-        assignments have a fixed value for each terminal.
-
-        Recall assignments are of length $n$.
-
-        We can choose three of the $n$ values in the assignments to fix and
-        make a clause out of it in the following manner:
-
-        if the value is False, the term is positive
-
-        if the value is True, the term is negated
-
-        This will create a clause that blocks the assignment.
-
-        This allows us to have ${n \choose 3}$ possible clauses that block an assignment.
-        
+        Therefore, there are $2^n$ possible assignments.
     \end{proof}
+
+    \begin{lemma}
+        If a clause contains the same terminal in its negated and positive form, it will
+        not block any assignments.
+    \end{lemma}
+    \begin{proof}
+
+        Consider a clause containing the same terminal in both the positive and
+        negative form.
+
+        We know that terminal must either be True or False. Consider both cases:
+
+        That terminal's value is True:
+        The positive form of the terminal will be true and the clause will evaluate to true
+
+        That terminal's value is False:
+        The negative form of the terminal will be true and the clause will evaluate to true
+
+        Since the clause evaluates to True in every case, there will never be an 
+        assignment with which it is impossible to make this clause evalute to False.
+    \end{proof}
+
+    % \begin{lemma}
+    %     For a given instance with $n$ terminals, there are $8 * {\binom{n}{3}}$
+    %     possible 3-terminal clauses that block at least one instance.
+    % \end{lemma}
+    % \begin{proof}
+    %     Recall from Lemma XXX 3.2 that a clause containing the same terminal in both
+    %     the positive and negated form will always be true.
+
+    %     Therefore, it will never block any assignments.
+
+    %     Recall also that an instance containing the same terminal in the same
+    %     form twice is not a valid 3SAT clause.
+
+    %     Therefore we do not have to consider clauses containing the same terminal
+    %     twice since we are concerned with clauses that block assignments.
+
+    %     Given an instance with $n$ terminals, choose three of them to make a clause
+        
+    %     Once the terminals are selected, each terminal can have one of two values, either
+    %     True or False
+
+    %     There are $2 * 2 * 2$ possible clauses based on these terminals
+
+    %     Since there are $8$ clauses for every selection of three terminals, there are
+    %     $8 * {\binom{n}{3}}$ possible clauses
+    % \end{proof}
+
+    % \begin{lemma}
+    %     Each assignment can be blocked by at most ${\binom{n}{3}}$ 3-terminal clauses
+    % \end{lemma}
+    % \begin{proof}
+    %     Consider an assignment, A. WTS it is blocked by ${\binom{n}{3}}$ clauses.
+
+    %     Recall from Lemma XXX 3.4 that an assignment is blocked based on values of
+    %     the three terminals in the clause blocking it.
+
+    %     Notice also that each of these values only has one possible option since
+    %     assignments have a fixed value for each terminal.
+
+    %     Recall assignments are of length $n$.
+
+    %     We can choose three of the $n$ values in the assignments to fix and
+    %     make a clause out of it in the following manner:
+
+    %     if the value is False, the term is positive
+
+    %     if the value is True, the term is negated
+
+    %     This will create a clause that blocks the assignment.
+
+    %     This allows us to have ${\binom{n}{3}}$ possible clauses that block an assignment.
+        
+    % \end{proof}
 
     \begin{lemma}
         Each clause of length $k$ blocks $2^{n-k}$ assignments
@@ -258,72 +284,77 @@
         In this proof, I will use $a, b, c$ instead of $x_a, x_b, x_c$ and
         I will use 0 and 1 instead of False and True
 
-        Now, consider the general k-terminal clause, $C$ in an instance with
+        Now, consider the general k-terminal clause, $C$, in an instance with
         $n$ terminals.
 
-        As seen in Lemma 3.4, this blocks all assignments where all of the terms evaluate to False
+        As seen in Lemma 5.1, this blocks all assignments where all of the terms
+        evaluate to False.
 
         Since the values for $k$ terminals are set, there are $n-k$ terminals left
         whose values could be 0 or 1.
 
         Since an assignment exists for every possible way to assign values to
         each terminal, we know an assignment exists for every possible way to
-        assign a value for these $n-k$ terminals
+        assign a value for these $n-k$ terminals.
 
-        Since the values of $k$ terminals are fixed, there are $2^{n-k}$
-        unique assignments that are blocked by $C$.
+        There are two possible ways to assign values to these $n-k$ terminals
+        so there are $2^{n-k}$ unique assignments blocked by $C$.
     \end{proof}
 
+    % \begin{lemma}
+    %     Adding clauses to an unsatisfiable instance will never make it satisfiable.
+    %     Similarly, removing clauses from a satisfiable instance will never make it unsatisfiable.
+    % \end{lemma}
+    % \begin{proof}
+    %     1. Recall that clauses block assignments and an instance is unsatisfiable if
+    %     none of the possible assignments satisfy the instance, ie, an instnace is 
+    %     unsatifiable if all of the assignments are blocked.
+
+    %     Therefore, adding clauses to an instance in which all assignments are blocked
+    %     will never be able to unblock an assignment and it will remain unsatisfiable.
+
+    %     2. An instance is satisfiable if there exists a satisfying assignment, ie, 
+    %     an instance is satisfiable if there is at least one assignment that's not blocked.
+
+    %     Therefore, removing clauses will never be able to block that assignment and
+    %     the instance will remain satisfiable.
+    % \end{proof}
+
     \begin{lemma}
-        Adding clauses to an unsatisfiable instance will never make it satisfiable.
-        Similarly, removing clauses from a satisfiable instance will never make it unsatisfiable.
+        For any clause, $C$, if we select a terminal, $t$, that's not in $C$ 
+        then half of the assignments
+        blocked by $C$ will assign True to $t$ and the other half will assign 
+        False to $t$.
     \end{lemma}
     \begin{proof}
-        1. Recall that clauses block assignments and an instance is unsatisfiable if
-        none of the possible assignments satisfy the instance, ie, an instnace is 
-        unsatifiable if all of the assignments are blocked.
+        We have a clause, $C$, of fixed yet arbitrary length:
 
-        Therefore, adding clauses to an instance in which all assignments are blocked
-        will never be able to unblock an assignment and it will remain unsatisfiable.
+        $[1, 2, 3, ...]$
 
-        2. An instance is satisfiable if there exists a satisfying assignment, ie, 
-        an instance is satisfiable if there is at least one assignment that's not blocked.
+        Now we select a terminal, $t$, that's not in $C$, say we call this
+        terminal $t$.
 
-        Therefore, removing clauses will never be able to block that assignment and
-        the instance will remain satisfiable.
-    \end{proof}
-
-    \begin{lemma}
-        For any clause, C, if we select a terminal, t, that's not in C then half of the assignments
-        blocked by C will assign True to t and the other half will assign False to t
-    \end{lemma}
-    \begin{proof}
-        We have a clause, C, of arbitrary length:
-
-        [1, 2, 3, ...]
-
-        Now we select a terminal, t, that's not in C, say we call this terminal $t$
-
-        WTS half of the assignments blocked by C assign True to $t$ and the other half
-        assign False to $t$.
+        Want to show half of the assignments blocked by $C$ assign True to 
+        $t$ and the other half assign False to $t$.
 
         We know there will be no overlap between these assignments because a single assignment
         cannot assign both the values True and False to the same terminal.
 
-        Now we just have to show that exactly half of the assignments are blocked by assigning
-        either True or False to $t$. Let's say we assign True to $t$.
+        Now we just have to show that exactly half of the assignments are blocked 
+        by assigning either True or False to $t$.
 
-        Let's say there are $k$ terms in C, then we know it blocks assignments where
-        all of the terms evaluate to False.
+        Let's say there are $k$ terms in C, then we know it blocks assignments 
+        where all $k$ terms evaluate to False.
 
-        By Lemma 3.6, this clause blocks $2^{n-k}$ assignments. 
+        By Lemma 5.4, this clause blocks $2^{n-k}$ assignments. 
 
-        If we fix the calue of $t$ to True, then there are only $n-k-1$ terminals
+        If we fix the value of $t$, then there are only $n-k-1$ terminals
         whose values could be 0 or 1. Since we have two choices per terminal
         and there are $n-k-1$ terminals, then there are $2^{n-k-1}$ assignments
         blocked by $C$ where the value of $t$ is fixed.
 
-        Divide 
+        Divide to get the ratio of the number of assignments blocked by adding 
+        $t$ to the number of assignments blocked by $C$ without $t$:
         
         $2^{n-k-1}/2^{n-k}$
 
@@ -336,70 +367,90 @@
         This shows that half of the assignments blocked by $C$ assign a fixed
         value to $t$.
 
-        Recall that a terminal can be assigned the value True or False.
+        Since there are two possible values for $t$ and each block mutually
+        exclusive halves of the assignments blocked by $C$, the lemma holds.
 
-        Therefore, for any clause, $C$, if we select a terminal, $t$, that's not
+        For any clause, $C$, if we select a terminal, $t$, that's not
         in $C$ then half of the assignments blocked by $C$ will assign True
         to $t$ and the other half will assign False to $C$.
-
     \end{proof}
 
     \begin{lemma}
-        Given a clause of length k, say C, all of the assignments blocked by
-        another clause, say D, which contains all of the terms in C, are also blocked
-        by C.
+        Given a clause, $C$, and another clause, $D$, such that all of the 
+        terms in $C$ also exist in $D$, then all of the assignments
+        blocked by $D$ are also blocked by $C$.
     \end{lemma}
     \begin{proof}
-        Given a clause, $C$, of an arbitrary length, say $k$:
+        Given a clause, $C$, of a fixed yet arbitrary length:
 
-        [1, 2, 3, ...]
+        $[a, b, c, ...]$
 
         And another clause, $D$, containing all the terms in $C$ with possibly
-        additional terms, say of length $l$:
+        additional terms:
 
-        [1, 2, 3, ... a, b, c, ...]
+        $[a, b, c, ..., d, e, f, ...]$
 
-        WTS all the assignments blocked by $D$ are also blocked by $C$.
+        Want to show all the assignments blocked by $D$ are also blocked by $C$.
 
         We know that $C$ blocks all assignments that cause all the terms to evaluate
         to False.
 
-        We know there are $2^{n-k}$ remaining terminals, each with a possible value
-        of True or False.
+        In other words, $C$ blocks all assignments where 
+ 
+        $a = b = c = ... = False$
 
-        For each of the terminals in $D$ that are not in $C$, we know the value is fixed
-        in the assignments blocked by $D$.
+        Similarly, $D$ blocks all assignments where
 
-        Since there are $2^{n-k}$ remaining terminals, each with a possible value of True and False,
-        and the assignments blocked by $D$ have set values for potentially up to the 
-        rest of the terminals, all of the assignments blocked by $D$ are also blocked by $C$        
+        $a = b = c = ... = d = e = f = ... = False$
+
+        Clearly all assignments consistent with the terminal assignments from $D$
+        are also consistent with the terminal assignments from $C$.
+
+        Therefore, every assignment blocked by $D$ is also blocked by $C$.
     \end{proof}
 
     \begin{lemma}
-        Two clauses of length k that share all the same terms, except for one in which
-        the same terminal is positive in one clause and negated in the other, implies
-        a clause of length k-1 which is composed of all the shared terminals.
+        Given the following restrictions:
+        \begin{itemize}
+            \item $A$ is a clause of length $k$
+            \item $B$ is a clause of length $k$
+            \item $A$ and $B$ share $k-1$ identical terms
+            \item $A$ and $B$ share one terminal that is negated in one clause
+            and positive in the other
+            \item $C$ is a clause of length $k-1$ composed of the shared terms
+            from $A$ and $B$
+        \end{itemize}
+        Then $A$ and $B$ imply $C$.
+
+        % Two clauses of length k that share all the same terms, except for one in which
+        % the same terminal is positive in one clause and negated in the other, implies
+        % a clause of length k-1 which is composed of all the shared terminals.
     \end{lemma}
     \begin{proof}
         Given clauses consistent with the description:
 
-        A := [1, 2, 3, ... i]
-        B := [1, 2, 3, ..., -i]
+        $A := [a, b, c, ... i]$
 
-        where 1, 2, 3, ... is shared between the clauses and i is a terminal not in
-        1, 2, 3, ...
+        $B := [a, b, c, ..., -i]$
 
-        Recall that the same terminal cannot appear twice within the same clause.
+        where $a, b, c, ...$ is shared between the clauses and $i$ is a 
+        terminal not in $a, b, c, ...$
+
+        Want to show this implies the described clause.
+
+        Recall by Lemma 5.3 that the same terminal cannot appear both negated and
+        positive within the same
+        clause and still block an assignment, so $i$ cannot exist in $a, b, c...$
 
         Consider the clause
 
-        C := [1, 2, 3, ...]
+        $C := [1, 2, 3, ...]$
 
-        We know by Lemma 3.8 that if we select a terminal that's not in $C$, say $t$, 
+        We know by Lemma 5.5 that if we select a terminal that's not in $C$, say $t$, 
         then half of the assignments blocked by $C$ assign True to $t$ and the other
-        half of the assignments blocked by $C$ assign False to $t$
+        half of the assignments blocked by $C$ assign False to $t$.
 
-        Let this terminal $t$ that's not in $C$ be the terminal $i$ that's in $A$ and $B$
+        Let this terminal $t$ that's not in $C$ be the terminal $i$ that's in $A$ and $B$.
 
         We know that $A$ blocks all assignments blocked by $C$ where $i$ is assigned
         the value of 0.
@@ -409,146 +460,105 @@
 
         Since $A$ and $B$ both block mutually exclusive halves of $C$, we can
         say that $A$ and $B$ imply $C$.
-
     \end{proof}
 
     \begin{lemma}
-        Given a clause, C, and a terminal, t, that's not in C, two new clauses
-        can be implied consisting of all the terms of C appended to either 
-        the positive form of t or the negated form of t.
+        Given a clause, $C$, and a terminal, $t$, that's not in $C$, two 
+        new clauses can be implied consisting of all the terms of $C$ 
+        appended to either the positive form of $t$ or the negated form of $t$.
     \end{lemma}
     \begin{proof}
-        Given a clause, C, and a terminal, t, that's not in C:
+        Given a clause, $C$, and a terminal, $t$, that's not in $C$:
 
-        C := [a, b, c, ...]
-
-        By Lemma 3.8, half of the assignments blocked by $C$ assign True to $t$
-        and the other half of the assignments blocked by $C$ assign False to $t$.
+        $C := [a, b, c, ...]$
 
         We can compose two new clauses:
 
-        D := [a, b, c, ..., t]
+        $D := [a, b, c, ..., t]$
 
-        E := [a, b, c, ..., -t]
+        $E := [a, b, c, ..., -t]$
 
-        Since D and E both contain all the terminals from C, by Lemma 3.9 then
+        Since D and E both contain all the terminals from C, by Lemma 5.6 then
         D and E are implied by C.
         
     \end{proof}
 
-    \begin{lemma}[Stronger Lemma 3.10]
-        If two clauses have the same terminal, $t$, such that $t$ is positive
-        in one clause and negated in the other, then these clauses imply a new
-        clause which is composed of all the terms in both clauses that do not 
-        have $t$.
+    \begin{lemma}[Stronger Lemma 5.7]
+        If two clauses share the same terminal, $t$, such that $t$ is 
+        positive in one clause and negated in the other, then these clauses 
+        imply a new clause which is composed of all the terms in both clauses 
+        that do not have $t$.
     \end{lemma}
     \begin{proof}
         Consider two clauses, 
 
-        C := [1, 2, 3, ..., t]
-
-        D := [a, b, c, ..., -t]
+        $C := [a, b, c, ..., t]$
+        
+        $D := [d, e, f, ..., -t]$
 
         Where within a clause, the same terminal does not repeat, but between
-        clauses the same terminal can repeat.
+        clauses the same terminal may repeat.
 
-        WTS we can make a clause like this:
+        Want to show we can imply a clause consistent with the lemma description:
 
-        E := [1, 2, 3, ..., a, b, c, ...]
+        $E := [a, b, c, ..., d, e, f, ...]$
 
         Let's define some additional clauses:
 
-        E' := [1, 2, 3, ..., a, b, c, ..., t]
+        $E' := [a, b, c, ..., d, e, f, ..., t]$
 
-        E'' := [1, 2, 3, ..., a, b, c, ..., -t]
+        $E'' := [a, b, c, ..., d, e, f, ..., -t]$
 
-        % By Lemma 3.9, we know that all the clauses that C or D blocks are also
-        % blocked by C' and D' respectively.
+        By Lemma 5.6, we know that $C$ implies $E'$, ie, all assignments blocked by
+        $C$ are also blocked by $E'$.
 
-        % By Lemma 3.8, if we take any terminal, $i$, that's not in a clause, $F$, then
-        % half of the assignments blocked by $F$ will assign True to $i$ and the other
-        % half will assign the value False to $i$.
+        By Lemma 5.6, we know that $D$ implies $E''$.
 
-        By Lemma 3.9, we know that C implies E', ie, all assignments blocked by
-        C are also blocked by E.
+        By Lemma 5.7, since $E'$ and $E''$ share all the same terms except 
+        for $t$, which is positive in one clause and negated in the other, 
+        we can create a new clause composed of all the shared terms in $E'$ 
+        and $E''$.
 
-        By Lemma 3.9, we know that D implies E''.
-
-        By Lemma 3.10, since E' and E'' share all the same terms except for t, which
-        is positive in one clause and negated in the other, we can create a new
-        clause composed of all the shared terms in E' and E''.
-
-        Such a clause is already defined as E.
+        Such a clause is already defined as $E$.
 
         Now there are a couple extra cases to consider:
         
         \begin{itemize}
-            \item There is some overlap between 1, 2, 3, ... and a, b, c, ...
-            \item There is the same terminal that's positive in 1, 2, 3, ... and negated in a, b, c, ...
+            \item There is some overlap between a, b, c, ... and d, e, f, ...
+            \item There is the same terminal that's positive in a, b, c, ...
+            and negated in d, e, f, ...
         \end{itemize}
 
-        First, if the same term exists in 1, 2, 3, ... and a, b, c, ..., then we
+        First, if the same term exists in a, b, c, ... and d, e, f, ..., then we
         can just remove one of the duplicates since one term being true implies an identical term being True
 
-        Secondly, if the same terminal exists, but is of the opposite form in 1, 2, 3, ... and a, b, c, ...
-        then by Lemma 3.2, this clause will always be True and thus blocks no assignments so 
-        C and D do not imply E, but this type of clause is worthless so we can simply discard it.
-
+        Secondly, if the same terminal exists, but is of the opposite form in a, b, c, ... and d, e, f, ...
+        then by Lemma 5.3, this clause will always be True and thus blocks no assignments so 
+        $C$, $D$, and $E$ all block no assignments which makes the lemma vacuously true.
     \end{proof}
 
     \begin{lemma}
-        Given two clauses of length k and l that share a terminal, t, which is 
+        Given two clauses of lengths $k$ and $m$ that share a terminal, $t$, which is 
         positive in one clause and negated in the other, you will be able
-        to directly imply clauses of length max(k, l)-1 to (k + l - 2)
+        to directly imply clauses of length $max(k, m)-1$ to $(k + m - 2)$ where
+        the function $max(a, b)$ represents the parameter with the greatest value.
     \end{lemma}
     \begin{proof}
-        The smallest clause that can be implied by clauses of length k and l
+        The smallest clause that can be implied by clauses of length $k$ and $m$
         occur when all of the terms in one clause exist in the other.
 
         As such, the unique terms will come from the clause that's longer.
 
-        Removing t, you are left with 1 less than the maximum of k and l.
+        Removing $t$, you are left with 1 less than the maximum of $k$ and $m$.
 
         The largest clause can be implied if there are no terms shared between
-        the two clauses. In this case you subtract 1 from the length of each
-        clause to remove t and since no duplicates will be removed, the 
-        resulting clause's length is 2 less than the sum of the lengths of 
+        the two clauses. In this case you subtract $1$ from the length of each
+        clause to account for $t$ and since no duplicates will be removed, the 
+        resulting clause's length is $2$ less than the sum of the lengths of 
         the clauses.
     \end{proof}
 
     \begin{lemma}
-        Given an instance of 3SAT, you can expand all of the given clauses
-        to the point where you are considering clauses of length n.
-    \end{lemma}
-    \begin{proof}
-        TODO: PROVE
-    \end{proof}
-
-    \begin{lemma}
-        If you expand given 3-t clauses as described in 3.14, you will derive
-        $2^n$ unique clauses of length n iff the instance is unsatisfiable.
-    \end{lemma}
-    \begin{proof}
-        TODO: PROVE
-    \end{proof}
-
-    \begin{lemma}
-        Using the algo, 
-        \begin{itemize}
-            \item A 1-terminal clause can only be derived by a 2-t clause.
-            \item A 2-t clause can only be derived by a 2-t or 3-t clause.
-            \item A 3-t clause can only be derived by a 3-t or 4-t clause.
-        \end{itemize}
-    \end{lemma}
-    \begin{proof}
-        TODO Prove
-    \end{proof}
-
-    \begin{lemma}
-        % Using the algo, if two 3-t clauses, $T_{1,2}$, are used to derive a 4-t clause, $F$,
-        % then any 3-t clause, $T_3$ directly implied by $F_1$ and another 4-t
-        % clause, $F_2$, are directly implied by the 3-t clauses that imply
-        % the 4-t clauses.
         Given four clauses of length k - 1, A, B, C, and D, and one clause of 
         length k, E, such that 
         \begin{itemize}
@@ -558,355 +568,583 @@
         Then A, B, and C, imply D without having to process a clause of length k
     \end{lemma}
     \begin{proof}
-        Given an implied clause of length k, say C:
-
-        [1, 2, 3, ...]
-
-        By the algorithm, it requires two clauses to imply another clause.
-        Let's call these clauses D and E. The lengths of D and E can be:
-
-        D: length k
         
-        E: length $\geq$ 2
-
-        or
-
-        D: length k + 1
+        In the following figure, the first graph shows the implications as described, the second
+        graph shows the implications we want to prove:
         
-        E: length any
+        \includegraphics[scale=0.8]{317a}
 
-        Okay.
-
-        C, along with another clause, F of length m, can imply clauses of the following length:
-
-        \begin{itemize}
-            \item if k $>$ m, [k-1, k+m-2]
-            \item if m $>$ k, [m-1, k+m-2] 
-        \end{itemize}
-
-        Let the clause implied by C and F be called G.
-        
-        Half of the assignments blocked by C are blocked by D and the 
-        other half are blocked by E.
-
-        Half of the assignments blocked by G are blocked by C and the
-        other half are blocked by F.
-
-        WTS some combo of D, E, and F, imply G.
-
-        D + E
-
-        D + F
-
-        E + F
-
-        Known:
-        \begin{itemize}
-            \item All terms in C exist in either D or E
-            \item D and E contain an opposite term, say i
-            \item All terms in D or E that's not i exist in C
-            \item F must contain an opposite term from C
-            \item F must contain an opposite term from D or E that's not i 
-            \item D + F can imply another clause, say H
-            \item E + F can imply another clause, say I
-            \item H and I can derive G
-        \end{itemize}
-        
-        \includegraphics[scale=0.8]{317}
+        % add label to figure
 
         Define the clauses in the following manner:
 
-        D := [a, b, ..., i]
+        A := [a, b, $\beta$, i]
 
-        E := [c, d, ... -i]
+        B := [c, d, $\delta$ -i]
 
-        C := [a, b, ..., c, d, ...]
+        C := [-a, e, f, $\phi$]
 
-        F := [-a, e, f, ...]
-
-        G := [b..., c, d, ..., e, f, ...]
-
-        H := [b, ..., i, e, f, ...]
-
-        Define lengths for the ... after b, d, and f
-
-        ... after b: $\beta$
+        Then the following are derived by Lemma 5.7:
         
-        ... after d: $\delta$
+        $\rightarrow$ E = [a, b, $\beta$, c, d, $\delta$]
 
-        ... after f: $\phi$
+        $\rightarrow$ D = [b, $\beta$, c, d, $\delta$, e, f, $\phi$]
 
-        We know C is of length k and G is of length k - 1 or k.
+        $\rightarrow$ F = [b, $\beta$, i, e, f, $\phi$]
 
-        Let lowercase alphabetical letters represent that terminal with a count of 1
+        Where $\beta, \delta, $ and $\phi$ are sets of terms in the instance.
 
-        Let letters in parentheses represent the count of terminals in both sets
+        Note that since $C$ and $E$ imply $D$, then $C$ and $E$ must share the
+        same terminal such that it is positive in one clause and negated in the other.
+        Since all of the terms in $E$ came from $A$ or $B$ (not including $i$),
+        then such a term in $C$ must have the same term of the opposite form in
+        $A$ or $B$ (again it cannot be $i$ since $i$ is not in $E$). And since
+        $A$ and $B$ are fixed yet arbitrary sets, it does not matter which clause
+        we pick as long as it is fixed for the rest of the proof. Let's pick a
+        the terminal, $a$, from clause $A$.
+ 
+        Recall from Lemma 5.3 that if a clause blocks any assignments, it cannot
+        contain the same term in both forms, so if $\beta, \delta$, or $\phi$ contain
+        the same terminal in both forms then $D$ blocks no assignments and the lemma 
+        is vacuously true.
 
-        Let length of G be k
+        We know $C$ is of length $k$ and $D$ is of length $k - 1$ or $k$.
 
-        k = a + b + $\beta$ + c + d + $\delta$ - $(\beta \delta)$ (by clause C)
+        Consider the case where $D$ has length $k$:
 
-        k = b + c + d + e + f + $\beta + \delta + \phi - (\beta \delta) - 
-        (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$ (by clause G)
+        In the following equations, let the presence of a term represent a count of one,
+        and the presence of a set of terms represent the number of terms in that set. If
+        multiple sets of terms are shown in parentheses, let this represent the number
+        of terms found in both sets.
 
-        len(H) = b + i + e + f + $\beta + \phi - (\beta \phi)$
+        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) - 
+        (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$ (by clause D)
 
-        len(H) $<$ k
+        length of $F = b + i + e + f + \beta + \phi - (\beta \phi)$
 
-        b + i + e + f + $\beta + \phi - (\beta \phi)$ $<$ 
-        b + c + d + e + f + $\beta + \delta + \phi - (\beta \delta) - 
+        Want to show length of $F < k$
+
+        $b + i + e + f + \beta + \phi - (\beta \phi) < 
+        b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) - 
         (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
 
-        $\rightarrow$ i + $\beta + \phi - (\beta \phi)$ $<$ 
-        c + d + $\beta + \delta + \phi - (\beta \delta) - 
+        $\rightarrow$ $i + \beta + \phi - (\beta \phi) < 
+        c + d + \beta + \delta + \phi - (\beta \delta) - 
         (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
 
-        $\rightarrow$ i $<$ 
-        c + d + $\delta - (\beta \delta) - (\delta \phi) + (\beta \delta \phi)$
+        $\rightarrow$ $i < 
+        c + d + \delta - (\beta \delta) - (\delta \phi) + (\beta \delta \phi)$
 
-        By Venn Diagram shenanigans, $\delta - (\beta \delta) - (\delta \phi) + (\beta \delta \phi)$, 
-        represents the number of terminals in $\delta$ not in $\beta$ or $\phi$
+        As seen by using a Venn Diagram or other set intuition, $\delta - 
+        (\beta \delta) - (\delta \phi) + (\beta \delta \phi)$, 
+        represents the number of terminals in $\delta$ not in $\beta$
+        and not in $\phi$.
 
-        The lowest case for the right hand side of the equation is where this is 0, ie, 
-        all of the terminals in $\delta$ are in $\beta$ or $\phi$. In this case, the equation becomes:
+        The lowest case for the right hand side of the inequality is where 
+        this is 0, ie, all of the terms in $\delta$ are in $\beta$ or 
+        $\phi$. In this case, the inequality becomes:
 
-        $\rightarrow$ i $<$ c + d
+        $\rightarrow$ $i < c + d$
 
-        which is guaranteed to be true since c and d both appear in E, they have to be different
-        so the length of H will always be less than k, so you do not have to process
-        clauses of length k to get the same implications.
+        % rephrase
+        % which is guaranteed to be true since c and d both appear in B, they have to be different
+        % so the length of F will always be less than k, so you do not have to process
+        % clauses of length k to get the same implications.
 
-        However, you may have to process clauses up to length k - 1.
+        Which is true as long as $c$ and $d$ exist in $B$.
 
-        Let length of G be k - 1
+        WTS $c$ and $d$ always exists in $B$:
 
-        This would imply $\rightarrow$ i $<$ c + d - 1
+        Suppose not, then 
 
-        Alas this does not hold, so we get
+        $B := [\delta, -i]$
 
-        $\rightarrow$ i $=$ c + d - 1
+        Notice that $\delta$ is simply a fixed, yet arbitrary set of terms
+        following the rules of a valid clause.
 
-        Which means the length of H will be k - 1, which is still shorter than C, 
-        but is it short enough?
+        As long as $\delta$ contains at least two terms, we can simply use 
+        any two terms from $\delta$ as c and d.
 
-        This is only valuable if D, E, and F are of length k - 1 because then 
-        this shows you will not have to process clauses of length k to
-        get implications that that clause + another clause of length k - 1 will
-        imply.
+        If $\delta$ does not contain two terms, then the largest possible
+        length of B is 2.
         
-        This proves that if we have four 3-t clauses, A, B, C, and D, and one
-        4-t clause, E st A and B -> E and C and E imply D, then A, B, and
-        C will imply D without having to process a 4-terminal clause.
+        By Lemma 5.10, the largest clause this can imply is of length 
+        $(a + b - 2)$ where $a$ is the length of $A$ and $b$ is the length 
+        of $B$.
 
+        This means the largest $E$ implied by $A$ and $B$ has the same 
+        length as $A$.
+
+        Because the lengths are equal, such a case would not allow $A$ to 
+        have length $k - 1$ and $E$ to have length $k$.
+
+        Such a case would not be consistent with the requirements of this 
+        lemma and would not apply.
+
+        Since $c$ and $d$ always exist in $B$, you can derive $D$ by processing
+        clauses of length at most $k-1$.
+    
+        % However, you may have to process clauses up to length k - 1.
+
+        Consider the case where the length of $D$ is $k - 1$:
+
+        This means $k$ is one greater than the length of $D$, so $k$ is now:
+
+        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) - 
+        (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$ (by clause D)
+
+        Similarly as before, the inequality will become:
+
+        $\rightarrow$ $i < c + d + 1$
+
+        Which is again true as long as $c$ and $d$ are in $B$ and $i$ is in $A$.
+
+        Similarly to the first half of this proof, $c$ and $d$ have to be in
+        $B$.
+
+        $i$ has to be in $A$ by the requirements of this lemma.
+
+        Since $F$ is shorter than $E$ in all cases, the lemma holds true.
     \end{proof}
 
     \begin{lemma}
-        Given the following clauses:
+        Given the following:
         \begin{itemize}
-            \item A, of length shorter than k
-            \item B, of length k
-            \item C, of length shorter than k
-            \item D, of length k or k - 1
-            \item A expands to imply B
-            \item B and C imply D
+            \item $A$ is a clause of length less than $k$
+            \item $B$ is a clause of length $k$
+            \item $C$ is a clause of length less than $k$
+            \item $D$ is a clause of length $k$ or $k - 1$
+            \item $A$ expands to imply $B$ by Lemma 5.6
+            \item $B$ and $C$ imply $D$ by Lemma 5.9
         \end{itemize}
-        Then A and C can imply D by processing clauses of at most length k - 1
+        Then $A$ and $C$ can imply $D$ by processing clauses of at 
+        most length $k - 1$.
     \end{lemma}
     \begin{proof}
 
         Consider the following case:
 
-        \includegraphics{318}
+        \includegraphics[scale=0.8]{318}
 
-        A := [a, b, ...]
+        A := [a, b, $\beta$]
+        
+        A' := [a, b, $\beta$, c]
 
-        B := [a, b, ..., c, d, ...]
+        B := [a, b, $\beta$, c, d, $\delta$]
 
-        $C_1$ := [-a, e, f, ...]
+        $C_1$ := [-a, e, f, $\phi$]
 
-        $C_2$ := [-c, e, f, ...]
+        $C_2$ := [-c, e, f, $\phi$]
 
-        $D_1$ := [b, ..., c, d, ..., e, f, ...]
+        $D_1$ := [b, $\beta$, c, d, $\delta$, e, f, $\phi$]
 
-        $D_2$ := [a, b, ..., d, ..., e, f, ...]
+        $D_2$ := [a, b, $\beta$, d, $\delta$, e, f, $\phi$]
 
-        E := [b, ..., e, f, ...]
+        E := [b, $\beta$, e, f, $\phi$]
 
-        A' := [a, b, ..., c]
+        F := [a, b, $\beta$, e, f, $\phi$]
 
-        F := [a, b, ..., e, f, ...]
+        Where $\beta, \delta$, and $\phi$ are fixed, yet arbitrary sets of terms 
+        abiding by the rules for a valid clause (see Lemma 5.3) and consistent
+        with the requirements of this lemma.
 
-        Where C has to contain an opposite terminal that's either in A or not in A
+        Notice that $C$ has to contain a term from $B$ in the opposite form by 
+        lemma 5.9.
 
-        Define the following:
+        Notice that $B$ is made up of terms from $A$ and terms not in $A$
+        by lemma 5.6.
 
-        $\beta$ := set of terminals after b
-        $\delta$ := set of terminals after d
-        $\phi$ := set of terminals after f
+        The term in $C$ which is opposite from the term in $B$ can therefore
+        be opposite from a term
+        in $A$ (in this case, use $C_1$ and $D_1$) or a 
+        term not in $A$ (in this case use $C_2$ and $D_2$).
+        
+        Consider the opposite form term in $C$ is in $A$, ie, use $C_1$
+        and $D_1$:
 
-        Consider $C_1$ and $D_1$
+        Notice $A$ and $C_1$ share an opposite term, then they can derive
+        a clause, $E$, by Lemma 5.9:
 
-        Notice A and $C_1$ share an opposite term
+        And $E$ can imply a clause $D_1$ by Lemma 5.6:
 
         \includegraphics[scale=0.8]{318b.png}
+
+        % label the graphic
+
+        Want to show you only have to process clauses whose length is
+        less than $k$ to derive $D_1$.
+
+        Want to show length of $E$ is less than $k$.
+
+        Consider two cases: (1) $D$ is of length $k$ and 
+        (2) $D$ is of length $k - 1$
         
-        Since B is of length k, we know 
+        Consider (1) where $D$ is of length $k$:
 
-        $k = a + b + c + d + \beta + \delta - \beta \delta$
+        Since $D$ is of length $k$, we can define $k$ as follows:
 
-        Consider D is of length k
+        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
 
-        $k = b + c + d + e + f + \beta + \delta + \phi - \beta \delta 
-        - \beta \phi - \delta \phi + \beta \delta \phi$
+        Length of $E = b + e + f + \beta + \phi - (\beta \phi)$
+        
+        WTS length of $E is less than k$:
 
-        WTS length of E is less than k
+        $b + e + f + \beta + \phi - (\beta \phi) < b + c + d + e + f + 
+        \beta + \delta + \phi - (\beta \delta) - (\beta \phi) - (\delta \phi) 
+        + (\beta \delta \phi)$
 
-        len(E) = $b + e + f + \beta + \phi - \beta \phi$
+        $\rightarrow 0 < c + d + \delta - (\beta \delta) 
+        - (\delta \phi) + (\beta \delta \phi)$
 
-        len(E) $<$ k
+        Using a Venn Diagram or by other set intuition, $\delta - 
+        (\beta \delta) - (\delta \phi) + (\beta \delta \phi)$ represents
+        the number of terms in $\delta$ not in $\beta$ and not in $\phi$. 
+        The lowest this value can be is 0 if all terms in $\delta$ are in 
+        $\beta$ or $\phi$.
 
-        $b + e + f + \beta + \phi - \beta \phi < b + c + d + e + f + \beta + \delta + \phi - \beta \delta 
-        - \beta \phi - \delta \phi + \beta \delta \phi$
-
-        $\rightarrow 0 < c + d + \delta - \beta \delta 
-        - \delta \phi + \beta \delta \phi$
-
-        $\delta - \beta \delta - \delta \phi + \beta \delta \phi$ represents
-        the number of terminals in $\delta$ not in $\beta$ or $\phi$. The lowest
-        this value can be is 0.
+        The inequality becomes:
 
         $\rightarrow 0 < c + d$
 
-        This is always true, so len(E) is indeed less than k
+        Which is true as long as $c$ or $d$ exist in $B$.
 
-        Consider D is of length k - 1
+        WTS $c$ or $d$ always exists in $B$.
 
-        Add a $-1$ to the inequality:
+        Suppose not, then:
 
-        $b + e + f + \beta + \phi - \beta \phi < b + c + d + e + f + \beta + \delta + \phi - \beta \delta 
-        - \beta \phi - \delta \phi + \beta \delta \phi - 1$
+        $B := [a, b, \beta]$
 
-        $\rightarrow 0 < c + d - 1$
+        Note that the maximum length of $\delta$ is 0 because if it were 1
+        or more, then we can just extract $c$ or $d$ from $\delta$.
 
-        Which is again always true since c and d have to be different because
-        they exist in the same clause, so len(E) is indeed less than k.
+        In this case, the length of $B$ is the same as the length of $A$ and 
+        it is impossible for the lemma requirements defining the lengths
+        of $A$ and $B$ to hold.
 
-        Since expanding a clause only directly implies clauses of length 1 greater, 
-        you only have to process clauses of length 1 shorter than D to get D
+        Therefore, $c$ or $d$ must always exist in $B$.
 
-        Consider $C_2$ and $D_2$
+        Since $c$ or $d$ must exist in $B$, the inequality is always true, 
+        and the length of $E$ is indeed less than $k$.
+
+        Consider (2) $D$ is of length $k - 1$:
+
+        Then the length of $k$ is redefined as:
+
+        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
+
+        Similarly as before, the inequality becomes:
+
+        $\rightarrow 0 < c + d + 1$
+
+        Which is always true so the length of $E$ is indeed less than $k$.
+
+        Notice that, by lemma 5.6, you only have to process clauses of length
+        at most $k-1$ to derive a clause of length $k$, in context, you 
+        can derive $D$ via expansion while only processing clauses with
+        a maximum length of $k-1$.
+
+        % rephrase
+        % Since expanding a clause only directly implies clauses of length 1 greater, 
+        % you only have to process clauses of at most length k - 1 to derive D
+
+        Consider the case using $C_2$ and $D_2$:
+
+        We can construct a clause, $A'$, such that $A$ expands to $A'$ by 
+        lemma 5.6 and there is a term in $A'$ whose opposite term is in $C_2$.
+
+        By lemma 5.9, $A'$ and $C_2$ imply a clause, $F$.
+
+        And by lemma 5.6, all the terms in $F$ are in $D_2$ so $F$ implies $D_2$.
+
+        This is seen in the following graphic:
 
         \includegraphics[scale=0.8]{318c.png}
         
-        WTS A' and F are shorter than k
+        Want to show $A'$ and $F$ are shorter than $k$.
 
-        Consider D is of length k
+        First, Want to show the length of $A'$ is less than $k$:
 
-        $k = b + c + d + e + f + \beta + \delta + \phi - \beta \delta 
-        - \beta \phi - \delta \phi + \beta \delta \phi$
+        Consider two cases, (1) $D_2$ is of length $k$ and 
+        (2) $D_2$ is of length k - 1
 
-        len(A') = $a + b + \beta + c$
+        Consider (1) $D_2$ is of length $k$, then we can define k as follows:
 
-        len(A') $<$ k
+        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
 
-        $\rightarrow$ $a + b + \beta + c$ $<$ $b + c + d + e + f + \beta + \delta + \phi - \beta \delta 
-        - \beta \phi - \delta \phi + \beta \delta \phi$
+        length of $A' = a + b + \beta + c$
 
-        $\rightarrow$ $a$ $<$ $d + e + f + \delta + \phi - \beta \delta 
-        - \beta \phi - \delta \phi + \beta \delta \phi$
+        Want to show the length of $A'$ is less than $k$:
 
-        In the smallest case for the R.H.S., d overlaps with e or f. 
-        $\delta + \phi - \beta \delta - \beta \phi - \delta \phi + \beta \delta \phi$
-        represents the number of terminals in $\delta$ + $\phi$ - overlap.
-        The smallest value for this is when $\delta = \phi$
+        $\rightarrow$ $a + b + \beta + c$ $<$ $b + c + d + e + f + 
+        \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
 
-        $\rightarrow$ $a$ $<$ $e + f + \delta$
+        $\rightarrow$ $a$ $<$ $d + e + f + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
 
-        Which is true as long as there are at least two terminals in $e, f, \delta$ or $\phi$
+        By Venn Diagram or other set intuition, 
+        $\delta + \phi - (\beta \delta) - (\beta \phi) - (\delta \phi) + 
+        (\beta \delta \phi)$ represents the number of unique terms in 
+        $\delta$ and $\phi$
+        The smallest value for this is when $\delta = \phi$, so this can
+        be replaced with $\phi$.
 
-        Consider D is of length k - 1
+        $\rightarrow$ $a$ $<$ $d + e + f + \phi$
 
-        Similarly as before, we will derive
+        Which is true as long as there are at least two terms in $d, e, f, \delta$ or $\phi$
 
-        $\rightarrow$ $a$ $<$ $e + f + \delta - 1$
+        Want to show at least two terms have to exist in d, e, f, $\delta$, or $\phi$.
 
-        Which is true as long as there are at least three terminals in $e, f, \delta$ or $\phi$
+        Suppose not, then the largest $D_2$ is
 
-        WTS F is shorter than k
+        $D_2 := [a, b, \beta, x]$
 
-        len(F) = $a + b + e + f + \beta + \phi - \beta \phi$
+        Where $x$ is a single term from $\{d, e, f, \delta, \phi\}$
 
-        len(F) $<$ k
+        The clause $A$ can clearly expand to $D_2$ by Lemma 5.6. 
+        
+        Since $D_2$ is of length $k$, it can be expanded to by processing
+        only clauses with a maximum length of $k-1$.
 
-        $a + b + e + f + \beta + \phi - \beta \phi$ $< $ $b + c + d + e + f + \beta + \delta + \phi - \beta \delta 
-        - \beta \phi - \delta \phi + \beta \delta \phi$
+        Therefore any case where there are fewer than two terms in 
+        $\{d, e, f, \delta, \phi\}$, will allow the lemma to hold.
 
-        $\rightarrow$ $a$ $< $ $c + d + \delta - \beta \delta - \delta \phi + \beta \delta \phi$
+        Consider (2) $D_2$ is of length $k - 1$:
 
-        Where $\delta - \beta \delta - \delta \phi + \beta \delta \phi$ represents
-        the terminals in $\delta$ that are not in $\beta$ or $\phi$
+        $k$ is now defined as:
 
-        Which is true if there are at least two terminals spread across c, d, or ($\delta$ and not $\beta$ and not $\phi$)
+        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
 
-        Which translates to at least two terminals in $D_2$ that are not in A or $C_2$
+        Similarly as before, the inequality becomes:
 
+        $\rightarrow$ $a$ $<$ $d + e + f + \delta + 1$
+
+        Which is true as long as there is at least one term in
+        $d, e, f, \delta$ or $\phi$.
+
+        As seen before, if there are fewer than two terms in
+        $\{d, e, f, \delta, \phi\}$ then the lemma already holds.
+
+        Therefore if $D_2$ is of length $k - 1$, the length of $A'$ is 
+        shorter than $k$.
+        
+        Secondly, want to show $F$ is shorter than $k$.
+
+        Consider two cases, (1) $D_2$ is of length $k$ and 
+        (2) $D_2$ is of length $k - 1$.
+
+        Consider (1) where $D_2$ is of length $k$:
+        
+        By $D_2$, $k$ is defined as 
+
+        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
+
+        length of $F = a + b + e + f + \beta + \phi - (\beta \phi)$
+        
+        WTS length of $F$ is less than $k$:
+
+        $a + b + e + f + \beta + \phi - (\beta \phi)$ $<$ 
+        $b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
+
+        $\rightarrow$ $a$ $<$ $c + d + \delta - (\beta \delta) - 
+        (\delta \phi) + (\beta \delta \phi)$
+
+        Using a Venn Diagram or by other set intuition, 
+        $\delta - (\beta \delta) - (\delta \phi) + (\beta \delta \phi)$
+        represents the terms in $\delta$ that are not in $\beta$ or $\phi$.
+        
+        This is lowest when all the terms in $\delta$ are in $\beta$ or $\phi$, 
+        this part of the inequality then becomes 0.
+
+        Then the inequality becomes:
+
+        $\rightarrow$ $a$ $<$ $c + d$
+
+        Which is true if $c$ and $d$ exist.
+
+        WTS $c$ and $d$ exist.
+
+        Suppose not, then
+
+        $B := [a, b, \beta, x]$
+
+        where $x$ is a single term. Note that if $x$ is more than one term,
+        then we could use the two terms in $x$ as $c$ and $d$.
+
+        Here we can use $x$ as $c$ and $B$ becomes equivalent to $A'$, 
+        which was already shown to be shorter than $k$.
+
+        Consider (2) where $D_2$ is of length $k - 1$.
+
+        Then $k$ is defined as:
+
+        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
+
+        Want to show length of $F$ is less than $k$:
+
+        $a + b + e + f + \beta + \phi - (\beta \phi)$ $<$ 
+        $b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
+        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
+
+        Similarly as before, this becomes:
+
+        $\rightarrow$ $a$ $<$ $c + d + 1$
+
+        Which is always true since we already proved $c$ and $d$ have to exist.
+
+        Since $F$ is smaller than $k$ and $D_2$ has a maximum length of $k$, 
+        and by Lemma 3.6 the largest a clause has to be in order to imply
+        another clause of length $k$ is $k-1$. Meaning you only have to process
+        clauses of length $k-1$ in order to derive a clause of length $k$.
+        
+        Since $A, C_1, C_2, E, and F$ are all shorter than $k$ and $D$ can
+        be derived by expanding $E$ or $F$, then $D$ can be derived from $A$
+        and $C$ without the need to process clauses of length greater than $k - 1$.
     \end{proof}
 
+    % \begin{lemma}
+    %     Using Lemma 5.10, a 1-t clause can only be directly implied by two 2-t clauses sharing
+    %     the same terminal with the other terminal positive in one clause and 
+    %     negated in the other.
+    % \end{lemma}
+    % \begin{proof}
+    %     Given a 1-t clause, 
+        
+    %     [i]
+
+    %     WTS that it can only be directly implied by 2-t clauses like 
+
+    %     [i, j]
+
+    %     [i, -j]
+
+    %     By Lemma XXX 3.13, the smallest clause that can be derived from two
+    %     clauses of length k and l is max(k, l) - 1.
+
+    %     With k = l = 2, this gives us a clause of length 1.
+
+    %     If we increase by the lowest possible amount, say k = 3, l = 2, this
+    %     gives us a clause of length 2.
+
+    %     So we have to use two clauses of length 2 if we want to directly imply
+    %     a clause of length 1 by using the algorithm.
+
+    %     By the algorithm, both clauses must share the same terminal, where it's 
+    %     positive in one clause and negative in the other.
+
+    %     Now each clause has one remaining terminal and they could either be (1)
+    %     the same terminal or (2) different terminals.
+
+    %     \begin{enumerate}
+    %         \item The same term:
+            
+    %         By Lemma XXX 3.12 or more directly Lemma XXX 3.10, this will derive a 1-t clause
+            
+    %         \item Different term:
+            
+    %         By Lemma XXX 3.12, this will derive a 2-t clause
+    %     \end{enumerate}
+
+    %     Therefore, using Lemma XXX 3.12, a 1-t clause can only be directly implied by 
+    %     two 2-t clauses sharing the same terminal with the other terminal positive
+    %     in one clause and negated in the other.
+
+    % \end{proof}
+
     \begin{lemma}
-        Using Lemma 3.12, a 1-t clause can only be directly implied by two 2-t clauses sharing
-        the same terminal with the other terminal positive in one clause and 
-        negated in the other.
+        Given an instance of 3SAT, you can expand all of the given clauses
+        to the point where you are considering clauses of length $n$.
     \end{lemma}
     \begin{proof}
-        Given a 1-t clause, 
-        
-        [i]
+        Given an instance of 3SAT, we know all clauses are of length 3.
 
-        WTS that it can only be directly implied by 2-t clauses like 
-
-        [i, j]
-
-        [i, -j]
-
-        By Lemma 3.13, the smallest clause that can be derived from two
-        clauses of length k and l is max(k, l) - 1.
-
-        With k = l = 2, this gives us a clause of length 1.
-
-        If we increase by the lowest possible amount, say k = 3, l = 2, this
-        gives us a clause of length 2.
-
-        So we have to use two clauses of length 2 if we want to directly imply
-        a clause of length 1 by using the algorithm.
-
-        By the algorithm, both clauses must share the same terminal, where it's 
-        positive in one clause and negative in the other.
-
-        Now each clause has one remaining terminal and they could either be (1)
-        the same terminal or (2) different terminals.
-
-        \begin{enumerate}
-            \item The same term:
-            
-            By Lemma 3.12 or more directly Lemma 3.10, this will derive a 1-t clause
-            
-            \item Different term:
-            
-            By Lemma 3.12, this will derive a 2-t clause
-        \end{enumerate}
-
-        Therefore, using Lemma 3.12, a 1-t clause can only be directly implied by 
-        two 2-t clauses sharing the same terminal with the other terminal positive
-        in one clause and negated in the other.
-
+        If we want to consider a generic $n$-terminal, $B$, that's implied by a
+        given clause, $A$, then by Lemma 5.6 we know it's implied iff it $B$ 
+        contains all of the terms in $A$.
     \end{proof}
 
     \begin{lemma}
-        The n-terminal clauses described in Lemma 3.14 can be reduced to derive
+        If you expand given 3-t clauses as described in Lemma 5.13, you will
+        derive $2^n$ unique clauses of length $n$ iff the instance is unsatisfiable.
+    \end{lemma}
+    \begin{proof}
+        Want to show an unsatifiable instance implies $2^n$ unique n-terminal
+        clauses can be derived from the given 3-t clauses:
+
+        By lemma 5.4, a clause of length $n$ blocks 1 assignment. 
+
+        Recall an instance is unsatisfiable iff all $2^n$ assignments are
+        blocked.
+
+        If a 3-terminal clause blocks an assignment, then it also implies
+        the corresponding n-terminal assignment because there is one possible
+        n-terminal clause for any assignment.
+
+        Since all assignments are blocked, there exists a 3-terminal clause for each
+        assignment such that the terminals in the clause are assigned to make
+        the clause evalute to false.
+
+        Similarly, for each assignment, there exists an n-terminal clause such
+        that the terminals in the clause are assigned to make the clause evaluate
+        to false.
+
+        This will create a unique n-terminal clause for each assignment since
+        each clause can block only one assignment and overlap would imply
+        the same terminal having two values in the same assignment.
+
+        Notice that for each of these n-terminal clauses, they must contain
+        three terms from at least one given clause. If they didn't, then
+        the assignment blocked by that n-terminal clause would not be blocked
+        and the instance would be satisfiable.
+
+        WTS if $2^n$ unique n-terminal clauses are derived by the given
+        3-t clauses, then the instance is unsatifiable.
+
+        By lemma 5.4, a clause of length $n$ blocks 1 assignment. 
+
+        Therefore if there are $2^n$ unique n-terminal clauses, then
+        all $2^n$ assignments will be blocked.
+
+        Note that there will be no overlap because each n-terminal clause
+        sets the value for each terminal and overlap would imply a terminal
+        having two values at the same time.
+    \end{proof}
+
+    \begin{lemma}
+        The n-terminal clauses described in Lemma 5.14 can be reduced to derive
         any pair of contradicting 1-terminal clauses.
     \end{lemma}
     \begin{proof}
-        TODO Prove
+        Given $2^n$ n-terminal clauses, want to show you can imply any pair
+        of contradicting 1-terminal clauses by lemma 5.7.
+
+        Pick a terminal that will not exist in the final 1-terminal clauses.
+
+        Half of the existing n-terminal clauses have that terminal assigned
+        the value of False and the other half have that terminal assigned
+        the value of True.
+
+        Pick one clause that blocks an assignment where the terminal is True.
+
+        Then there exists an assignment/n-terminal clause for each possible
+        value for the remaining n-1 terminals.
+
+        Therefore, there must exist another clause that shares all of the same terms, but
+        where that one terminal is assigned the value of False.
+
+        Using these two terms, we can create a new clause by lemma 5.7.
+
+        Now all of the clauses of length n - 1 do not contain that terminal.
+
+        Forget that terminal is part of the problem and repeat this process
+        until you are left with two contradicting 1-terminal clauses.
     \end{proof}
 
     \begin{lemma}
@@ -920,103 +1158,42 @@
 
         [-a]
 
-        Let the following be a generic 3-terminal clause we want to derive
-        using the contradicting 1-t clauses:
+        By lemma 5.6, we can expand to any clause that contains $a$ or $-a$.
+
+        Let the following be a generic 3-terminal clause that does not contain
+        $a$ or $-a$:
 
         [b, c, d]
 
-        By Lemma 3.9, we know the 1-terminal clauses imply the following 3-t clauses:
+        By Lemma 5.6, we know the 1-terminal clauses imply the following 3-t clauses:
 
         [a, b, c]
 
         [-a, b, d]
 
-        By Lemma 3.12, these clauses imply:
+        By Lemma 5.9, these clauses imply:
 
         [b, c, d]
     \end{proof}
 
-    \begin{lemma}
-        Any unsatifiable instance can be converted to a form such that if one 3-terminal
-        clause is removed, the instance will be satisfiable.
-    \end{lemma}
-    \begin{proof}
-        TODO Prove    
-    \end{proof}
+    % \begin{lemma}
+    %     Any unsatifiable instance can be converted to a form such that if one 3-terminal
+    %     clause is removed, the instance will be satisfiable.
+    % \end{lemma}
+    % \begin{proof}
+    %     TODO Prove    
+    % \end{proof}
 
-    \begin{lemma}
-        
-    \end{lemma}
-    \begin{proof}
-        
-    \end{proof}
-
-    \begin{lemma}
-        Maybe dumb but: Given an instance of 3SAT, we can add another terminal, $x_i$, 
-        then for each clause, we create two new 4-terminal clauses with either form of $x_i$
-        appended to the current clause.
-    \end{lemma}
-    \begin{proof}
-        Given:
-
-        [1, 2, 3], [1, -2, 3], [-4, -5, 6], ...
-
-        We can add the terminal, A, and create the 4-t clauses
-
-        [1, 2, 3, A], [1, 2, 3, -A], 
-    
-        [1, -2, 3, A], [1, -2, 3, -A],
-
-        [-4, -5, 6, A], [-4, -5, 6, -A], 
-
-        ...
-
-        Then what do we do? I guess we want to show [[A], [-A]] exists iff the instance is unsat idk
-
-    \end{proof}
-
-    \begin{lemma}
-        All of the clauses implied by Lemma 3.12 are all of the clauses that could possibly be implied
-    \end{lemma}
-    \begin{proof}
-        "possibly be implied" - what does this mean?
-
-        WTS the given clauses of length 3 can be processed to gain all of the 
-        possible clauses of length 3 that are implied
-
-        again, what does "implied" mean? are you relying on the definition of
-        "imply" in your algorithm?
-
-        WTS an unsatisfiable instance implies contradicting 1-t clauses. 
-
-        Unsatisfiable -> all assignments are blocked
-
-        Contradicting 1-t clauses -> 2-t clauses
-
-        2-t clauses -> 2-t or 3-t clauses
-
-        3-t clauses -> 3-t clauses or 4-t clauses, but all my homies hate 4-t clauses
-
-        Proving this is another million dollar proof
-    \end{proof}
-
-    \begin{lemma}
-        An instance is unsatifiable iff contradicting 1-terminal clauses can 
-        be derived using the algorithm from the Algorithm section.
-    \end{lemma}
-    \begin{proof}
-        TODO Prove the million dollar proof
-    \end{proof}
 
     \section{Algorithm}
 
     \begin{enumerate}
         \item For each clause in the instance, C, of length 3 or less:
         \begin{enumerate}
-            % \item Get all clauses implied by C according to Lemma 3.12
             \item For each clause in the instance, D, of length 3 or less:
             \begin{enumerate}
-                \item Get all clauses implied by C and D according to Lemma 3.12 and add them to the instance
+                \item Get all clauses implied by C and D according to Lemma 5.9 
+                and add them to the instance
             \end{enumerate}
             \item For each clause in the instance, E, of length 1:
             \begin{enumerate}
@@ -1036,11 +1213,11 @@
 
     In this section I will analyze the time complexity of the algorithm in section 4
 
-    (1) At most ${n \choose 3}*8 + {n \choose 2}*4 + {n \choose 2}*2$ clauses to iterate which is on the order of
+    (1) At most ${\binom{n}{3}}*8 + {\binom{n}{2}}*4 + {\binom{n}{1}}*2$ clauses to iterate which is on the order of
 
     $O(n^3)$
 
-    (1.a) At most ${n \choose 3}*8 + {n \choose 2}*4 + {n \choose 2}*2$ clauses to iterate which is on the order of
+    (1.a) At most ${\binom{n}{3}}*8 + {\binom{n}{2}}*4 + {\binom{n}{1}}*2$ clauses to iterate which is on the order of
 
     $O(n^3)$
 
@@ -1050,11 +1227,11 @@
 
     $O(1)$
 
-    (1.b) At most ${n \choose 1} * 2$ clauses of length 1 exist, which is on the order of
+    (1.b) At most ${\binom{n}{1}} * 2$ clauses of length 1 exist, which is on the order of
 
     $O(n)$
 
-    (1.b.i) At most ${n \choose 1} * 2$ clauses of length 1 exist, which is on the order of
+    (1.b.i) At most ${\binom{n}{1}} * 2$ clauses of length 1 exist, which is on the order of
 
     $O(n)$
 
@@ -1062,7 +1239,7 @@
 
     $O(1)$
 
-    (2) Worst case, we add one new clause each time so we have to do (1) ${n \choose 3} * 8 + {n \choose 2} * 8 + {n \choose 1} * 2$ which is on the order of
+    (2) Worst case, we add one new clause each time so we have to do (1) ${\binom{n}{3}} * 8 + {\binom{n}{2}} * 8 + {\binom{n}{1}} * 2$ which is on the order of
 
     $O(n^3)$
 
@@ -1092,7 +1269,16 @@
 
     \section{Proof of Correctness}
 
-    By Lemma 3.18/Lemma 3.17, if we can derive a clause of length k, say C, then
+    By Lemma 5.12, if we expand to a clause, $B$, of length $k$, then
+    use $B$ and another clause, $C$, of length less than $k$, to imply
+    a new clause, $D$, of length at most $k$ by lemma 5.9, then
+    we can derive $D$ by processing clauses of at most length $k-1$.
+
+
+
+    ---
+
+    By Lemma XXX 3.18/Lemma XXX 3.17, if we can derive a clause of length k, say C, then
     any clause of length k - 1, say D, can be implied by 
     the clauses implying C without the need to process a clause of length 
     k or greater.
@@ -1107,30 +1293,30 @@
     They cannot imply any new n-terminal clauses since we already have all possible
     n-terminal clauses since it's unsatisfiable.
 
-    And by Lemma 3.18, the n-1-terminal clauses that are implied can be implied
+    And by Lemma XXX 3.18, the n-1-terminal clauses that are implied can be implied
     without having to process clauses longer than n - 1.
 
     Now we have all the n-1-terminal clauses. These imply clauses between
-    lengths n-2 and 2(n-1) - 2 by Lemma 3.13.
+    lengths n-2 and 2(n-1) - 2 by Lemma XXX 3.13.
 
     We already have the clauses longer than n-1 so we really only care about
     implying the clauses of length n-2. 
 
-    Again by Lemma 3.18, these clauses can be implied without having to
+    Again by Lemma XXX 3.18, these clauses can be implied without having to
     process clauses greater than length n-2.
 
     Continue this pattern...
 
     We already have the clauses of length n-w and we already derived any clause
     longer than n-w so the only clauses left are the clauses of length n-w-1.
-    By Lemma 3.18/Lemma 3.17, we can derive the clauses of length n-w-1 without
+    By Lemma XXX 3.18/Lemma XXX 3.17, we can derive the clauses of length n-w-1 without
     processing clauses longer than n-w-1.
 
     Continue ...
 
     We already have clauses of length 4 and we already derived any clause greater
     than length 4 so the only clauses left to imply are those of length 3.
-    By Lemma 3.18/3.17, we can derive the clauses of length 3 without processing
+    By Lemma XXX 3.18/Lemma XXX 3.17, we can derive the clauses of length 3 without processing
     clauses greater than length 3. 
 
     Now we have all the clauses of length 3, and clearly a path exists to derive
@@ -1140,7 +1326,7 @@
     time complexity analysis in section 5 holds and it is indeed polynomial time.
 
     But wait! What if we get the retort: 
-    Consider "we already have all clauses of length 3, doesn't Lemma 3.17/18 mean
+    Consider "we already have all clauses of length 3, doesn't Lemma XXX 3.17/ Lemma XXX 18 mean
     any 2-terminal clause implied by these can already be implied without 
     processing a clause of length 3?"
     No, because the given 3-terminal clauses were not derived, so some processing
@@ -1151,16 +1337,18 @@
 
     In this paper, we present an algorithm to solve 3SAT in polynomial time.
 
-    By the Cook-Levin theorem, 3SAT is NP-complete, meaning 3SAT is at least
+    By the (Karp's paper), 3SAT is NP-complete, meaning 3SAT is at least
     as hard as every problem in NP.
     
     Since we have an algorithm to solve 3SAT in polynomial time, then all problems
     in NP can be solved in polynomial time.
 
-    Thus, the class of problems, P, that can be solved in polynomial time is
-    equivalent to the class of problems, NP, that can be solved in non-deterministic
-    polynomial time.
+    Thus, P = NP. 
 
+    % example citation
+    % \cite{knuth:1984}
+    % \bibliography{refs}
+    % \bibliographystyle{plain}
 
     TODO:
     \begin{itemize}
