@@ -1138,9 +1138,9 @@
             \item A, B, C, and D, are clauses shorter than k
             \item E and F are clauses of length k
             \item G is a clause of length k or k - 1
-            \item A and B imply E
-            \item C and D imply F
-            \item E and F imply G
+            \item A and B imply E by Lemma 5.9
+            \item C and D imply F by Lemma 5.9
+            \item E and F imply G by Lemma 5.9
         \end{itemize}
         Then G can be implied by processing clauses with a maximum length of k - 1
     \end{lemma}
@@ -1538,7 +1538,7 @@
             \item a clause, $C$, of length less than $k$
             \item a clause, $D$, of length $k$
             \item a clause $E$, of length $k$
-            \item a clause $F$, of length $k - 1$
+            \item a clause $F$, of length $k - 1$ or $k$
             \item A and B imply D by Lemma 5.9
             \item C expands to E by Lemma 5.8
             \item D and E imply F by Lemma 5.9
@@ -1606,6 +1606,142 @@
 
         (1a) $G$ is shorter than $k$.
 
+        Consider two cases (1ai) $F_1$ is of length $k$ and (1aii) $F_1$ is of length $k-1$.
+
+        (1ai) $F_1$ is of length k
+
+        In the following equations, let the presence of a term represent a count of one,
+        and the presence of a set of terms represent the number of terms in that set. If
+        multiple sets of terms are shown in parentheses, let this represent the number
+        of terms found in both sets.
+        
+        Recall $F_1$ is of length k so k can be defined as follows:
+        
+        $k = b + c + d + f + g + h 
+        + \beta + \delta + \phi + \gamma
+        - (\beta \delta) - (\beta \phi) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma)
+        $
+
+        Length of $G = b + i + f + \beta + \phi - (\beta \phi)$
+
+        Want to show length of G is less than k:
+
+        $b + i + f + \beta + \phi - (\beta \phi)$
+        $<$
+        $b + c + d + f + g + h 
+        + \beta + \delta + \phi + \gamma
+        - (\beta \delta) - (\beta \phi) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma) 
+        $
+
+        $\rightarrow$ $b + i + f$
+        $<$
+        $b + c + d + f + g + h 
+         + \delta + \gamma
+        - (\beta \delta) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma) 
+        $
+
+        Here's a representation of the sets and how each term affects the size of a set
+
+        \begin{center}
+            \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c| }
+                \hline
+                term & $\beta$ & $\delta$ & $\phi$ & $\gamma$ & 
+                $\beta \delta$ & $\beta \phi$ & $\beta \gamma$ & 
+                $\delta \phi$ & $\delta \gamma$ & $\phi \gamma$ &
+                $\beta \delta \phi$ & $\beta \delta \gamma$ &
+                $\beta \phi \gamma$ & $\delta \phi \gamma$ &
+                $\beta \delta \phi \gamma$\\
+                \hline
+                $ + \delta$ & 0 & +1 & 0 & 0 & +1 & 0 & 0 & +1 & +1 & 0 & +1 & +1 & 0 & +1 & +1 \\
+                \hline
+                $ + \gamma$ & 0 & 0 & 0 & +1 & 0 & 0 & +1 & 0 & +1 & +1 & 0 & +1 & +1 & +1 & +1 \\
+                \hline
+                $- (\beta \delta)$ & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & 0 & -1 \\
+                \hline
+                $- (\beta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & -1 \\
+                \hline
+                $- (\delta \phi)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & 0 & -1 & -1 \\
+                \hline
+                $- (\delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & -1 & -1 \\
+                \hline
+                $- (\phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & -1 & -1 \\
+                \hline
+                $+ (\beta \delta \phi)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & 0 & +1 \\
+                \hline
+                $+ (\beta \delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & +1 \\
+                \hline
+                $+ (\beta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & +1 \\
+                \hline
+                $+ (\delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & +1 \\
+                \hline
+                $- (\beta \delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 \\
+                \hline
+                total & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+                \hline
+            \end{tabular}
+        \end{center}
+
+        It is seen the sets of generic terms on the R.H.S. represent the count of terms in $\delta$, $\gamma$, and $\delta \gamma$.
+
+        Let's call this $y$. The inequality then becomes:
+
+        $\rightarrow$ $i$
+        $<$
+        $c + d + g + h + y
+        $
+
+        which is true as long as two terms exist in {$c, d, g, h, y$}.
+
+        Consider the two cases: zero terms exist in {$c, d, g, h, y$} or one term exists in {$c, d, g, h, y$}
+
+        Zero terms exist in the aforementioned set:
+
+        In this case, we may redefine some clauses:
+
+        $B := [-i]$
+
+        $D := [a, b, \beta]$
+
+        Notice $B$ must consist of a single term, $-i$, because if any terms existed in $\delta$, they could be extracted and used as $c$ or $d$ but we are considering the case where $c$ and $d$ do not exist.
+
+        Now we have 
+        
+        $D := [a, b, \beta]$
+
+        $A := [a, b, \beta, i]$
+
+        Recall we defined the length of $D$ as $k$ and the length of $A$ as less than $k$. Clearly it is seen that the length of $A$ is one greater than the length of $D$. This is impossible with the given lengths. So this case is impossible, at least one term must exist in {$c, d, g, h, y$}
+
+        Consider the case where one term exists in the aforementioned set:
+
+        It was previously seen that if no terms exist in {$c, d$} then we will reach a contradiction, so the one term that exists in {$c, d, g, h, y$} must exist in {$c, d$}
+
+        Let's redefine clauses similarly to before:
+
+        $B := [c, -i]$
+
+        $D := [a, b, \beta, c]$
+
+        Since $c$ and $d$ are generic terms that are treated the same throughout this example (they always exist together), it does not matter which term we pick. So let's pick $c$ to be the term that exists. Again, we can have no terms in $\delta$ since any additional term could be extracted and treated as $d$ which we know does not exist. 
+
+        Now we know
+
+        $D := [a, b, \beta, c]$
+
+        $A := [a, b, \beta, i]$
+
+        Since $c$ and $i$ both represent a single terminal, it is seen that the length of $D$ is equal to the length of $A$. Recall the length of $D$ was defined as $k$ and the length of $A$ was defined to be less than $k$. Therefore this is a contradiction and the case where a single term exists in {$c, d, g, h, y$} is impossible.
+
+        Since a contradiction exists in the cases where zero and one terms exist in {$c, d, g, h, y$} we know at least two terms must exist in that set. We also know that if at least two terms exist in that set, the inequality holds and the length of G is less than k.
+
+        (1aii) F is of length k - 1
+
         In the following equations, let the presence of a term represent a count of one,
         and the presence of a set of terms represent the number of terms in that set. If
         multiple sets of terms are shown in parentheses, let this represent the number
@@ -1635,98 +1771,133 @@
         + 1
         $
 
-        $\rightarrow$ $b + i + f$
+        Similarly as before, this will derive to:
+
+        $\rightarrow$ $i$
         $<$
-        $b + c + d + f + g + h 
-         + \delta + \gamma
-        - (\beta \delta) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
-        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
-        - (\beta \delta \phi \gamma) 
+        $c + d + g + h + y
         + 1
         $
 
-        Using a Venn Diagram or by other set intuition, the generic sets on the
-        L.H.S. of the inequality represent the unique terms in $\beta$ and $\phi$.
-        Similarly, the generic sets of the R.H.S. represent the unique terms
-        in $\beta, \delta, \phi,$ and $\gamma$. 
+        Where $y$ represents the number of terms exactly in the sets $\delta$, $\gamma$, and $\delta \gamma$ (as defined in section 1ai). We already showed that at least two terms must exist in the set {$c, d, g, h, y$} so this inequality will always be true.
 
-        Subtracting the sets of generic terms on the L.H.S. from both sides
-        yields the R.H.S. sets of generic terms as follows: 
-        
-        \begin{itemize}
-            \item the number of terms just in $\delta$
-            \item the number of terms just in $\gamma$
-            \item the number of terms just in $\delta$ and $\gamma$ 
-        \end{itemize}
+        (1b) Want to show $H$ is shorter than $k$.
 
-        The lowest case for this is 0 if there are no terms in the aforementioned sets.
+        We have two cases to consider: (1bi) $F_1$ is of length $k$ and (1bii) $F_1$ is of length $k-1$
 
-        In such a case, the inequality becomes:
+        Consider (1bi) $F_1$ is of length $k$
 
-        $b + i + f < b + c + d + f + g + h + 1$
+        Recall $F_1$ is of length $k$, so we can define $k$ as follows:
 
-        $\rightarrow$ $i < c + d + g + h + 1$
+        $k = b + c + d + f + g + h 
+        + \beta + \delta + \phi + \gamma
+        - (\beta \delta) - (\beta \phi) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma)
+        $
 
-        Which is true as long as at least one term exists in {$c, d, g, h$}
+        Length of $H = b + f + c + d 
+        + \beta + \delta + \phi
+        - (\beta \delta) - (\beta \phi) - (\delta \phi)
+        + (\beta \delta \phi) $
 
-        WTS at least one term has to exist in {$c, d, g, h$}.
+        Want to show the length of H is less than k.
 
-        Suppose not, then no terms from {$c, d, g, h$} exist.
+        $b + f + c + d 
+        + \beta + \delta + \phi
+        - (\beta \delta) - (\beta \phi) - (\delta \phi)
+        + (\beta \delta \phi) $
+        $<$
+        $b + c + d + f + g + h 
+        + \beta + \delta + \phi + \gamma
+        - (\beta \delta) - (\beta \phi) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma)
+        $
 
-        Then some clauses are redefined:
+        $\rightarrow$
+        $b + f + c + d$
+        $<$
+        $b + c + d + f + g + h 
+        + \gamma
+        - (\beta \gamma) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma)
+        $
 
-        $B := [\delta, -i]$
+        The following is set intuition for the R.H.S. of the inequality:
 
-        $E_1 := [-a, f, \phi, \gamma]$
-        
-        Recall that the number of terms in just $\delta$, $\gamma$, and 
-        $\delta \cap \gamma$ is 0, so any terms in these sets have
-        to exist in $\beta$ or $\phi$.
+        \begin{center}
+            \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c| }
+                \hline
+                term & $\beta$ & $\delta$ & $\phi$ & $\gamma$ & 
+                $\beta \delta$ & $\beta \phi$ & $\beta \gamma$ & 
+                $\delta \phi$ & $\delta \gamma$ & $\phi \gamma$ &
+                $\beta \delta \phi$ & $\beta \delta \gamma$ &
+                $\beta \phi \gamma$ & $\delta \phi \gamma$ &
+                $\beta \delta \phi \gamma$\\
+                \hline
+                $ + \gamma$ & 0 & 0 & 0 & +1 & 0 & 0 & +1 & 0 & +1 & +1 & 0 & +1 & +1 & +1 & +1 \\
+                \hline
+                $- (\beta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & -1 \\
+                \hline
+                $- (\delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & -1 & -1 \\
+                \hline
+                $- (\phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & -1 & -1 \\
+                \hline
+                $+ (\beta \delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & +1 \\
+                \hline
+                $+ (\beta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & +1 \\
+                \hline
+                $+ (\delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & +1 \\
+                \hline
+                $- (\beta \delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 \\
+                \hline
+                total & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+                \hline
+            \end{tabular}
+        \end{center}
 
-        Now in $E_1$ all of the terms in $\gamma$ have to exist in $\phi$
-        or $\beta$. $E_1$ can be rewritten as:
+        This shows the generic sets on the R.H.S. consist of the terms that
+        are in $\gamma$ and in no other set. 
 
-        $E_1 := [-a, f, \phi, \gamma']$
+        Let's represent this as $y$ (we cannot just call it $\gamma$ because there could be a term in $\gamma$ that exists in another set that would not be in $y$)
 
-        Where $\gamma'$ is a subset of $\beta$
+        The inequality therefore becomes:
 
-        Similarly, $D$ can be rewritten as 
+        $\rightarrow$
+        $b + f + c + d$
+        $<$
+        $b + c + d + f + g + h 
+        + y
+        $
 
-        $D := [a, b, \beta, \delta']$
+        $\rightarrow$
+        $0 < g + h + y$
 
-        Where $\delta'$ is a subset of $\phi$
+        Which is true if at least one term exists in {$g, h, y$}
 
-        Combining these with Lemma 5.9, we get a new clause
+        Suppose not. Then no terms exist in {$g, h, y$} and we can redefine some clauses:
 
-        $I = [f, b, \phi, \beta, \gamma', \delta']$
+        $E_1 := [-a, f, \phi]$
 
-        But since $\gamma'$ and $\delta'$ are subsets of $\beta$ and
-        $\phi$ respectively, these clauses only contain duplicates, so
-        $I$ may be rewritten as:
+        Notice that no terms may exist in $\gamma$ because if at least one term exists in $\gamma$, it may be extracted and used as $g$ or $h$, but we said no terms may exist in {$g, h$}.
 
-        $I = [f, b, \phi, \beta]$
+        Now we have the clauses:
 
-        The length of $I$ is clearly at most the length of $F$ since
-        all the terms in $I$ exist in $F$. Therefore, the greatest length
-        of $I$ is $k-1$. 
-        
-        Since $\gamma'$ and $\delta'$ are subsets of $\beta$ and $\phi$, 
-        their lengths are at most the lengths of the latter sets.
+        $C_1 := [-a, f, \phi]$
 
-        The longest $D$ is such that $\delta'$ is of the same length as
-        $\phi$, which is the length of $I$.
-        
-        Recall the length of $D$ is given as $k$.
+        $E_2 := [-a, f, \phi]$
 
-        $D$ cannot have a length of $k$ while also having a maximum length
-        of $k - 1$.
+        Notice these two clauses are identical and therefore have the same length. Recall we defined the length of $E$ as $k$ and the length of $C$ as less than $k$ so this is a contradiction. Therefore at least on term must exist in {$g, h, y$}.
 
-        This is a contradiction, so at least one term has to exist in {$c, d, g, h$}
-        so the length of $G$ is indeed less than k.
+        Since at least one term must exist in {$g, h, y$}, the inequality holds.
 
-        (1b) Want to show $H$ is shorter than $k$
+        Therefore the length of $H$ is less than $k$ when the length of $F_1$ is $k$.
 
-        Recall $F$ is of length $k - 1$, so we can define $k$ as follows:
+        Consider (1bii) $F_1$ is of length $k-1$
+
+        Recall $F_1$ is of length $k - 1$, so we can define $k$ as follows:
 
         $k = b + c + d + f + g + h 
         + \beta + \delta + \phi + \gamma
@@ -1756,189 +1927,24 @@
         + 1
         $
 
-        $\rightarrow$
-        $b + f + c + d$
-        $<$
-        $b + c + d + f + g + h 
-        + \gamma
-        - (\beta \gamma) - (\delta \gamma) - (\phi \gamma)
-        + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
-        - (\beta \delta \phi \gamma)
-        + 1
-        $
-
-        % The following is set intuition for the R.H.S. of the inequality:
-
-        % \begin{center}
-        %     \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c| }
-        %         \hline
-        %         term & $\beta$ & $\delta$ & $\phi$ & $\gamma$ & 
-        %         $\beta \delta$ & $\beta \phi$ & $\beta \gamma$ & 
-        %         $\delta \phi$ & $\delta \gamma$ & $\phi \gamma$ &
-        %         $\beta \delta \phi$ & $\beta \delta \gamma$ &
-        %         $\beta \phi \gamma$ & $\delta \phi \gamma$ &
-        %         $\beta \delta \phi \gamma$\\
-        %         \hline
-        %         $ + \gamma$ & 0 & 0 & 0 & +1 & 0 & 0 & +1 & 0 & +1 & +1 & 0 & +1 & +1 & +1 & +1 \\
-        %         \hline
-        %         $- (\beta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & -1 \\
-        %         \hline
-        %         $- (\delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & -1 & -1 \\
-        %         \hline
-        %         $- (\phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & -1 & -1 \\
-        %         \hline
-        %         $+ (\beta \delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & +1 \\
-        %         \hline
-        %         $+ (\beta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & +1 \\
-        %         \hline
-        %         $+ (\delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & +1 \\
-        %         \hline
-        %         $- (\beta \delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 \\
-        %         \hline
-        %         total & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        %         \hline
-        %     \end{tabular}
-        % \end{center}
-
-        % This shows the generic sets on the R.H.S. consist of the terms that
-        % are in $\gamma$ and in no other set. This is lowest when all of the 
-        % terms in $\gamma$ exist in another set which would result in a sum of 0.
-
-        Using a Venn Diagram or by other set intuition, the sets left on the R.H.S.
-        of the inequality represent the number of terms existing only in $\gamma$.
-        This is lowest when all the terms in $\gamma$ exist in another set, which
-        would result in the generic sets on the R.H.S. summing to 0.
-
-        The inequality therefore becomes:
+        Similarly to before, this will derive 
 
         $\rightarrow$
-        $b + f + c + d$
-        $<$
-        $b + c + d + f + g + h 
-        + \gamma
-        - (\beta \gamma) - (\delta \gamma) - (\phi \gamma)
-        + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
-        - (\beta \delta \phi \gamma)
-        + 1
-        $
+        $0 < g + h + y + 1$
 
-        $\rightarrow$
-        $0 < g + h + 1$
-
-        Which is always true.
-
-        Therefore $H$ is shorter than $k$.
-
-        Since $G$ and $H$ are shorter than $k$, we can derive $F$
-        by only processing clauses with a maximum length of $k-1$.
+        Where $y$ represents the number of terms in $\gamma$ that exist in no other set. This is always true.
+        
+        Therefore the length of $H$ is less than $k$ when the length of $F_1$ is $k - 1$.
 
         Consider (2) the opposite form term does not exist in C.
 
-        We can create two new clauses:
+        Recall we have the clauses:
 
-        $J := [b, \beta, i, e, f, \phi, h, \gamma]$ (By clauses $E_2$ and $A$)
+        $C_2 := [e, f, \phi]$
 
-        $K := [c, d, \delta, b, \beta, e, f, \phi, h, \gamma]$ (By clauses $J$ and $B$)
+        $F_2 := [b, \beta, c, d, \delta, e, f, \phi, h, \gamma]$
 
-        Since all of the terms in $K$ exist in $F_2$, Lemma 5.8 can be used
-        to derive $F_2$ from $K$.
-
-        Want to show (2a) $J$ is shorter than $k$ and (2b) $K$ is shorter than $k$
-
-        (2a) Want to show the length of $J$ is less than $k$
-        
-        We can define $k$ in terms of $F_2$:
-
-        $k = b + c + d + e + f + h
-        + \beta + \delta + \phi + \gamma
-        - (\beta \delta) - (\beta \phi) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
-        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
-        - (\beta \delta \phi \gamma)
-        + 1
-        $
-
-        Length of $J = 
-        b + i + e + f + H
-        + \beta + \phi + \gamma
-        - (\beta \phi) - (\beta \gamma) - (\phi \gamma)
-        + (\beta \phi \gamma)
-        $
-
-        Want to show the length of $J$ is less than $k$
-
-        $b + i + e + f + H
-        + \beta + \phi + \gamma
-        - (\beta \phi) - (\beta \gamma) - (\phi \gamma)
-        + (\beta \phi \gamma)
-        $
-        $<$
-        $b + c + d + e + f + h
-        + \beta + \delta + \phi + \gamma
-        - (\beta \delta) - (\beta \phi) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
-        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
-        - (\beta \delta \phi \gamma)
-        + 1
-        $
-
-        $\rightarrow$
-        $i
-        $
-        $<$
-        $c + d
-        \delta
-        - (\beta \delta) - (\delta \phi) - (\delta \gamma)
-        + (\beta \delta \phi) + (\beta \delta \gamma) + (\delta \phi \gamma)
-        - (\beta \delta \phi \gamma)
-        + 1
-        $
-
-        Using a Venn Diagram or by other set intuition, the generic sets
-        of terms on the R.H.S. represent the number of terms in $\delta$
-        that do not exist in any other set.
-
-        The lowest possible value for this is 0 and the inequality becomes:
-
-        $i < c + d + 1$
-
-        Which is true as long as one term exists in {$c, d$}.
-
-        Want to show at least one term exists in {$c, d$}.
-
-        Suppose not, then we can rewrite $B$ as follows:
-
-        $B := [-i]$
-
-        Note that $\delta$ cannot have any terms because any terms from
-        $\delta$ could be extracted to be treated as $c$ or $d$.
-
-        Then D is recalculated:
-
-        $D = [a, b, \beta]$
-
-        We know D is of length k and A is of length k - 1.
-
-        Here it is clearly seen the length of A is one more
-        than the length of $D$ which is impossible since the 
-        length of $A$ is k - 1 while the length of D is k.
-
-        This is a contradiction, therefore at least one term must exist
-        in {$c, d$}.
-
-        Therefore the inequality holds and J is shorter than k.
-
-        (2b) $K$ is shorter than $k$
-
-        Recall 
-        
-        $K := [c, d, \delta, b, \beta, e, f, \phi, h, \gamma]$ (By clauses $J$ and $B$)
-
-        $F_2 = [b, \beta, c, d, \delta, e, f, \phi, h, \gamma]$
-
-        These two clauses are the same so $K$ has a length of $k-1$.
-        
-        Since $J$ and $K$ are shorter than $k$ and $J$ and $K$ can be used
-        to derive $F_2$, we can derive $F_2$ by processing clauses with a 
-        maximum length of $k-1$.
+        Since all of the terms in $C_2$ exist in $F_2$, we can keep expanding $C_2$ by Lemma 5.7 until we derive $F_2$ and by the nature of the lemma, we will only have to process a clause of length 1 shorter than $F_2$ to derive $F_2$. So we have to process clauses between the length of $C_2$ and the length of $F_2$ - 1. Since we defined $C_2$ to be shorter than k and the maximum length of $F_2$ is $k$, we can derive $F_2$ without having to process a clause of length $k$ or greater.
 
         Since $F_1$ and $F_2$ are all possible cases of $F$ and they 
         can be derived without processing clauses longer than length
@@ -1953,7 +1959,7 @@
             \item a clause $B$, of length less than k
             \item a clause $C$, of length k
             \item a clause $D$, of length k
-            \item a clause $E$, of length k - 1
+            \item a clause $E$, of length k or k - 1
             \item $A$ expands to $C$ by lemma 5.8
             \item $B$ expands to $D$ by lemma 5.8
             \item $C$ and $D$ imply $E$ by lemma 5.7
@@ -2010,8 +2016,8 @@
 
         Notice that all of the terms in $A$ exist in $E$. Therefore, we
         can expand $A$, one term at a time by lemma 5.8, to derive
-        $E$. Since a single term is added in each step, and $E$ is of length k - 1,
-        the largest clause that needs to be processed is of length k - 2.
+        $E$. Since a single term is added in each step, and $E$ has a maximum lengh of $k$,
+        the largest clause that needs to be processed is of length k - 1.
 
         Consider case (2) the opposite form term exists in either A or B.
 
@@ -2059,14 +2065,107 @@
 
         $F = [b, \beta, d, \delta]$
 
-        whose terms are clearly a subset of the terms in $E$. As such, 
-        $F$ can be used to derive $E$ by Lemma 5.8. Since Lemma 5.8 only
-        adds a single term with each step and $E$ is of length k - 1 then
-        the maximum length of $F$ is k - 1 (since it's a subset of E) and 
-        you only have to process clauses with a maximum length of k - 1
-        to derive E. 
+        Want to show $F$ is shorter than $E$. 
 
-        Therefore if you have clauses, A, B, C, D, and E, as described,
+        Consider two cases (3a) the length of $E$ is $k$ and (3b) the length of $E$ is $k-1$.
+
+        Consider (3a) the length of $E$ is $k$.
+
+        We can define $k$ as follows:
+
+        $k = b + e + f + d + g + h 
+            + \beta + \phi + \delta + \gamma
+            - (\beta \phi) - (\beta \delta) - (\beta \gamma) - (\phi \delta) - (\phi \gamma) - (\delta \gamma)
+            + (\beta \phi \delta) + (\beta \phi \gamma) + (\phi \delta \gamma)
+            - (\beta \phi \delta \gamma)
+            $
+
+        And the length of $F$ is:
+
+        Length of $F = b + d + \beta + \delta - (\beta \delta)$
+
+        Want to show the length of $F$ is less than $k$:
+
+        $b + d + \beta + \delta - (\beta \delta)$
+        $<$
+        $b + e + f + d + g + h 
+            + \beta + \phi + \delta + \gamma
+            - (\beta \phi) - (\beta \delta) - (\beta \gamma) - (\phi \delta) - (\phi \gamma) - (\delta \gamma)
+            + (\beta \phi \delta) + (\beta \phi \gamma) + (\phi \delta \gamma)
+            - (\beta \phi \delta \gamma)
+        $
+
+        $\rightarrow$
+        $0$
+        $<$
+        $e + f + g + h 
+            + \phi + \gamma
+            - (\beta \phi) - (\beta \gamma) - (\phi \delta) - (\phi \gamma) - (\delta \gamma)
+            + (\beta \phi \delta) + (\beta \phi \gamma) + (\phi \delta \gamma)
+            - (\beta \phi \delta \gamma)
+        $
+
+        For ease, let's represent the generic sets of terms on the R.H.S. as $y$. The inequality becomes:
+
+        $0 < e + f + g + h + y$
+
+        Which is true as long as at least one term exists in {$e, f, g, h, y$}.
+
+        Suppose not. Then no terms exist in {$e, f, g, h, y$}.
+
+        We can redefine some clauses: 
+
+        $C := [a, b, \beta]$
+
+        Notice that no terms may exist ibn $\phi$ because any term in $\phi$ could be extracted and treated as $e$ or $f$, but we know these do not exist.
+
+        Now we have the clauses:
+
+        $C := [a, b, \beta]$
+
+        $A := [a, b, \beta]$
+
+        Notice the length of $C$ is the same as the length of $A$. Recall we defined the length of $C$ as $k$ and the length of $A$ as $k-1$. This is a contradiction so at least one term has to exist in {$e, f, g, h, y$}.
+
+        Therefore the inequality holds and you can derive $E$ by processing clauses with a maximum length of $k-1$ if the length of $E$ is $k$.
+
+        Consider (3b) the length of $E$ is $k - 1$.
+
+        We can define $k$ as follows:
+
+        $k = b + e + f + d + g + h 
+            + \beta + \phi + \delta + \gamma
+            - (\beta \phi) - (\beta \delta) - (\beta \gamma) - (\phi \delta) - (\phi \gamma) - (\delta \gamma)
+            + (\beta \phi \delta) + (\beta \phi \gamma) + (\phi \delta \gamma)
+            - (\beta \phi \delta \gamma)
+            $
+
+        And the length of $F$ is:
+
+        Length of $F = b + d + \beta + \delta - (\beta \delta)$
+
+        Want to show the length of $F$ is less than $k$:
+
+        $b + d + \beta + \delta - (\beta \delta)$
+        $<$
+        $b + e + f + d + g + h 
+            + \beta + \phi + \delta + \gamma
+            - (\beta \phi) - (\beta \delta) - (\beta \gamma) - (\phi \delta) - (\phi \gamma) - (\delta \gamma)
+            + (\beta \phi \delta) + (\beta \phi \gamma) + (\phi \delta \gamma)
+            - (\beta \phi \delta \gamma)
+        $
+
+        Similarly to before, this will derive
+
+        $0 < e + f + g + h + y + 1$
+
+        Which is always true.
+
+        Therefore the inequality holds and you can derive $E$ by processing clauses with a maximum length of $k-1$ if the length of $E$ is $k - 1$.
+
+        Therefore both cases will allow you to derive $E$ by processing clauses of length no greater than $k$ - 1.        
+
+        Since all three cases work, if you have clauses, A, B, C, D, and E, as described,
         then E can be derived by processing clauses with a maximum length
         of k - 1.
     \end{proof}
