@@ -514,9 +514,14 @@
     \end{proof}
 
     \begin{lemma}
-        Given four clauses of length $k - 1,$ $A, B, C,$ and $D$, and one clause of 
-        length $k,$ $E$, such that 
+        Given the following:
+        % Given four clauses of length $k - 1,$ $A, B, C,$ and $D$, and one clause of 
+        % length $k,$ $E$, such that 
         \begin{itemize}
+            \item A clause, $A$, of length less than $k$
+            \item A clause, $B$, of length less than $k$
+            \item A clause, $C$, of length less than $k$
+            \item A clause, $A$, of length $k$ or $k - 1$
             \item $A$ and $B$ imply $E$ by Lemma 5.9
             \item $C$ and $E$ imply $D$ by Lemma 5.9
         \end{itemize}
@@ -566,14 +571,14 @@
         the same terminal in both forms then $D$ blocks no assignments and the resulting
         clause may be disregarded.
 
-        We know $C$ is of length $k$ and $D$ is of length $k - 1$ or $k$.
+        We know $C$ is of length $k$ and $D$ is of length (1) $k$ or (2) $k-1$.
 
         In the following equations, let the presence of a term represent a count of one,
         and the presence of a set of terms represent the number of terms in that set. If
         multiple sets of terms are shown in parentheses, let this represent the number
         of terms found in both sets.
 
-        Consider the case where $D$ has length $k$ then we can define $k$ in terms of $D$:
+        Consider (1) the case where $D$ has length $k$ then we can define $k$ in terms of $D$:
         
         $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) - 
         (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
@@ -639,7 +644,7 @@
         Since $c$ and $d$ always exist in $B$, you can derive $D$ by processing
         clauses of length at most $k-1$.
     
-        Consider the case where the length of $D$ is $k - 1$:
+        Consider (2) the case where the length of $D$ is $k - 1$:
 
         This means $k$ is one greater than the length of $D$, so $k$ is now:
 
