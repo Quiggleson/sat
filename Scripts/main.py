@@ -11,7 +11,7 @@ def write_blockages(clauses, n, write=True):
   if write:
       
     # Open output file
-    output_file = open('blockages.txt', 'w+')
+    output_file = open('blockages.md', 'w+')
 
     # Write data about the instance
     output_file.write('Instance:\n')
@@ -186,14 +186,13 @@ def check_redun(assignments, clauses, n):
 # ]
 
 
-n = 6
+n = 5
 clauses = [
   [1, 2, 3],
-  [1, 2, 3, 4]
-  # [-1, -2, 3],
-  # [1, 2, 4],
-  # [-1, 2, 4]
+  [4, 5, -3],
+  [1, 2, 4, 5]
 ]
+
 for clause in clauses:
   clause.sort()
 
