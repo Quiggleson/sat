@@ -435,13 +435,6 @@ INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/newtx/NewTXMI7.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/newtx/stxscr.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ot1.vf
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1--base.tfm
-INPUT ./Source/318c.png
-INPUT ./Source/318c.png
-INPUT ./Source/318c.png
-INPUT ./Source/318c.png
-INPUT /usr/local/texlive/2023/texmf-dist/fonts/vf/public/newtx/ntxsy5.vf
-INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/newtx/txsys.tfm
-INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/public/newtx/txex-bar.tfm
 INPUT ./Source/517a.png
 INPUT ./Source/517a.png
 INPUT ./Source/517a.png

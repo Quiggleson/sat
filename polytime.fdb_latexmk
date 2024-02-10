@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex polytime"] 1706043688.786 "polytime.aux" "polytime.bbl" "polytime" 1706046382.77528 0
+["bibtex polytime"] 1707537885.36578 "polytime.aux" "polytime.bbl" "polytime" 1707539133.05786 0
   "./refs.bib" 1705973906.55239 2952 22bb79b3f7b02323f0c93c39c9b3f38b ""
   "/usr/local/texlive/2023/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "polytime.aux" 1706046382.45792 3229 a8473600cbddac8bc25deaf29b2115da "pdflatex"
+  "polytime.aux" 1707539132.65652 3049 c55a8087e37d23288325795b33bab46e "pdflatex"
   (generated)
   "polytime.bbl"
   "polytime.blg"
   (rewritten before read)
-["pdflatex"] 1706046381.28416 "/home/rob/Repos/sat/polytime.tex" "polytime.pdf" "polytime" 1706046382.77553 0
-  "/home/rob/Repos/sat/polytime.tex" 1706046381.03796 91226 4bb973264e2925c9a95de079af31da34 ""
+["pdflatex"] 1707539131.40559 "/home/rob/Repos/sat/polytime.tex" "polytime.pdf" "polytime" 1707539133.05801 0
+  "/home/rob/Repos/sat/polytime.tex" 1707539131.19648 80608 0ec15c707f2119445090adb8be699bc7 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc" 1490131464 2921 8ca0eb0831f9bc5da080d3697cfe67bf ""
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc" 1490131464 2933 9ad527ce78d7c5fa0a642dead095f172 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc" 1490131464 2934 a4a9158faed2e9e89c771b4e3b7fc12f ""
@@ -85,7 +85,6 @@
   "/usr/local/texlive/2023/texmf-dist/fonts/vf/public/libertine/LinLibertineTI-tlf-t1.vf" 1490131464 1768 b3bfd8ed1fe2dce5fd19610abe4c3dbe ""
   "/usr/local/texlive/2023/texmf-dist/fonts/vf/public/newtx/ntxexx.vf" 1699567298 1716 73c8d39d4c3ace9ec98a8f066bb3b494 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/vf/public/newtx/ntxsy.vf" 1699567298 1804 0d5405efa3655e9ce85ebf4efa9b7f0b ""
-  "/usr/local/texlive/2023/texmf-dist/fonts/vf/public/newtx/ntxsy5.vf" 1699567298 1852 729c2bf5aecca1c077a058610b5c0949 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/vf/public/newtx/ntxsy7.vf" 1699567298 1932 eb3a33127536e5b93d4fbe6076112b0d ""
   "/usr/local/texlive/2023/texmf-dist/fonts/vf/public/newtx/nxlmi.vf" 1569879884 2744 3e5ba39e1559219ae379b7645e2f9524 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/vf/public/newtx/nxlmi7.vf" 1575323900 2740 2574d1692bc06933fa73eb18c93daedb ""
@@ -213,15 +212,14 @@
   "/usr/local/texlive/2023/texmf.cnf" 1705775149.13012 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
   "Source/318.png" 1705601361.36585 7197 a304206194599d56ee37892c60d6b996 ""
   "Source/318b.png" 1705602339.03576 7395 ffdffe80995caf005d1bbf5d177bf4b3 ""
-  "Source/318c.png" 1705602858.76391 7487 637e600cbb92d65fc1d21eae2f579334 ""
   "Source/511a.png" 1706032907.39847 9664 69892870c2ee051bebf54531337425ca ""
   "Source/517a.png" 1705853108.42805 13472 1d355b55a6b3de3ce61cdbd7a73cd76d ""
   "Source/518a.png" 1705857467.79309 10916 971a1a725958dd8a00ebcfd3e9852ab3 ""
   "Source/519a.png" 1705858730.98607 8516 be14620c2d31d8a22da888a476a1bc8e ""
-  "polytime.aux" 1706046382.45792 3229 a8473600cbddac8bc25deaf29b2115da "pdflatex"
-  "polytime.bbl" 1706043688.89869 485 b490a5c8474ca947609e761ac69f2779 "bibtex polytime"
-  "polytime.out" 1706046382.45792 1499 a1155969cff862e61ff13b8690caf2db "pdflatex"
-  "polytime.tex" 1706046381.03796 91226 4bb973264e2925c9a95de079af31da34 ""
+  "polytime.aux" 1707539132.65652 3049 c55a8087e37d23288325795b33bab46e "pdflatex"
+  "polytime.bbl" 1707537885.47073 485 b490a5c8474ca947609e761ac69f2779 "bibtex polytime"
+  "polytime.out" 1707539132.66052 1498 4b67f688d54b9e32dc569c3107d8e7ea "pdflatex"
+  "polytime.tex" 1707539131.19648 80608 0ec15c707f2119445090adb8be699bc7 ""
   (generated)
   "polytime.aux"
   "polytime.log"

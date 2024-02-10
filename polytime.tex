@@ -8,10 +8,10 @@
 
     \title{A Polynomial Time Algorithm for 3SAT} 
     \author{Robert Quigley}
-    \email{robertquigley21@gmail.com}
+    \email{robertquiggleson@gmail.com}
 
     \begin{abstract}
-        It is shown that any two clauses in an instance of 3SAT sharing the same terminal which is positive in one clause and negated in the other can imply a new clause composed of the remaining terms from both clauses. Clauses can also imply other clauses as long as all the terms in the implying clauses exist in the implied clause. It is shown an instance of 3SAT is unsatisfiable if and only if it can derive contradicting 1-terminal clauses in exponential time. It is further shown that these contradicting clauses can be implied with the aforementioned techniques without processing clauses of length 4 or greater, reducing the computation to polynomial time. Therefore there is a polynomial time algorithm that will produce contradicting 1-terminal clauses if and only if the instance of 3SAT is unsatifiable. Since such an algorithm exists and 3SAT is NP-Complete, we can conclude P = NP.
+        It is shown that any two clauses in an instance of 3SAT sharing the same terminal which is positive in one clause and negated in the other can imply a new clause composed of the remaining terms from both clauses. Clauses can also imply other clauses as long as all the terms in the implying clauses exist in the implied clause. It is shown an instance of 3SAT is unsatisfiable if and only if it can derive contradicting 1-terminal clauses in exponential time. It is further shown that these contradicting clauses can be implied with the aforementioned techniques without processing clauses of length 4 or greater, reducing the computation to polynomial time. Therefore there is a polynomial time algorithm that will produce contradicting 1-terminal clauses if and only if the instance of 3SAT is unsatisfiable. Since such an algorithm exists and 3SAT is NP-Complete, we can conclude P = NP.
     \end{abstract}
     
     \keywords{NP-Complete, SAT, 3SAT, Satisfiability, P vs NP, Polynomial Time, Non-deterministic Polynomial Time, Complexity Theory, Computational Complexity, Complexity Classes, Cook-Levin Theorem, Karp's 21 NP-Complete Problems}
@@ -42,10 +42,10 @@
         The problem is to determine whether or not there exists an assignment
         for each terminal that allows the instance to evaluate to True.
         As seen in \cite{Karp1972}, the satisfiability problem
-        with at most 3 literals per clause is NP-Complete. This is the same 
+        with exactly 3 literals per clause is NP-Complete. This is the same 
         as the boolean satisfiability problem, but it is presented such that
         a clause contains exactly three terminals combined with logical OR operators
-        and possbily negations, and each clause is combined with logical AND operators.
+        and possibly negations, and each clause is combined with logical AND operators.
         The idea of NP-completeness shows that if one NP-complete problem can be solved
         in polynomial time, then all problems in the class NP can be solved in polynomial time.
         In other words, P = NP. 
@@ -75,7 +75,7 @@
             \end{itemize}
             \item Time Complexity Analysis
             \begin{itemize}
-                \item A step-by-step analysis of the time complexity of the algorithm
+                \item An analysis of the time complexity of the algorithm
             \end{itemize}
             \item Proof of Correctness
             \begin{itemize}
@@ -101,7 +101,7 @@
     \begin{definition}
         Clauses: a set of terms combined by logical OR operators.
         Clauses usually take the form 
-        $(x_i \lor \neg x_j \lor x_k)$ where $x_i \neq x_j \neq x_k$
+        $(x_i \lor \neg x_j \lor x_k)$ where $x_i \neq x_j \neq x_k$.
     \end{definition}
     \begin{definition}
         (3SAT) Instance: a set of any number of clauses combined by logical
@@ -110,7 +110,7 @@
         , but they are free to repeat between clauses. 
         Instances usually take the form:
 
-        $(x_i \lor \neg x_j \lor x_k) \land (x_l \lor x_m \lor x_n)$
+        $(x_i \lor \neg x_j \lor x_k) \land (x_l \lor x_m \lor x_n)$.
     \end{definition}
     \begin{definition}
         Assignment: A list of values in which each value represents either True
@@ -118,8 +118,7 @@
         all terminals are assigned a value.
     \end{definition}
     \begin{definition}
-        Satisfying Assignment: An assignment, $A$, is said to satisfy the instance, 
-        if applying $A$ will make the instance evaluate to True.
+        Satisfying Assignment: An assignment, $A$, is said to satisfy the instance if applying $A$ will make the instance evaluate to True.
     \end{definition}
     \begin{definition}
         Satisfiable: an instance is satisfiable iff there exists a satisfying assignment.
@@ -131,7 +130,7 @@
     \section{Algorithm-Specific Definitions}
     \begin{definition}
         Blocking an Assignment: An assignment, $A$, is said to be blocked by a clause, $C$ if, 
-        given an instance containg $C$, there is no way that $A$ allows $C$ to evaluate to True, and
+        given an instance containing $C$, there is no way that $A$ allows $C$ to evaluate to True, and
         thus there is no way $A$ allows the instance to evaluate to True.
     \end{definition}
     \begin{definition}
@@ -142,7 +141,7 @@
         Given Clauses: clauses which were given in the original instance.
     \end{definition}
     \begin{definition}
-        Implied Clauses: clauses which are implied by the clauses in the original instance.
+        Derived or Implied Clauses: clauses which are implied by the clauses in the original instance.
     \end{definition}
     \begin{definition}
         k-terminal (k-t) clause: a clause is described as a k-terminal or a k-t clause
@@ -158,8 +157,7 @@
         clause exist in the implied clause.
     \end{definition}
     \begin{definition}
-        Contradicting Clauses: A set of clauses is said to be contradicting if
-        they block every assignment.
+        Contradicting 1-terminal Clauses: A set of two clauses are considered to be contradicting 1-terminal clauses if (1) they are both of length 1, (2) they contain the same terminal, and (3) the terminal is positive in one clause and negated in the other.
     \end{definition}
 
     \section{Reformatting and Processing}
@@ -202,118 +200,88 @@
     \section{Lemmas}
 
     \begin{lemma}
-        A clause can block an assignment    
+        A clause can block an assignment.
     \end{lemma}
     \begin{proof}
-        Recall the definition of a clause blocking an assignment:
-        An assignment is blocked if it does not allow the clause to evaluate to True.
+        Recall an assignment is blocked if it does not allow the clause to evaluate to True.
 
-        Since terms in a clause are combined by logical OR operators, a 
-        clause cannot evalute to True iff all terms evalute to False.
+        Since terms in a clause are combined by logical OR operators, a clause cannot evaluate to True if all terms evaluate to False.
 
-        A term evaluates to False if it's either (1) negated and the terminal's
-        value is True or (2) positive and the terminal's value is False
+        A term evaluates to False if it's either (1) negated and the terminal's value is True or (2) positive and the terminal's value is False.
 
-        Given a clause, we know there are some number of unique terminals and we can
-        find assignments where all terms evalute to False.
+        Given a clause, we know there are some number of unique terminals and we can find assignments where all terms evaluate to False.
 
-        Since all the terms evaluate to False and are combined by logical OR operators, 
-        the clause will evalutae to False.
+        Since all the terms evaluate to False and are combined by logical OR operators, the clause will evaluate to False.
 
-        Since the instance is composed of clauses combined by logical AND operators 
-        and one clause evalutes to False, then the entire instance evalutes to False.
+        Since the instance is composed of clauses combined by logical AND operators and one clause evaluates to False, then the entire instance evaluates to False.
 
-        Since the instance evaluates to False, the assignment cannot satisfy
-        the instance.
+        Since the instance evaluates to False, the assignment cannot satisfy the instance.
     \end{proof}
 
     \begin{lemma}        
         For a given instance with $n$ terminals, there are $2^n$ possible assignments.
     \end{lemma}
     \begin{proof}
-        An assignment for this instance consists of $n$ values, each with two possible
-        values, True or False.
+        An assignment for this instance consists of $n$ values, each with two possible values, True or False.
 
         Therefore, there are $2^n$ possible assignments.
     \end{proof}
 
     \begin{lemma}
-        If a clause contains the same terminal in its negated and positive form, it will
-        not block any assignments.
+        If a clause contains the same terminal in its negated and positive form, it will not block any assignments.
     \end{lemma}
     \begin{proof}
 
-        Consider a clause containing the same terminal in both the positive and
-        negative form.
+        Consider a clause containing the same terminal in both the positive and negative form.
 
         We know that terminal must either be True or False. Consider both cases:
 
-        That terminal's value is True:
-        The positive form of the terminal will be True and the clause will evaluate to True.
+        That terminal's value is True: The positive form of the terminal will be True and the clause will evaluate to True.
 
-        That terminal's value is False:
-        The negated form of the terminal will be True and the clause will evaluate to True.
+        That terminal's value is False: The negated form of the terminal will be True and the clause will evaluate to True.
 
-        Since the clause evaluates to True in every case, there will never be an 
-        assignment with which it is impossible to make this clause evalute to False.
+        Since the clause evaluates to True in every case, there will never be an assignment with which it is impossible to make this clause evaluate to False.
+
+        In other words, this clause blocks no assignments.
     \end{proof}
 
     \begin{lemma}
         Each clause of length $k$ blocks $2^{n-k}$ assignments.
     \end{lemma}
     \begin{proof}
-        Consider the generic $k$-terminal clause, $C$, in an instance with
-        $n$ terminals.
+        Consider the generic $k$-terminal clause, $C$, in an instance with $n$ terminals.
 
-        As seen in Lemma 5.1, this blocks all assignments where all of the terms
-        evaluate to False.
+        As seen in Lemma 5.1, this blocks all assignments where all of the terms evaluate to False.
 
-        Since the values for $k$ terminals are set, there are $n-k$ terminals left
-        whose values could be True or False.
+        Since the values for $k$ terminals are set, there are $n-k$ terminals left whose values could be True or False.
 
-        Since an assignment exists for every possible way to assign values to
-        each terminal, we know an assignment exists for every possible way to
-        assign a value for these $n-k$ terminals.
+        Since an assignment exists for every possible way to assign values to each terminal, we know an assignment exists for every possible way to assign a value for these $n-k$ terminals.
 
-        There are two possible ways to assign values to each of these $n-k$ terminals
-        so there are $2^{n-k}$ unique assignments blocked by $C$.
+        There are two possible ways to assign values to each of these $n-k$ terminals so there are $2^{n-k}$ unique assignments blocked by $C$.
     \end{proof}
 
     \begin{lemma}
-        For any clause, $C$, if we select a terminal, $t$, that's not in $C$ 
-        then half of the assignments
-        blocked by $C$ will assign True to $t$ and the other half will assign 
+        For any clause, $C$, if we select a terminal, $t$, that's not in $C$ then half of the assignments blocked by $C$ will assign True to $t$ and the other half will assign 
         False to $t$.
     \end{lemma}
     \begin{proof}
-        We have a clause, $C$, of fixed yet arbitrary length:
+        We have a clause, $C$, of fixed yet arbitrary length, $k$:
 
         $[a, b, c, ...]$
 
-        Now we select a terminal, $t$, that's not in $C$, say we call this
-        terminal $t$.
+        Now we select a terminal, $t$, that's not in $C$.
 
-        Want to show half of the assignments blocked by $C$ assign True to 
-        $t$ and the other half assign False to $t$.
+        Want to show half of the assignments blocked by $C$ assign True to $t$ and the other half assign False to $t$.
 
-        We know there will be no overlap between these assignments because a single assignment
-        cannot assign both the values True and False to the same terminal.
+        We know there will be no overlap between these assignments because a single assignment cannot assign both the values True and False to the same terminal.
 
-        Now we just have to show that exactly half of the assignments are blocked 
-        by assigning either True or False to $t$.
+        Now we just have to show that exactly half of the assignments are blocked by assigning either True or False to $t$.
 
-        Let's say there are $k$ terms in C, then we know it blocks assignments 
-        where all $k$ terms evaluate to False.
+        By Lemma 5.4, $C$ blocks $2^{n-k}$ assignments. 
 
-        By Lemma 5.4, this clause blocks $2^{n-k}$ assignments. 
+        If we fix the value of $t$, then there are only $n-k-1$ terminals whose values could be 0 or 1. Since we have two choices per terminal and there are $n-k-1$ terminals, then there are $2^{n-k-1}$ assignments blocked by $C$ where the value of $t$ is fixed.
 
-        If we fix the value of $t$, then there are only $n-k-1$ terminals
-        whose values could be 0 or 1. Since we have two choices per terminal
-        and there are $n-k-1$ terminals, then there are $2^{n-k-1}$ assignments
-        blocked by $C$ where the value of $t$ is fixed.
-
-        Divide to get the ratio of the number of assignments blocked by adding 
-        $t$ to the number of assignments blocked by $C$ without $t$:
+        Divide to get the ratio of the number of assignments blocked by adding $t$ to the number of assignments blocked by $C$ without $t$:
         
         $2^{n-k-1}/2^{n-k}$
 
@@ -323,36 +291,28 @@
 
         = $1/2$
 
-        This shows that half of the assignments blocked by $C$ assign a fixed
-        value to $t$.
+        This shows that half of the assignments blocked by $C$ assign a fixed value to $t$.
 
-        Since there are two possible values for $t$ and each block mutually
-        exclusive halves of the assignments blocked by $C$, the lemma holds.
+        Since there are two possible values for $t$ and each block mutually exclusive halves of the assignments blocked by $C$, the lemma holds.
 
-        For any clause, $C$, if we select a terminal, $t$, that's not
-        in $C$ then half of the assignments blocked by $C$ will assign True
-        to $t$ and the other half will assign False to $C$.
+        For any clause, $C$, if we select a terminal, $t$, that's not in $C$ then half of the assignments blocked by $C$ will assign True to $t$ and the other half will assign False to $C$.
     \end{proof}
 
     \begin{lemma}
-        Given a clause, $C$, and another clause, $D$, such that all of the 
-        terms in $C$ also exist in $D$, then all of the assignments
-        blocked by $D$ are also blocked by $C$.
+        Given a clause, $C$, and another clause, $D$, such that all of the terms in $C$ also exist in $D$, then all of the assignments blocked by $D$ are also blocked by $C$.
     \end{lemma}
     \begin{proof}
         Given a clause, $C$, of a fixed yet arbitrary length:
 
-        $[a, b, c, ...]$
+        $C := [a, b, c, ...]$
 
-        And another clause, $D$, containing all the terms in $C$ with possibly
-        additional terms:
+        And another clause, $D$, containing all the terms in $C$ with possibly additional terms:
 
-        $[a, b, c, ..., d, e, f, ...]$
+        $D := [a, b, c, ..., d, e, f, ...]$
 
         Want to show all the assignments blocked by $D$ are also blocked by $C$.
 
-        We know that $C$ blocks all assignments that cause all the terms to evaluate
-        to False.
+        We know that $C$ blocks all assignments that cause all the terms to evaluate to False.
 
         In other words, $C$ blocks all assignments where 
  
@@ -362,8 +322,7 @@
 
         $a = b = c = ... = d = e = f = ... = False$
 
-        Clearly all assignments consistent with the terminal assignments from $D$
-        are also consistent with the terminal assignments from $C$.
+        Clearly all assignments consistent with the terminal assignments from $D$ are also consistent with the terminal assignments from $C$.
 
         Therefore, every assignment blocked by $D$ is also blocked by $C$.
     \end{proof}
@@ -388,39 +347,29 @@
 
         $B := [a, b, c, ..., -i]$
 
-        where $a, b, c, ...$ is shared between the clauses and $i$ is a 
-        terminal not in $a, b, c, ...$
+        where $a, b, c, ...$ is shared between the clauses and $i$ is a terminal not in $a, b, c, ...$
 
-        Want to show this implies the described clause.
+        Want to show this implies $C$.
 
-        Recall by Lemma 5.3 that the same terminal cannot appear both negated and
-        positive within the same
-        clause and still block an assignment, so $i$ cannot exist in $a, b, c...$
+        Recall by Lemma 5.3 that the same terminal cannot appear both negated and positive within the same clause and still block an assignment, so $i$ cannot exist in $a, b, c...$
 
         Consider the clause
 
         $C := [a, b, c, ...]$
 
-        We know by Lemma 5.5 that if we select a terminal that's not in $C$, say $t$, 
-        then half of the assignments blocked by $C$ assign True to $t$ and the other
-        half of the assignments blocked by $C$ assign False to $t$.
+        We know by Lemma 5.5 that if we select a terminal that's not in $C$, say $t$, then half of the assignments blocked by $C$ assign True to $t$ and the other half of the assignments blocked by $C$ assign False to $t$.
 
         Let this terminal $t$ that's not in $C$ be the terminal $i$ that's in $A$ and $B$.
 
-        We know that $A$ blocks all assignments blocked by $C$ where $i$ is assigned
-        the value of False.
+        We know that $A$ blocks all assignments blocked by $C$ where $i$ is assigned the value of False.
 
-        We know that $B$ blocks all assignments blocked by $C$ where $i$ is assigned
-        the value of True.
+        We know that $B$ blocks all assignments blocked by $C$ where $i$ is assigned the value of True.
 
-        Since $A$ and $B$ both block mutually exclusive halves of the assignments
-        blocked by $C$, we can say that $A$ and $B$ imply $C$.
+        Since $A$ and $B$ both block mutually exclusive halves of the assignments blocked by $C$, we can say that $A$ and $B$ imply $C$.
     \end{proof}
 
     \begin{lemma}[Expansion]
-        Given a clause, $C$, and a terminal, $t$, that's not in $C$, two 
-        new clauses can be implied consisting of all the terms of $C$ 
-        appended to either the positive form of $t$ or the negated form of $t$.
+        Given a clause, $C$, and a terminal, $t$, that's not in $C$, then two new clauses can be implied consisting of all the terms of $C$ appended to either the positive form of $t$ or the negated form of $t$.
     \end{lemma}
     \begin{proof}
         Given a clause, $C$, and a terminal, $t$, that's not in $C$:
@@ -433,15 +382,11 @@
 
         $E := [a, b, c, ..., -t]$
 
-        Since D and E both contain all the terminals from C, by Lemma 5.6 then
-        D and E are implied by C.   
+        Since D and E both contain all the terminals from C, by Lemma 5.6 then D and E are implied by C.   
     \end{proof}
 
     \begin{lemma}[General Lemma 5.7]
-        If two clauses share the same terminal, $t$, such that $t$ is 
-        positive in one clause and negated in the other, then these clauses 
-        imply a new clause which is composed of all the terms in both clauses 
-        that do not have $t$.
+        If two clauses share the same terminal, $t$, such that $t$ is positive in one clause and negated in the other, then these clauses imply a new clause which is composed of all the terms in both clauses except terms containing $t$.
     \end{lemma}
     \begin{proof}
         Consider two clauses, 
@@ -450,8 +395,7 @@
         
         $D := [d, e, f, ..., -t]$
 
-        Where within a clause, the same terminal does not repeat, but between
-        clauses the same terminal may repeat.
+        Where within a clause, the same terminal does not repeat, but between clauses the same terminal may repeat.
 
         Want to show we can imply a clause consistent with the lemma description:
 
@@ -463,60 +407,43 @@
 
         $E'' := [a, b, c, ..., d, e, f, ..., -t]$
 
-        By Lemma 5.6, we know that $C$ implies $E'$, ie, all assignments blocked by
-        $E'$ are also blocked by $C$.
+        By Lemma 5.6, we know that $C$ implies $E'$ because all the terms in $C$ exist in $E$.
 
         By Lemma 5.6, we know that $D$ implies $E''$.
 
-        By Lemma 5.7, since $E'$ and $E''$ share all the same terms except 
-        for $t$, which is positive in one clause and negated in the other, 
-        we can create a new clause composed of all the shared terms in $E'$ 
-        and $E''$.
+        By Lemma 5.7, since $E'$ and $E''$ share all the same terms except for $t$, which is positive in one clause and negated in the other, we can create a new clause composed of all the shared terms in $E'$ and $E''$.
 
         Such a clause is already defined as $E$.
 
         Now there are a couple extra cases to consider:
         
         \begin{itemize}
-            \item There is some overlap between a, b, c, ... and d, e, f, ...
-            \item There is the same terminal that's positive in a, b, c, ...
-            and negated in d, e, f, ...
+            \item There is some overlap between $a, b, c, ...$ and $d, e, f, ...$
+            \item There is the same terminal that's positive in $a, b, c, ...$ and negated in $d, e, f, ...$
         \end{itemize}
 
-        First, if the same term exists in a, b, c, ... and d, e, f, ..., then we
-        can just remove one of the duplicates since one term being true implies an identical term being True.
+        First, if the same term exists in $a, b, c, ...$ and $d, e, f, ...$, then we can just remove one of the duplicates since one term being true implies an identical term being True.
 
-        Secondly, if the same terminal exists, but is of the opposite form in a, b, c, ... and d, e, f, ...
-        then by Lemma 5.3, this clause will always be True and thus blocks no assignments. In this case, 
-        the lemma is vacuously true, but we disregard the clause as it is of no value.
-        
+        Secondly, if the same terminal exists, but is of the opposite form in $a, b, c, ...$ and $d, e, f, ...$
+        then by Lemma 5.3, this clause will always be True and thus blocks no assignments. In this case, the lemma is vacuously true, but we disregard the clause as it is of no value.
     \end{proof}
 
     \begin{lemma}
-        Given two clauses of lengths $k$ and $m$ that share a terminal, $t$, which is 
-        positive in one clause and negated in the other, you will be able
-        to directly imply clauses of length $max(k, m)-1$ to $(k + m - 2)$ where
-        the function $max(a, b)$ represents the parameter with the greatest value.
+        Given two clauses of lengths $k$ and $m$ imply another clause by Lemma 5.9, the implied clause will be of length $max(k, m)-1$ to $(k + m - 2)$ where the function $max(k, m)$ represents the parameter with the greatest value.
     \end{lemma}
     \begin{proof}
-        The smallest clause that can be implied by clauses of length $k$ and $m$
-        using Lemma 5.9 occur when all but one of the terms in one clause exist in the other.
+        The smallest clause that can be implied by clauses of length $k$ and $m$ using Lemma 5.9 occur when all but one of the terms in one clause exist in the other.
 
         As such, the unique terms will come from the clause that's longer.
 
         Removing $t$, you are left with 1 less than the maximum of $k$ and $m$.
 
-        The largest clause can be implied if there are no terms shared between
-        the two clauses. In this case you subtract $1$ from the length of each
-        clause to account for $t$ and since no duplicates will be removed, the 
-        resulting clause's length is $2$ less than the sum of the lengths of 
+        The largest clause can be implied if there are no terms shared between the two clauses. In this case you subtract $1$ from the length of each clause to account for $t$ and since no duplicates will be removed, the resulting clause's length is $2$ less than the sum of the lengths of 
         the clauses.
     \end{proof}
 
     \begin{lemma}
         Given the following:
-        % Given four clauses of length $k - 1,$ $A, B, C,$ and $D$, and one clause of 
-        % length $k,$ $E$, such that 
         \begin{itemize}
             \item A clause, $A$, of length less than $k$
             \item A clause, $B$, of length less than $k$
@@ -551,32 +478,23 @@
         
         $E = [a, b, \beta, c, d, \delta]$ (By $A$ and $B$)
 
-        $D = [b, \beta, c, d, \delta, e, f, \phi]$ (By $C$ and $D$)
+        $D = [b, \beta, c, d, \delta, e, f, \phi]$ (By $C$ and $E$ or by $F$ and $B$)
 
         $F = [b, \beta, i, e, f, \phi]$ (By $A$ and $C$)
 
         Where $\beta, \delta, $ and $\phi$ are generic sets of terms in the instance.
 
-        Note that since $C$ and $E$ imply $D$, then $C$ and $E$ must share the
-        same terminal such that it is positive in one clause and negated in the other.
-        Since all of the terms in $E$ came from $A$ or $B$ (not including $i$),
-        then such a term in $C$ must have the same term of the opposite form in
-        $A$ or $B$ (again it cannot be $i$ since $i$ is not in $E$). And since
-        $A$ and $B$ are fixed yet arbitrary sets, it does not matter which clause
-        we pick as long as it is fixed for the rest of the proof. Let's pick a
-        the terminal, $a$, from clause $A$. Now $C$ contains $-a$.
+        Note that since $C$ and $E$ imply $D$, then $C$ and $E$ must share the same terminal such that it is positive in one clause and negated in the other.
+        
+        Since all of the terms in $E$ came from $A$ or $B$ (not including $i$), then such a term in $C$ must have the same term of the opposite form in $A$ or $B$.
+        
+        And since $A$ and $B$ are fixed yet arbitrary sets, it does not matter which clause we pick as long as it is fixed for the rest of the proof. Let's pick a the terminal, $a$, from clause $A$. Now $C$ contains $-a$.
  
-        Recall from Lemma 5.3 that if a clause blocks any assignments, it cannot
-        contain the same term in both forms, so if $\beta, \delta$, or $\phi$ contain
-        the same terminal in both forms then $D$ blocks no assignments and the resulting
-        clause may be disregarded.
+        Recall from Lemma 5.3 that if a clause blocks any assignments, it cannot contain the same term in both forms, so if $\beta, \delta$, or $\phi$ contain the same terminal in both forms then $D$ blocks no assignments and the resulting clause may be disregarded.
 
         We know $C$ is of length $k$ and $D$ is of length (1) $k$ or (2) $k-1$.
 
-        In the following equations, let the presence of a term represent a count of one,
-        and the presence of a set of terms represent the number of terms in that set. If
-        multiple sets of terms are shown in parentheses, let this represent the number
-        of terms found in both sets.
+        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in both sets.
 
         Consider (1) the case where $D$ has length $k$ then we can define $k$ in terms of $D$:
         
@@ -613,36 +531,30 @@
 
         Want to show $c$ and $d$ always exists in $B$:
 
-        Suppose not, then we can rewrite $B$ without $c$ or $d$:
+        Suppose not, then at most one of $c$ or $d$ exists.
 
-        $B := [\delta, -i]$
+        Recall we have the clauses:
 
-        Notice that $\delta$ is simply a fixed, yet arbitrary set of terms
-        following the rules of a valid clause.
+        $A := [a, b, \beta, i]$
+        $B := [c, d, \delta, -i]$
+        $E := [a, b, \beta, c, d, \delta]$
 
-        As long as $\delta$ contains at least two terms, we can simply use 
-        any two terms from $\delta$ as c and d.
+        And since only $c$ or $d$ exist, we can redefine some clauses:
 
-        If $\delta$ does not contain two terms, then the largest possible
-        length of B is 2.
-        
-        By Lemma 5.10, the largest clause this can imply is of length 
-        $(|A| + |B| - 2)$ where $|A|$ is the length of $A$ and $|B|$ is the length 
-        of $B$.
+        $B := [x, -i]$
+        $E := [a, b, \beta, x]$
 
-        This means the largest $E$ implied by $A$ and $B$ has the same 
-        length as $A$.
+        Where x is represents either $c$ or $d$.
 
-        Because the lengths are equal, such a case would not allow $A$ to 
-        have length $k - 1$ and $E$ to have length $k$.
+        Note that no terms may exist in $\delta$ because any terms in $\delta$ could be extracted and treated as $c$ or $d$, but we know $x$ already represents the one of these terms that exist and the other term cannot exist.
 
-        Such a case would be inconsistent with the conditions of this 
-        lemma and would not apply.
-        
-        Therefore, at least two terms have to exist in \{$c, d$\}.
+        Notice the length of $A$ is the same as the length of $E$.
 
-        Since $c$ and $d$ always exist in $B$, you can derive $D$ by processing
-        clauses of length at most $k-1$.
+        This is a contradiction because the length of $A$ is given as less than $k$ and the length of $E$ is given as $k$.
+
+        Therefore both $c$ and $d$ must exist and the inequality is true.
+
+        Therefore $F$ is shorter than $k$ when $D$ is of length $k$.
     
         Consider (2) the case where the length of $D$ is $k - 1$:
 
@@ -655,12 +567,11 @@
 
         $\rightarrow$ $i < c + d + 1$
 
-        Which is again true as long as $c$ and $d$ are in $B$ and $i$ is in $A$.
+        Which is true as long as at least $c$ or $d$ exist.
 
-        As seen in the first half of this proof, $c$ and $d$ have to be in
-        $B$.
+        It was seen that both $c$ and $d$ must exist and since the proof does not rely on the length of $D$, the inequality holds.
 
-        $i$ has to be in $A$ by the conditions of this lemma.
+        Therefore the length of $F$ is shorter than $k$ when the length of $D$ is $k - 1$.
 
         Since the length of $F$ is less than $k$ in all cases, you can derive
         $D$ by processing only clauses with a maximum length of $k-1$.
@@ -676,8 +587,7 @@
             \item $A$ expands to imply $B$ by Lemma 5.8
             \item $B$ and $C$ imply $D$ by Lemma 5.9
         \end{itemize}
-        Then $A$ and $C$ can imply $D$ by processing clauses of at 
-        most length $k - 1$.
+        Then $D$ can be implied by processing clauses of at most length $k - 1$.
     \end{lemma}
     \begin{proof}
 
@@ -689,12 +599,10 @@
             \Description[An illustration of the derivations described in the lemma]{An illustration of the derivations described in the lemma}
         \end{figure}
 
-        Let the clauses be defined with the following generic definitions:
+        Let the clauses be defined as follows:
 
         $A := [a, b, \beta]$
         
-        $A' := [a, b, \beta, c]$
-
         $B := [a, b, \beta, c, d, \delta]$
 
         $C_1$ := [-a, e, f, $\phi$]
@@ -707,22 +615,15 @@
 
         E := [b, $\beta$, e, f, $\phi$]
 
-        F := [a, b, $\beta$, e, f, $\phi$]
+        Where $\beta, \delta$, and $\phi$ are fixed, yet arbitrary sets of terms such that the clauses block at least one assignment (see Lemma 5.3).
 
-        Where $\beta, \delta$, and $\phi$ are fixed, yet arbitrary sets of terms 
-        abiding by the rules for a valid clause (see Lemma 5.3) and consistent
-        with the conditions of this lemma.
-
-        Notice that $C$ has to contain a term from $B$ in the opposite form by 
-        lemma 5.9.
+        Notice that $C$ has to contain a term from $B$ in the opposite form by Lemma 5.9.
 
         Notice that $B$ is made up of terms from $A$ and terms not in $A$
-        by lemma 5.6.
+        by Lemma 5.6.
 
         The term in $C$ which is opposite from the term in $B$ can therefore
-        be opposite (1) from a term
-        in $A$ (in this case, use $C_1$ and $D_1$) or (2) a 
-        term not in $A$ (in this case use $C_2$ and $D_2$).
+        be opposite (1) from a term in $A$ (in this case, use $C_1$ and $D_1$) or (2) a term not in $A$ (in this case use $C_2$ and $D_2$).
         
         (1) Consider the opposite form term in $C$ is in $A$, ie, use $C_1$
         and $D_1$:
@@ -739,17 +640,14 @@
         Want to show you only have to process clauses whose length is
         less than $k$ to derive $D_1$.
 
-        Want to show length of $E$ is less than $k$.
+        Since $D_1$ is derived using only $A$, $C_1$, and $E$ and $A$ and $C$ are given to be shorter than $k$, want to show length of $E$ is less than $k$.
 
         Consider two cases: (1a) $D$ is of length $k$ and 
         (1b) $D$ is of length $k - 1$
         
         Consider (1a) where $D$ is of length $k$:
 
-        In the following equations, let the presence of a term represent a count of one,
-        and the presence of a set of terms represent the number of terms in that set. If
-        multiple sets of terms are shown in parentheses, let this represent the number
-        of terms found in both sets.
+        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in both sets.
 
         Since $D$ is of length $k$, we can define $k$ as follows:
 
@@ -761,43 +659,36 @@
         Want to show the length of $E$ is less than $k$:
 
         $b + e + f + \beta + \phi - (\beta \phi) < b + c + d + e + f + 
-        \beta + \delta + \phi - (\beta \delta) - (\beta \phi) - (\delta \phi) 
-        + (\beta \delta \phi)$
+        \beta + \delta + \phi - (\beta \delta) - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
 
         $\rightarrow 0 < c + d + \delta - (\beta \delta) 
         - (\delta \phi) + (\beta \delta \phi)$
 
-        Using a Venn Diagram or by other set intuition, $\delta - 
-        (\beta \delta) - (\delta \phi) + (\beta \delta \phi)$ represents
-        the number of terms in $\delta$ not in $\beta$ and not in $\phi$. 
-        The lowest this value can be is 0 if all terms in $\delta$ are in 
-        $\beta$ or $\phi$.
+        Which is true as long as at least one term exists on the R.H.S.
 
-        The inequality becomes:
+        Want to show at least one term exists on the R.H.S.
 
-        $\rightarrow 0 < c + d$
+        Suppose not, then no terms exist on the R.H.S. and we can redefine some clauses.
 
-        Which is true as long as $c$ or $d$ exist in $B$.
+        Recall the original clause definitions:
 
-        Want to show $c$ or $d$ always exists in $B$.
+        $A := [a, b, \beta]$
 
-        Suppose not, then we can rewrite $B$ as follows:
+        $B := [a, b, \beta, c, d, \delta]$
+
+        Since no terms exist on the R.H.S. we can redefine some clauses:
 
         $B := [a, b, \beta]$
 
-        Note that the maximum length of $\delta$ is 0 because if it were 1
-        or more, then we can just extract $c$ or $d$ from $\delta$.
+        Note that no terms may exist in $\delta$ because any term in $\delta$ can be extracted and treated as $c$ or $d$ and those are explicitly removed from existence.
 
-        In this case, the length of $B$ is the same as the length of $A$.
-        
-        Recall the conditions of the lemma defined the length of $B$ as $k$
-        and the length of $A$ as $k-1$.
+        Notice $A$ is exactly $B$.
 
-        Therefore it is impossible for the lemma conditions defining the lengths
-        of $A$ and $B$ to be true and $c$ or $d$ must always exist in $B$.
+        This is a contradiction because the length of $A$ is given as less than $k$ while the length of $B$ is given as $k$.
 
-        Since $c$ or $d$ must exist in $B$, the inequality is always true, 
-        and the length of $E$ is indeed less than $k$.
+        Therefore at least one term must exist on the R.H.S. and the inequality holds.
+
+        Therefore $E$ is shorter than $k$ when $D$ is of length $k$ and we use $D_1$.
 
         Consider (1b) $D$ is of length $k - 1$:
 
@@ -810,219 +701,32 @@
 
         $\rightarrow 0 < c + d + 1$
 
-        Which is always true so the length of $E$ is indeed less than $k$.
-
-        Notice that, by lemma 5.8, you only have to process clauses of length
-        at most $k-1$ to derive a clause of length $k$. In context, you 
-        can derive $D$ via expansion while only processing clauses with
-        a maximum length of $k-1$.
+        Which is always true so the length of $E$ is indeed less than $k$ when $D$ is of length $k - 1$ and we use $D_1$.
 
         (2) Consider the case using $C_2$ and $D_2$:
-
-        We can construct a clause, $A'$, such that $A$ expands to $A'$ by 
-        Lemma 5.8 and there is a term in $A'$ whose opposite term is in $C_2$.
-
-        By Lemma 5.9, $A'$ and $C_2$ imply a clause, $F$.
-
-        And by Lemma 5.6, all the terms in $F$ are in $D_2$ so $F$ implies $D_2$.
-
-        This is seen in the following figure:
-
-        \begin{figure}[h]
-            \includegraphics[scale=0.8]{318c.png}
-            \caption{An illustration of the derivations using $A', C_2$, and $F$}
-            \Description[An illustration of the derivations using $A', C_2$, and $F$]{An illustration of the derivations using $A', C_2$, and $F$}
-        \end{figure}
         
-        Want to show (2a) $A'$  is shorter than $k$ and (2b) $F$ is shorter than $k$.
-
-        (2a) Want to show the length of $A'$ is less than $k$:
-
-        Consider two cases, (2ai) $D_2$ is of length $k$ and 
-        (2aii) $D_2$ is of length k - 1
-
-        Consider (2ai) $D_2$ is of length $k$, then we can define k as follows:
-
-        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
-        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
-
-        length of $A' = a + b + \beta + c$
-
-        Want to show the length of $A'$ is less than $k$:
-
-        $\rightarrow$ $a + b + \beta + c$ $<$ $b + c + d + e + f + 
-        \beta + \delta + \phi - (\beta \delta) 
-        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
-
-        $\rightarrow$ $a$ $<$ $d + e + f + \delta + \phi - (\beta \delta) 
-        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
-
-        By Venn Diagram or other set intuition, 
-        $\delta + \phi - (\beta \delta) - (\beta \phi) - (\delta \phi) + 
-        (\beta \delta \phi)$ represents the number of unique terms in 
-        $\delta$ and $\phi$.
-        The smallest value for this is when $\delta = \phi$, so this can
-        be replaced with $\phi$.
-
-        $\rightarrow$ $a$ $<$ $d + e + f + \phi$
-
-        Which is clearly true as long as there are at least two terms in $d, e, f, \delta$ or $\phi$.
-
-        Consider the cases where 0 terms exist in $d, e, f, \delta, \phi$
-
-        Then 
-        
-        $D_2 := [a, b, \beta]$
-
-        Recall 
+        Recall the clauses:
 
         $A := [a, b, \beta]$
 
-        It is seen $A$ and $D_2$ are the same length, but the conditions of the lemma state
-        $A$ is of length less than $k$ and $D$ is of length $k$. 
+        $C_2 = [-c, e, f, \phi]$
 
-        This is a contradiction so at least one term has to exist in $d, e, f, \delta, \phi$
+        $D_2 = [a, b, \beta, d, \delta, e, f, \phi]$
 
-        Consider the cases where 1 term exists in $d, e, f, \delta, \phi$
+        Since all of the terms in $A$ exist in $D_2$, we can expand $A$ to $D_2$ using Lemma 5.8
 
-        Then 
+        Since the length of $A$ is given as less than $k$, we can derive $D$ by processing clauses with a maximum length of $k - 1$.
         
-        $D_2 := [a, b, \beta, x]$
-
-        Where $x$ is a single term from $\{d, e, f, \delta, \phi\}$
-        
-        Recall $A = [a, b, \beta]$
-
-        Since $x$ is exactly one term, $D_2$ is larger than $A$.
-
-        The clause $A$ can expand to $D_2$ by Lemma 5.6. In this case, 
-        we can expand $A$ to $D_2$ directly and we do not necessarily 
-        need $A'$,
-        
-        Since $D_2$ is of length $k$, it can be expanded to by processing
-        only clauses with a maximum length of $k-1$.
-
-        Therefore, either the inequality holds, or if it doesn't we can
-        derive $D_2$ directly without processing clauses longer than length $k-1$.
-
-        Consider (2aii) $D_2$ is of length $k - 1$:
-
-        $k$ is now defined as:
-
-        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
-        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
-
-        Similarly as before, the inequality becomes:
-
-        $\rightarrow$ $a$ $<$ $d + e + f + \phi + 1$
-
-        Where $\phi$ = $\delta$
-
-        Which is true as long as there is at least one term in
-        $d, e, f, \delta$ or $\phi$.
-
-        As seen before, if there are fewer than two terms in
-        $\{d, e, f, \delta, \phi\}$ then we can derive $D_2$ without
-        processing clauses larger than length $k-1$.
-
-        Therefore if $D_2$ is of length $k - 1$, then either the length of $A'$ is 
-        shorter than $k$ or $D_2$ can be derived directly from $A$ whose length is less than $k$.
-        
-        (2b) want to show $F$ is shorter than $k$.
-
-        Consider two cases, (2bi) $D_2$ is of length $k$ and 
-        (2bii) $D_2$ is of length $k - 1$.
-
-        Consider (2bi) where $D_2$ is of length $k$:
-        
-        By $D_2$, $k$ is defined as 
-
-        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
-        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
-
-        length of $F = a + b + e + f + \beta + \phi - (\beta \phi)$
-        
-        Want to show the length of $F$ is less than $k$:
-
-        $a + b + e + f + \beta + \phi - (\beta \phi)$ $<$ 
-        $b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
-        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
-
-        $\rightarrow$ $a$ $<$ $c + d + \delta - (\beta \delta) - 
-        (\delta \phi) + (\beta \delta \phi)$
-
-        Using a Venn Diagram or by other set intuition, 
-        $\delta - (\beta \delta) - (\delta \phi) + (\beta \delta \phi)$
-        represents the terms in $\delta$ that are not in $\beta$ or $\phi$.
-        
-        This is lowest when all the terms in $\delta$ are in $\beta$ or $\phi$, 
-        this part of the inequality then becomes 0.
-
-        Then the inequality becomes:
-
-        $\rightarrow$ $a$ $<$ $c + d$
-
-        Which is clearly true if $c$ and $d$ exist.
-
-        Consider the case where $c$ and $d$ don't exist.
-
-        Then $B$ can be redefined:
-
-        $B := [a, b, \beta, x]$
-
-        where $x$ is a single term. Note that if $x$ is more than one term,
-        then we could use the two terms in $x$ as $c$ and $d$.
-
-        Since $x$ is a single term, the length of $B$ is the same as the length of $A'$ 
-        which was already shown to be shorter than $k$ or irrelevant
-        as $D_2$ could be derived directly from $A$ without processing
-        clauses of length greater than $k-1$.
-
-        Consider (2bii) where $D_2$ is of length $k - 1$.
-
-        Then $k$ is defined as:
-
-        $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
-        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
-
-        Want to show length of $F$ is less than $k$:
-
-        $a + b + e + f + \beta + \phi - (\beta \phi)$ $<$ 
-        $b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
-        - (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
-
-        Similarly as before, this becomes:
-
-        $\rightarrow$ $a$ $<$ $c + d + 1$
-
-        Which is always true since we already proved $c$ and $d$ have to exist
-        or if they don't we can derive $D_2$ without processing clauses
-        greater than length $k-1$. 
-
-        Since the cases where we cannot directly derive $D_2$ by processing
-        clauses with a maximum length of $k-1$ imply the inequality holds, then
-        $F$ is smaller than $k$ and $D_2$ has a maximum length of $k$, 
-        and by Lemma 3.6 the largest a clause has to be in order to imply
-        another clause of length $k$ is $k-1$. Meaning you only have to process
-        clauses of length $k-1$ in order to derive a clause of length $k$.
-        
-        Since $A, C_1, C_2, E,$ and $F$ are all shorter than $k$ or
-        $D$ can be directly derived from clauses shorter than $k$ 
-        and $D$ can
-        be derived by expanding $E$ or $F$, then $D$ can be derived 
-        without the need to process clauses of length greater than $k - 1$.
+        Since the possible lengths of $D$ are $k$ or $k - 1$ and in both cases we derive $D$ by processing clauses with a maximum length of $k - 1$ then $D$ can always be derived by processing clauses with a maximum length of $k - 1$.
     \end{proof}
 
     \begin{lemma}
-        Given an instance of 3SAT, you can expand all of the given clauses
-        to the point where you are considering clauses of length $n$.
+        Given an instance of 3SAT, you can expand all of the given clauses to the point where you are considering clauses of length $n$.
     \end{lemma}
     \begin{proof}
         Given an instance of 3SAT, we know all clauses are of length 3.
 
-        If we want to consider a generic $n$-terminal clause, $B$, that's implied by a
-        given clause, $A$, then by Lemma 5.6 we know it's implied iff $B$ 
-        contains all of the terms in $A$.
+        If we want to consider a generic $n$-terminal clause, $B$, that's implied by a given clause, $A$, then by Lemma 5.6 we know it's implied iff $B$ contains all of the terms in $A$.
     \end{proof}
 
     \begin{lemma}
@@ -1030,8 +734,7 @@
         derive $2^n$ unique clauses of length $n$ iff the instance is unsatisfiable.
     \end{lemma}
     \begin{proof}
-        Want to show an unsatifiable instance $\implies$ $2^n$ unique n-terminal
-        clauses can be derived from the given 3-t clauses:
+        Want to show an unsatisfiable instance $\implies$ $2^n$ unique n-terminal clauses can be derived from the given 3-t clauses:
 
         By lemma 5.4, a clause of length $n$ blocks 1 assignment. 
 
@@ -1039,31 +742,15 @@
         blocked.
 
         If a 3-terminal clause blocks an assignment, then it also implies
-        the corresponding n-terminal assignment because there is one possible
-        n-terminal clause for any assignment.
-
-        Since all assignments are blocked, there exists a 3-terminal clause for each
-        assignment such that the terminals in the clause are assigned to make
-        the clause evalute to false.
-
-        Similarly, for each assignment, there exists an n-terminal clause such
-        that the terminals in the clause are assigned to make the clause evaluate
-        to false.
-
-        This will create a unique n-terminal clause for each assignment since
-        each clause can block only one assignment and overlap would imply
-        the same terminal having two values in the same assignment.
+        the corresponding n-terminal assignment because there is one possible n-terminal clause for any assignment.
 
         Notice that for each of these n-terminal clauses, they must contain
         three terms from at least one given clause. If they didn't, then
-        the assignment blocked by that n-terminal clause would not be blocked
-        and the instance would be satisfiable.
+        the assignment blocked by that n-terminal clause would not be blocked and the instance would be satisfiable.
 
-        Since each n-terminal clause blocks one assignment, blocking all assignments
-        requires $2^n$ n-terminal clauses.
+        Since each n-terminal clause blocks one assignment, blocking all assignments requires $2^n$ n-terminal clauses.
 
-        Want to show $2^n$ unique n-terminal clauses are derived by the given
-        3-t clauses $\implies$ then the instance is unsatifiable.
+        Want to show $2^n$ unique n-terminal clauses are derived by the given 3-t clauses $\implies$ then the instance is unsatisfiable.
 
         By lemma 5.4, a clause of length $n$ blocks 1 assignment. 
 
@@ -1076,26 +763,22 @@
     \end{proof}
 
     \begin{lemma}
-        The n-terminal clauses described in Lemma 5.14 can be reduced to derive
-        any pair of contradicting 1-terminal clauses.
+        The n-terminal clauses described in Lemma 5.14 can be reduced to derive any pair of contradicting 1-terminal clauses.
     \end{lemma}
     \begin{proof}
-        Given $2^n$ n-terminal clauses, want to show you can imply any pair
-        of contradicting 1-terminal clauses by lemma 5.7.
+        Given $2^n$ n-terminal clauses, want to show you can imply any pair of contradicting 1-terminal clauses by lemma 5.7.
+
+        Algorithm: 
 
         Pick a terminal that will not exist in the final 1-terminal clauses.
 
-        Half of the existing n-terminal clauses have that terminal assigned
-        the value of False and the other half have that terminal assigned
-        the value of True.
+        Notice half of the existing n-terminal clauses have that terminal assigned the value of False and the other half have that terminal assigned the value of True.
 
         Pick one clause that blocks an assignment where the terminal is True.
 
-        Then there exists an assignment for each possible
-        value for the remaining n-1 terminals.
+        Then there exists an assignment for each possible value for the remaining n-1 terminals.
 
-        Therefore, there must exist another clause that shares all of the same terms, but
-        where that one terminal is assigned the value of False.
+        Therefore, there must exist another clause that shares all of the same terms, but where that one terminal is assigned the value of False.
 
         Using these two terms, we can create a new clause by lemma 5.7.
 
@@ -1103,38 +786,41 @@
 
         Repeat this process while never selecting the same terminal twice
         until you are left with two contradicting 1-terminal clauses.
+
+        Each clause is guaranteed to have a matching clause since every possible combination of terminal assignments exists and when you use Lemma 5.7 to create new clauses, the rest of all of the clauses remain the same except the selected terminal is removed.
     \end{proof}
 
     \begin{lemma}
-        Contradicting 1-terminal clauses can be expanded to imply
-        every possible clause.
+        Contradicting 1-terminal clauses can be expanded to imply every possible clause.
     \end{lemma}
     \begin{proof}
         Let the following clauses be a pair of contradicting 1-t clauses:
 
-        [a]
+        $[a]$
 
-        [-a]
+        $[-a]$
+
+        Any other clause could either contain $a$, $-a$, or neither.
 
         By lemma 5.6, we can expand to any clause that contains $a$ or $-a$.
 
-        Let the following be a generic 3-terminal clause that does not contain
-        $a$ or $-a$:
+        Now want to show these clauses imply another clause that does not contain  $a$ or $-a$.
 
-        [b, c, d, ...]
+        Let the following be a generic k-terminal clause that does not contain $a$ or $-a$:
 
-        By Lemma 5.6, we know the 1-terminal clauses imply the following 3-t clauses:
+        $[b, c, d, ...]$
 
-        [a, b]
+        By Lemma 5.8, we know the 1-terminal clauses imply the following clauses:
 
-        [-a, c, d, ...]
+        $[a, b]$
+
+        $[-a, c, d, ...]$
 
         By Lemma 5.9, these clauses imply:
 
-        [b, c, d, ...]
+        $[b, c, d, ...]$
 
-        Therefore we can imply any clause containing $a, -a$, or neither, 
-        which encompasses every possible clause.
+        Therefore a set of contradicting 1-terminal clauses can imply any clause containing $a, -a$, or neither, which encompasses every possible clause.
     \end{proof}
 
     \begin{lemma}
@@ -1147,7 +833,7 @@
             \item C and D imply F by Lemma 5.9
             \item E and F imply G by Lemma 5.9
         \end{itemize}
-        Then G can be implied by processing clauses with a maximum length of k - 1
+        Then G can be implied by processing clauses with a maximum length of k - 1.
     \end{lemma}
     \begin{proof}
         Consider the following figure:
@@ -1176,24 +862,17 @@
         
         $G = [b, \beta, c, d, \delta, f, \phi, g, h, \gamma]$
         
-        Where $\beta, \delta, \phi,$ and $\gamma$ are fixed yet arbitrary sets
-        of terms consistent with the rules for a valid clause as by Lemma 5.3.
+        Where $\beta, \delta, \phi,$ and $\gamma$ are fixed yet arbitrary sets of terms such that the clauses block at least one assignment.
 
-        Notice that $E$ and $F$ have to share a term of the opposite form
-        in order to imply $G$ by Lemma 5.9. All of the terms in $E$ and $F$
-        came from $A, B, C,$ and $D$.
-        Since $A, B, C,$ and $D$ are
-        all arbitrary clauses, selecting which term to negate does not
-        have an effect on the outcome as long as one form of the term exists in $E$
+        Notice that $E$ and $F$ have to share a term of the opposite form in order to imply $G$ by Lemma 5.9. All of the terms in $E$ and $F$ came from $A, B, C,$ and $D$. Since $A, B, C,$ and $D$ are all arbitrary clauses, selecting which term to negate does not have an effect on the outcome as long as one form of the term exists in $E$
         and the other form exists in $F$.
-        Here the opposite term is shared 
-        between $A$ and $D$, but any term that appears positive in $A$
-        or $B$ and negated in $C$ or $D$ will yield the same results.
+        
+        Here the opposite term is shared between $A$ and $D$, but any term that appears positive in $A$ or $B$ and negated in $C$ or $D$ will yield the same results.
  
         Want to show $G$ can be derived by processing clauses with a 
-        maximum length of k - 1.
+        maximum length of $k - 1$.
 
-        Define additional implications:
+        Define additional implications by Lemma 5.9:
 
         $H = [b, \beta, i, f, \phi, j]$ (By clauses $A$ and $C$)
 
@@ -1203,6 +882,12 @@
 
         Notice $J$ is equivalent to $G$.
 
+        Want to show all clauses used to derive $J$ are shorter than $k$.
+
+        Want to show $A$, $C$, $B$, $H$, $D$, and $I$ are shorter than $k$.
+
+        It was given that $A$, $B$, $C$, and $D$ are shorter than $k$ so just want to show $H$ and $I$ are shorter than $k$.
+
         Want to show (1) $H$ is shorter than $k$ and (2) $I$ is shorter than $k$
 
         (1) Want to show $H$ is shorter than $k$
@@ -1211,9 +896,7 @@
 
         (1a) $G$ is of length $k$
 
-        In the following equations, let the presence of a term represent a count of one,
-        and the presence of a set of terms represent the number of terms in that set. If
-        multiple sets of terms are shown in parentheses, let this represent the number
+        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number
         of terms found in both sets.
 
         Since $G$ is of length $k$ we can define $k$ as follows:
@@ -1248,156 +931,99 @@
             - (\beta \delta \phi \gamma)
         $
 
-        % The R.H.S. has the following set intuition:
+        Which is true as long as at least three terms exist on the R.H.S.
 
-        % \begin{center}
-        %     \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c| }
-        %         \hline
-        %         term & $\beta$ & $\delta$ & $\phi$ & $\gamma$ & 
-        %         $\beta \delta$ & $\beta \phi$ & $\beta \gamma$ & 
-        %         $\delta \phi$ & $\delta \gamma$ & $\phi \gamma$ &
-        %         $\beta \delta \phi$ & $\beta \delta \gamma$ &
-        %         $\beta \phi \gamma$ & $\delta \phi \gamma$ &
-        %         $\beta \delta \phi \gamma$\\
-        %         \hline
-        %         $ + \delta$ & 0 & +1 & 0 & 0 & +1 & 0 & 0 & +1 & +1 & 0 & +1 & +1 & 0 & +1 & +1 \\
-        %         \hline
-        %         $ + \gamma$ & 0 & 0 & 0 & +1 & 0 & 0 & +1 & 0 & +1 & +1 & 0 & +1 & +1 & +1 & +1 \\
-        %         \hline
-        %         $- (\beta \delta)$ & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & 0 & -1 \\
-        %         \hline
-        %         $- (\beta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & -1 \\
-        %         \hline
-        %         $- (\delta \phi)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & 0 & -1 & -1 \\
-        %         \hline
-        %         $- (\delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & -1 & -1 \\
-        %         \hline
-        %         $- (\phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & -1 & -1 \\
-        %         \hline
-        %         $+ (\beta \delta \phi)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & 0 & +1 \\
-        %         \hline
-        %         $+ (\beta \delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & +1 \\
-        %         \hline
-        %         $+ (\beta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & +1 \\
-        %         \hline
-        %         $+ (\delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & +1 \\
-        %         \hline
-        %         $- (\beta \delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 \\
-        %         \hline
-        %         total & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        %         \hline
-        %     \end{tabular}
-        % \end{center}
-
-        Using a Venn Diagram or by other set intuition, the generic sets of 
-        terms on the R.H.S. of the inequality represent the following:
+        Consider the following cases:
 
         \begin{itemize}
-            \item terms just in $\delta$
-            \item terms just in $\gamma$
-            \item terms in both $\delta$ and $\gamma$
+            \item No terms exist on the R.H.S.
+            \item Exactly one term exists on the R.H.S.
+            \item Exactly two terms exist on the R.H.S.
         \end{itemize}
-        
-        The lowest possible value for this is 0 when the three aforementioned sets
-        have no terms.
 
-        The inequality becomes:
+        Consider case 1 where no terms exist on the R.H.S.
 
-        $b + i + f + j < b + c + d + f + g + h$
+        Recall the clauses:
 
-        $\rightarrow$ $i + j < c + d + g + h$
-
-        Which requires at least three unique terms in $c, d, g,$ and $h$.
-
-        Want to show at least three unique terms have to exist in 
-        $c, d, g,$ and $h$.
-
-        Suppose not. Then at most two unique terms exist in $c, d, g,$ and $h$.
-
-        Want to show the length of either E or F is the same as A, B, C, or D.
-
-        Consider all cases where there are fewer than three terms in {$c, d, g, h$}
-
-        Case 1, 0 terms exist in {$c, d, g, h$}
-
-        Recall the value for $B$
+        $A := [a, b, \beta, i]$
 
         $B := [c, d, \delta, -i]$
 
-        But since 0 terms exist in {$c, d, g, h$}, this becomes
+        $E := [a, b, \beta, c, d, \delta]$
+
+        But since no terms exist on the R.H.S., specifically $c$ and $d$ don't exist, we can redefine the clauses:
 
         $B := [-i]$
 
-        Note that no terms may exist in $\delta$ because any terms
-        in $\delta$ could be extracted to count as $c$ or $d$.
-
-        Then a new derivation of $E$ occurs:
-
         $E := [a, b, \beta]$
 
-        Which is identical to $A$ except for a missing $i$ terminal.
+        Notice that no terms may exist in $\delta$ because any term in $\delta$ can be extracted and treated as $c$ or $d$, but we defined these to not exist.
 
-        Therefore the length of $E$ is less than the length of $A$.
+        Notice the length of $E$ is shorter than the length of $A$.
 
-        This is a contradiction since the length of $E$ is given as $k$
-        and the length of $A$ is given as less than $k$.
+        This is a contradiction because the length of $A$ is given as less than $k$ while the length of $E$ is given as $k$.
 
-        Therefore this case is impossible.
+        Therefore this case is impossible and at least one term must exist on the R.H.S.
+ 
+        Consider case 2 where exactly one term exists on the R.H.S.
 
-        Case 2, 1 term exists in {$c, d, g, h$}
+        Recall the clauses:
 
-        It was shown that if 0 terms exist in {$c, d$}, there's a contradiction, 
-        so at least one term has to exist in {$c, d$}.
+        $A := [a, b, \beta, i]$
 
-        These terms are fixed, yet arbitrary so let's pick $c$ to be the one term that exists.
+        $B := [c, d, \delta, -i]$
 
-        $B$ is now assigned:
+        $E := [a, b, \beta, c, d, \delta]$
+
+        Recall at least one term must exist on the R.H.S., specifically either $c$ or $d$ must exist, but not both.
+
+        Since these terms are treated in the same way, let's pick $c$ to be the term that exists.
+
+        We can redefine some clauses as follows:
 
         $B := [c, -i]$
 
-        Again, no additional terms may exist in $\delta$ since they could
-        be used as the terminal $d$.
-
-        $E$ is again recalculated as:
-
         $E := [a, b, \beta, c]$
 
-        By Lemma 5.10, the maximum length of E is 
-        (length of $A$ + length of $B$ - 2).
+        Notice the length of $E$ is the same as the length of $A$.
 
-        Since exactly one term exists in $c$ and exactly one term exists in $-i$,
-        the length of $B$ is 2 and therefore the length of $E$ is the same
-        as the length of $A$.
+        This is a contradiction because the length of $A$ is given as less than $k$ while the length of $E$ is given as $k$.
 
-        However it was given that the length of $E$ is $k$ and the length of 
-        $A$ is less than $k$.
+        Therefore at least two terms must exist on the R.H.S.
 
-        This is a contradiction so this case cannot exist.
+        Consider case 3 where exactly two terms exists on the R.H.S.
 
-        Case 3, 2 terms exist in {$c, d, g, h$}
+        Notice how if both $c$ and $d$ do not exist, then a contradiction is reached. 
 
-        As seen in Case 2, at least two terms must exist in {$c, d$}. This
-        means no terms may exist in {$g, h$}.
+        Therefore both $c$ and $d$ must exist and the rest of the terms on the R.H.S. may not exist.
 
-        The clause $D$ can be rewritten:
+        Recall we have the clauses:
+
+        $C := [-a, f, \phi, j]$
+
+        $D := [g, h, \gamma, -j]$
+
+        $F := [-a, f, \phi]$
+
+        But since no terms on the R.H.S. exist, then $g$, $h$, and $\gamma$ may not exist. 
+
+        Notice that no terms in $\gamma$ may exist because if any terms in $\gamma$ exist, then they can be extracted and treated as $g$ or $h$.
+
+        Then we can redefine the clauses:
 
         $D := [-j]$
 
-        Note that $\gamma$ cannot contain any terms because any terms in
-        $\gamma$ could be extracted and used as $g$ or $h$
+        $F := [-a, f, \phi]$
 
-        Since $-j$ represents one terminal, the length of $D$ is 1.
+        Notice that $F$ is shorter than $C$.
 
-        Now the maximum length of $F$ is (length of $C$ + length of $D$ - 2).
-        Which means the maximum length of $F$ is one less than the length of $C$.
+        This is a contradiction because the length of $C$ is given as less than $k$ while the length of $F$ is given as $k$.
 
-        However it was given that the length of $F$ is $k$ and the length
-        of $C$ is less than $k$.
+        Therefore at least three terms must exist on the R.H.S.
 
-        This is a contradiction so this case cannot exist.
+        Since at least three terms must exist on the R.H.S., the inequality is true.
 
-        Since at least three terms must exist in {$c, d, g, h$}, the
-        inequality holds and $H$ is shorter than $k$.
+        Therefore $H$ is shorter than $k$ when the length of $G$ is $k$.
 
         (1b) $G$ is of length $k - 1$
 
@@ -1411,14 +1037,24 @@
             + 1
         $
 
+        Length of $H = b + i + f + j + \beta + \phi - (\beta \phi)$
+
         Similarly to before, the inequality becomes:
 
-        $\rightarrow$ $i + j < c + d + g + h + 1$
+        $\rightarrow$
+        $i + j$
+        $<$
+        $c + d + g + h
+            + \delta + \gamma
+            - (\beta \delta) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) -(\phi \gamma)
+            + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+            - (\beta \delta \phi \gamma)
+            + 1
+            $
 
-        Which is true as long as at least two terms exist in {$c, d, g, h$}.
+        Which is true as long as at least two terms exist on the R.H.S.
 
-        We already showed at least three terms must exist in {$c, d, g, h$}
-        so the inequality is always true.
+        It was already shown that at least three terms must exist on the R.H.S. and the proof does not rely on the length of $G$ so the inequality holds.
 
         Therefore $H$ is always shorter than $k$. 
 
@@ -1458,53 +1094,46 @@
             - (\beta \delta \phi \gamma)
         $
 
-        By Venn Diagram or other set intuition, 
-        the generic sets of terms on the L.H.S. represent the number 
-        of unique terms in $\delta, \beta,$ and $\phi$. Similarly, 
-        the generic sets of terms on the R.H.S. represent the number
-        of unique terms in $\delta, \beta, \phi,$ and $\gamma$.
+        $\rightarrow$
+        $j
+        $
+        $<$
+        $g + h
+            + \gamma
+            - (\beta \gamma) - (\delta \gamma) -(\phi \gamma)
+            + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+            - (\beta \delta \phi \gamma)
+        $
 
-        Subtacting the shared sets of terms from both sides, on
-        the R.H.S. we are left
-        with the terms in $\gamma$ that are not present in 
-        $\delta, \beta, or \phi$. The lowest value for this is 0 when
-        all terms in $\gamma$ exist in $\delta, \beta,$ and $\phi$.
+        Which is true as long as at least two terms exist on the R.H.S.
 
-        The inequality therefore becomes:
+        Suppose not, then a maximum of one term exists on the R.H.S.
 
-        $c + d + b + f + j < b + c + d + f + g + h$
+        Recall the clauses
 
-        $\rightarrow j < g + h$
-
-        Which is true as long as both g and h exist.
-
-        Want to show g and h exist.
-
-        Suppose not, then g and h don't exist.
-
-        Recall the value for $D$:
+        $C := [-a, f, \phi, j]$
 
         $D := [g, h, \gamma, -j]$
 
-        Since $g$ and $h$ don't exist, this becomes
+        $F := [-a, f, \phi, g, h, \gamma]$
 
-        $D := [-j]$
+        Due to the restriction of a maximum of one term existing on the R.H.S., we can redefine some clauses:
 
-        Note that no terms may exist in $\gamma$ because any terms in $\gamma$
-        could be extracted and counted as $g$ or $h$.
+        $D := [x, -j]$
 
-        Now we recalculate $E$:
+        $F := [-a, f, \phi, x]$
 
-        $E := [-a, f, \phi]$
+        Where $x$ represents a maximum of one term.
 
-        Which is smaller than $C$ because $j$ has to exist by the lemma's conditions.
+        Note that if $x$ was more than one term, then the two terms could be used as $g$ and $h$, but we know these do not exist.
 
-        However it was given that the length of $E$ is $k$ and the length of $C$
-        is less than $k$.
+        Notice the length of $F$ is at most the length of $C$.
 
-        This is a contradiction, therefore $g$ and $h$ must exist.
+        This is a contradiction because the length of $C$ is given as less than $k$ while the length of $F$ is given as $k$
 
-        Therefore the inequality is always true and the length of $I$ is less than $k$.
+        Therefore at least two terms exist on the R.H.S. and the inequality is true.
+
+        Therefore I is shorter than $k$ when $G$ is of length $k$.
 
         (2b) $G$ is of length $k - 1$
 
@@ -1518,21 +1147,32 @@
             + 1
         $
 
+        Length of $I = c + d + b + f + j
+        + \delta + \beta + \phi
+        - (\delta \beta) - (\delta \phi) - (\beta \phi)
+        + (\delta \beta \phi)
+        $
+
         Similarly to before, the inequality becomes
         
-        $\rightarrow j < g + h + 1$
+        $\rightarrow$
+        $j$
+        $<$
+        $g + h
+            + \gamma
+            - (\beta \gamma) - (\delta \gamma) -(\phi \gamma)
+            + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+            - (\beta \delta \phi \gamma)
+            + 1
+        $
 
-        Which is true as long as $g$ and $h$ exist. 
+        Which is true as long as at least one term exists on the R.H.S.
 
-        We already showed $g$ and $h$ exist so the inequality always 
-        holds true.
+        It was already shown at least two terms exist on the R.H.S. and the proof does not rely on the length of $G$ so the inequality is true.
 
-        Therefore, the length of $I$ is at most $k - 1$.
+        Therefore, the length of $I$ is shorter than $k$ when $G$ is of length $k - 1$.
 
-        Since we can derive J (which is equivalent to G) by processing
-        A, B, C, D, H, and I, all of which whose lengths are shorter than k, 
-        we can derive G by only processing clauses whose lengths are 
-        less than k.
+        Since $G$ can be derived by processing only $A$, $B$, $C$, $D$, $H$, and $I$ and all of those clauses are shorter than $k$, we can derive $D$ by processing clauses with a maximum length of $k - 1$.
     \end{proof}
 
     \begin{lemma}
@@ -1548,8 +1188,7 @@
             \item C expands to E by Lemma 5.8
             \item D and E imply F by Lemma 5.9
         \end{itemize}
-        Then F can be implied by only processing clauses with a maximum
-        length of $k-1$.
+        Then $F$ can be implied by only processing clauses with a maximum length of $k-1$.
     \end{lemma}
     \begin{proof}
         Consider the following figure:
@@ -1585,27 +1224,28 @@
         Where $\beta, \delta, \phi$ and $\gamma$ are generic sets of terms
         such that A, B, and C block at least one clause by Lemma 5.3.
         
-        Notice E and D must share a term of the opposite form and there
-        are two possible cases for what this term is: (1) it exists in
-        C or (2) it exists in the additional terms in E, ie, it does not
-        exist in C. Either way the opposite term must exist in A or B
-        since it must exist in D and D is composed of terms from A or B.
-        Since A and B are both generic clauses, it does not matter which
-        clause the term exists in as long as it is fixed.
+        Notice E and D must share a term of the opposite form and there are two possible cases for what this term is: 
+            \begin{itemize}
+                \item it exists in C (use $C_1$, $E_1$, and $F_2$)
+                \item it does not exist in C (use $C_2$, $E_2$, and $F_2$)
+            \end{itemize}
+        Either way the opposite term must exist in A or B since it must exist in D and D is composed of terms from A or B.
+        
+        Since A and B are both generic clauses, it does not matter which clause the term exists in as long as it is fixed.
+        
+        Let's $A$ to contain the opposite form term from $C$.
+        
+        Consider (1) the opposite form term exists in C (use $E_1$ and $F_1$).
 
-        Consider (1) the opposite form term exists in C (use $E_1$ and $F_1$)
-
-        Want to show $F_1$ can be derived by processing clauses with a maximum
-        length of k - 1.
+        Want to show $F_1$ can be derived by processing clauses with a maximum length of k - 1.
 
         Let the following clauses be defined:
 
-        $G = [b, \beta, i, f, \phi]$ (By clause A and $C_1$ with Lemma 5.9)
+        $G = [b, \beta, i, f, \phi]$ (By clause $A$ and $C_1$ with Lemma 5.9)
 
-        $H = [b, \beta, f, \phi, c, d, \delta]$ (By clause G and B with Lemma 5.9)
+        $H = [b, \beta, f, \phi, c, d, \delta]$ (By clause $G$ and $B$ with Lemma 5.9)
 
-        Since all of the terms in $H$ exist in $F_1$, Lemma 5.8 can be used to
-        derive $F_1$ from $H$.
+        Since all of the terms in $H$ exist in $F_1$, Lemma 5.8 can be used to derive $F_1$ from $H$.
 
         Want to show (1a) $G$ is shorter than $k$ and (1b) $H$ is shorter than $k$
 
@@ -1613,14 +1253,11 @@
 
         Consider two cases (1ai) $F_1$ is of length $k$ and (1aii) $F_1$ is of length $k-1$.
 
-        (1ai) $F_1$ is of length k
+        (1ai) $F_1$ is of length $k$
 
-        In the following equations, let the presence of a term represent a count of one,
-        and the presence of a set of terms represent the number of terms in that set. If
-        multiple sets of terms are shown in parentheses, let this represent the number
-        of terms found in both sets.
+        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in both sets.
         
-        Recall $F_1$ is of length k so k can be defined as follows:
+        Recall $F_1$ is of length $k$ so $k$ can be defined as follows:
         
         $k = b + c + d + f + g + h 
         + \beta + \delta + \phi + \gamma
@@ -1631,7 +1268,7 @@
 
         Length of $G = b + i + f + \beta + \phi - (\beta \phi)$
 
-        Want to show length of G is less than k:
+        Want to show length of $G$ is less than $k$:
 
         $b + i + f + \beta + \phi - (\beta \phi)$
         $<$
@@ -1642,116 +1279,45 @@
         - (\beta \delta \phi \gamma) 
         $
 
-        $\rightarrow$ $b + i + f$
+        $\rightarrow$ $i$
         $<$
-        $b + c + d + f + g + h 
+        $c + d + g + h 
          + \delta + \gamma
         - (\beta \delta) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
         + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
         - (\beta \delta \phi \gamma) 
         $
 
-        Here's a representation of the sets and how each term affects the size of a set
+        Which is true as long as at least two terms exist on the R.H.S.
 
-        \begin{center}
-            \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c| }
-                \hline
-                term & $\beta$ & $\delta$ & $\phi$ & $\gamma$ & 
-                $\beta \delta$ & $\beta \phi$ & $\beta \gamma$ & 
-                $\delta \phi$ & $\delta \gamma$ & $\phi \gamma$ &
-                $\beta \delta \phi$ & $\beta \delta \gamma$ &
-                $\beta \phi \gamma$ & $\delta \phi \gamma$ &
-                $\beta \delta \phi \gamma$\\
-                \hline
-                $ + \delta$ & 0 & +1 & 0 & 0 & +1 & 0 & 0 & +1 & +1 & 0 & +1 & +1 & 0 & +1 & +1 \\
-                \hline
-                $ + \gamma$ & 0 & 0 & 0 & +1 & 0 & 0 & +1 & 0 & +1 & +1 & 0 & +1 & +1 & +1 & +1 \\
-                \hline
-                $- (\beta \delta)$ & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & 0 & -1 \\
-                \hline
-                $- (\beta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & -1 \\
-                \hline
-                $- (\delta \phi)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & 0 & -1 & -1 \\
-                \hline
-                $- (\delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & -1 & -1 \\
-                \hline
-                $- (\phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & -1 & -1 \\
-                \hline
-                $+ (\beta \delta \phi)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & 0 & +1 \\
-                \hline
-                $+ (\beta \delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & +1 \\
-                \hline
-                $+ (\beta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & +1 \\
-                \hline
-                $+ (\delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & +1 \\
-                \hline
-                $- (\beta \delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 \\
-                \hline
-                total & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                \hline
-            \end{tabular}
-        \end{center}
+        Want to show at least two terms exist on the R.H.S.
 
-        It is seen the sets of generic terms on the R.H.S. represent the count of terms in $\delta$, $\gamma$, and $\delta \gamma$.
+        Suppose not, then at most one term exists on the R.H.S.
 
-        Let's call this $y$. The inequality then becomes:
+        Recall the clauses
 
-        $\rightarrow$ $i$
-        $<$
-        $c + d + g + h + y
-        $
+        $A := [a, b, \beta, i]$
 
-        which is true as long as two terms exist in {$c, d, g, h, y$}.
+        $D := [a, b, \beta, c, d, \delta]$
 
-        Consider the two cases: zero terms exist in {$c, d, g, h, y$} or one term exists in {$c, d, g, h, y$}
+        We can redefine some clauses since at most one term may exists on the R.H.S.
 
-        Zero terms exist in the aforementioned set:
+        $D := [a, b, \beta, x]$
 
-        In this case, we may redefine some clauses:
+        Where $x$ represents one term from $c$, $d$, or $\delta$.
 
-        $B := [-i]$
-
-        $D := [a, b, \beta]$
-
-        Notice $B$ must consist of a single term, $-i$, because if any terms existed in $\delta$, they could be extracted and used as $c$ or $d$ but we are considering the case where $c$ and $d$ do not exist.
-
-        Now we have 
+        Note that if $x$ was more than one term, the two terms could be extracted and treated as $c$ and $d$, but we know at most one of these terms exist.
         
-        $D := [a, b, \beta]$
+        Note the length of $D$ is the same as the length of $A$.
 
-        $A := [a, b, \beta, i]$
+        This is a contradiction because the length of $A$ is given as less than $k$ while the length of $D$ is given as $k$.
 
-        Recall we defined the length of $D$ as $k$ and the length of $A$ as less than $k$. Clearly it is seen that the length of $A$ is one greater than the length of $D$. This is impossible with the given lengths. So this case is impossible, at least one term must exist in {$c, d, g, h, y$}
+        Therefore at least two terms exist on the R.H.S. and the inequality is true.
 
-        Consider the case where one term exists in the aforementioned set:
-
-        It was previously seen that if no terms exist in {$c, d$} then we will reach a contradiction, so the one term that exists in {$c, d, g, h, y$} must exist in {$c, d$}
-
-        Let's redefine clauses similarly to before:
-
-        $B := [c, -i]$
-
-        $D := [a, b, \beta, c]$
-
-        Since $c$ and $d$ are generic terms that are treated the same throughout this example (they always exist together), it does not matter which term we pick. So let's pick $c$ to be the term that exists. Again, we can have no terms in $\delta$ since any additional term could be extracted and treated as $d$ which we know does not exist. 
-
-        Now we know
-
-        $D := [a, b, \beta, c]$
-
-        $A := [a, b, \beta, i]$
-
-        Since $c$ and $i$ both represent a single terminal, it is seen that the length of $D$ is equal to the length of $A$. Recall the length of $D$ was defined as $k$ and the length of $A$ was defined to be less than $k$. Therefore this is a contradiction and the case where a single term exists in {$c, d, g, h, y$} is impossible.
-
-        Since a contradiction exists in the cases where zero and one terms exist in {$c, d, g, h, y$} we know at least two terms must exist in that set. We also know that if at least two terms exist in that set, the inequality holds and the length of G is less than k.
+        Therefore $G$ is shorter than $k$ when using $F_1$ and the length of $F_1$ is $k$.
 
         (1aii) F is of length k - 1
 
-        In the following equations, let the presence of a term represent a count of one,
-        and the presence of a set of terms represent the number of terms in that set. If
-        multiple sets of terms are shown in parentheses, let this represent the number
-        of terms found in both sets.
-        
         Recall $F$ is of length k - 1 so k can be defined as follows:
         
         $k = b + c + d + f + g + h 
@@ -1776,15 +1342,25 @@
         + 1
         $
 
-        Similarly as before, this will derive to:
+        Similarly as before, the inequality will become:
 
         $\rightarrow$ $i$
         $<$
-        $c + d + g + h + y
+        $c + d + g + h 
+         + \delta + \gamma
+        - (\beta \delta) - (\beta \gamma) - (\delta \phi) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \phi) + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma) 
         + 1
         $
 
-        Where $y$ represents the number of terms exactly in the sets $\delta$, $\gamma$, and $\delta \gamma$ (as defined in section 1ai). We already showed that at least two terms must exist in the set {$c, d, g, h, y$} so this inequality will always be true.
+        Which is true as long as at least one term exists on the R.H.S.
+
+        We already showed at least two terms exist on the R.H.S. and the proof does not rely on the length of $F$.
+
+        Therefore at least one term exists on the R.H.S. and the inequality is true.
+
+        Therefore the length of $G$ is less than $k$ when using $F_1$ and the length of $F_1$ is $k - 1$.
 
         (1b) Want to show $H$ is shorter than $k$.
 
@@ -1806,7 +1382,7 @@
         - (\beta \delta) - (\beta \phi) - (\delta \phi)
         + (\beta \delta \phi) $
 
-        Want to show the length of H is less than k.
+        Want to show the length of $H$ is less than $k$.
 
         $b + f + c + d 
         + \beta + \delta + \phi
@@ -1830,75 +1406,41 @@
         - (\beta \delta \phi \gamma)
         $
 
-        The following is set intuition for the R.H.S. of the inequality:
-
-        \begin{center}
-            \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c| }
-                \hline
-                term & $\beta$ & $\delta$ & $\phi$ & $\gamma$ & 
-                $\beta \delta$ & $\beta \phi$ & $\beta \gamma$ & 
-                $\delta \phi$ & $\delta \gamma$ & $\phi \gamma$ &
-                $\beta \delta \phi$ & $\beta \delta \gamma$ &
-                $\beta \phi \gamma$ & $\delta \phi \gamma$ &
-                $\beta \delta \phi \gamma$\\
-                \hline
-                $ + \gamma$ & 0 & 0 & 0 & +1 & 0 & 0 & +1 & 0 & +1 & +1 & 0 & +1 & +1 & +1 & +1 \\
-                \hline
-                $- (\beta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & -1 & -1 & 0 & -1 \\
-                \hline
-                $- (\delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & 0 & -1 & -1 \\
-                \hline
-                $- (\phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & -1 & -1 & -1 \\
-                \hline
-                $+ (\beta \delta \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & 0 & +1 \\
-                \hline
-                $+ (\beta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & 0 & +1 \\
-                \hline
-                $+ (\delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & +1 & +1 \\
-                \hline
-                $- (\beta \delta \phi \gamma)$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 \\
-                \hline
-                total & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-                \hline
-            \end{tabular}
-        \end{center}
-
-        This shows the generic sets on the R.H.S. consist of the terms that
-        are in $\gamma$ and in no other set. 
-
-        Let's represent this as $y$ (we cannot just call it $\gamma$ because there could be a term in $\gamma$ that exists in another set that would not be in $y$)
-
-        The inequality therefore becomes:
-
         $\rightarrow$
-        $b + f + c + d$
+        $0$
         $<$
-        $b + c + d + f + g + h 
-        + y
+        $g + h 
+        + \gamma
+        - (\beta \gamma) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma)
         $
 
-        $\rightarrow$
-        $0 < g + h + y$
+        Which is true if at least one term exists on the R.H.S.
 
-        Which is true if at least one term exists in {$g, h, y$}
+        Want to show at least one term exists on the R.H.S.
 
-        Suppose not. Then no terms exist in {$g, h, y$} and we can redefine some clauses:
+        Suppose not, then no terms exist on the R.H.S.
 
-        $E_1 := [-a, f, \phi]$
-
-        Notice that no terms may exist in $\gamma$ because if at least one term exists in $\gamma$, it may be extracted and used as $g$ or $h$, but we said no terms may exist in {$g, h$}.
-
-        Now we have the clauses:
+        Recall the clauses
 
         $C_1 := [-a, f, \phi]$
 
-        $E_2 := [-a, f, \phi]$
+        $E_1 := [-a, f, \phi, g, h, \gamma]$
 
-        Notice these two clauses are identical and therefore have the same length. Recall we defined the length of $E$ as $k$ and the length of $C$ as less than $k$ so this is a contradiction. Therefore at least on term must exist in {$g, h, y$}.
+        Since no terms exist on the R.H.S., we can redefine some clauses:
 
-        Since at least one term must exist in {$g, h, y$}, the inequality holds.
+        $E_1 := [-a, f, \phi]$
 
-        Therefore the length of $H$ is less than $k$ when the length of $F_1$ is $k$.
+        Note that no other terms may exist in $E_1$ because any other terms could be used as $g$ or $h$, but we know these don't exist.
+
+        Notice $E$ is exactly $C_1$.
+
+        This is a contradiction because the length of $C$ is given as less than $k$ while the length of $E$ is given as $k$.
+
+        Therefore at least one term exists on the R.H.S. and the inequality is true.
+
+        Therefore $H$ is shorter than $k$ when using $F_1$ and the length of $F_1$ is $k$.
 
         Consider (1bii) $F_1$ is of length $k-1$
 
@@ -1935,13 +1477,21 @@
         Similarly to before, this will derive 
 
         $\rightarrow$
-        $0 < g + h + y + 1$
+        $0$
+        $<$
+        $g + h 
+        + \gamma
+        - (\beta \gamma) - (\delta \gamma) - (\phi \gamma)
+        + (\beta \delta \gamma) + (\beta \phi \gamma) + (\delta \phi \gamma)
+        - (\beta \delta \phi \gamma)
+        + 1
+        $
 
-        Where $y$ represents the number of terms in $\gamma$ that exist in no other set. This is always true.
+        Which is always true.
         
         Therefore the length of $H$ is less than $k$ when the length of $F_1$ is $k - 1$.
 
-        Consider (2) the opposite form term does not exist in C.
+        Consider (2) the opposite form term does not exist in $C$, use $C_2$, $E_2$, and $F_2$.
 
         Recall we have the clauses:
 
@@ -1949,12 +1499,11 @@
 
         $F_2 := [b, \beta, c, d, \delta, e, f, \phi, h, \gamma]$
 
-        Since all of the terms in $C_2$ exist in $F_2$, we can keep expanding $C_2$ by Lemma 5.7 until we derive $F_2$ and by the nature of the lemma, we will only have to process a clause of length 1 shorter than $F_2$ to derive $F_2$. So we have to process clauses between the length of $C_2$ and the length of $F_2$ - 1. Since we defined $C_2$ to be shorter than k and the maximum length of $F_2$ is $k$, we can derive $F_2$ without having to process a clause of length $k$ or greater.
+        Notice all of the terms in $C_2$ exist in $F_2$ so $C_2$ can expand to $F_2$ using Lemma 5.9.
 
-        Since $F_1$ and $F_2$ are all possible cases of $F$ and they 
-        can be derived without processing clauses longer than length
-        $k-1$, $F$ can be derived by processing only clauses with
-        a maximum length of $k-1$.
+        Since the length of $C$ is given as less than $k$, we can derive $F_2$ by processing clauses with a maximum length of $k - 1$.
+
+        Since $F_1$ and $F_2$ are all possible cases of $F$ and they can be derived without processing clauses longer than length $k-1$, $F$ can be derived by processing only clauses with a maximum length of $k-1$.
     \end{proof}
 
     \begin{lemma}
@@ -1969,8 +1518,7 @@
             \item $B$ expands to $D$ by lemma 5.8
             \item $C$ and $D$ imply $E$ by lemma 5.7
         \end{itemize}
-        Then $E$ can be derived by processing clauses whose length
-        is at most k - 1.
+        Then $E$ can be derived by processing clauses whose length is at most k - 1.
     \end{lemma}
     \begin{proof}
         Consider the following figure:
@@ -1993,15 +1541,11 @@
 
         $D = [c, d, \delta, g, h, \gamma]$
 
-        $E = [a, b, \beta, e, f, \phi, c, d, \delta, g, h, \gamma]$
+        % $E = [a, b, \beta, e, f, \phi, c, d, \delta, g, h, \gamma]$
 
-        Where $\beta, \delta, \phi,$ and $\gamma$ are fixed yet arbitrary
-        set of terms in which the clauses block at least one assignment
-        by Lemma 5.3.
+        Where $\beta, \delta, \phi,$ and $\gamma$ are fixed yet arbitrary set of terms in which the clauses block at least one assignment by Lemma 5.3.
 
-        In order for C and D to imply E by Lemma 5.7, they have to be
-        identical except for one term which is positive in one clause
-        and negated in the other.
+        In order for C and D to imply E by Lemma 5.7, they have to be identical except for one term which is positive in one clause and negated in the other.
 
         There are 3 cases:
         (1) the opposite form term does not exist in A or B
@@ -2010,47 +1554,41 @@
         
         Consider case (1) the opposite form term does not exist in A or B.
 
-        Then we fix one clause, say C, and redefine D in accordance with
-        the requirements of Lemma 5.7. The clauses become:
+        Then we have the clauses:
+
+        $A := [a, b, \beta]$
+
+        $B := [c, d, \delta]$
 
         $C := [a, b, \beta, e, f, \phi]$
 
-        $D := [a, b, \beta, -e, f, \phi]$
+        $D := [c, d, \delta, -e, h, \gamma]$
 
-        $E = [a, b, \beta, f, \phi]$
+        $E := [a, b, \beta, f, \phi, c, d, \delta, h, \gamma]$
 
-        Notice that all of the terms in $A$ exist in $E$. Therefore, we
-        can expand $A$, one term at a time by lemma 5.8, to derive
-        $E$. Since a single term is added in each step, and $E$ has a maximum lengh of $k$,
-        the largest clause that needs to be processed is of length k - 1.
+        Notice all of the terms in $A$ exist in $E$ so we can expand $A$ to $E$ by Lemma 5.8.
+
+        Since the length of $A$ is given as less than $k$, we can derive $E$ by processing clauses with a maximum length of $k - 1$.
 
         Consider case (2) the opposite form term exists in either A or B.
 
-        Again since C and D are both generic clauses derived in the same
-        way from other generic clauses, we can fix either. Let's fix C
-        and redefine D. The clauses become:
+        Since $C$ and $D$ are treated the same, let's say the opposite form term exists in $D$ and $A$.
+        
+        Now we have the clauses:
+
+        $A := [a, b, \beta]$
+
+        $B := [c, d, \delta]$
 
         $C := [a, b, \beta, e, f, \phi]$
 
-        $D := [-a, b, \beta, e, f, \phi]$
+        $D := [c, d, \delta, -a, h, \gamma]$
 
-        $E = [b, \beta, e, f, \phi]$
+        $E := [b, \beta, e, f, \phi, c, d, \delta, h, \gamma]$
 
-        We know $-a$ does not exist in $B$ and $B$ expands to $D$.
+        Notice all of the terms in $B$ exist in $E$ so we can expand $B$ to $E$ by Lemma 5.8.
 
-        The terms in $B$ are therefore a subset of the terms in $D$ not counting
-        $-a$.
-
-        More clearly \{$c, d, \delta$\} $\subset$ \{$b, \beta, e, f, \phi$\}
-
-        Notice the set on the right is just all of the terms in E.
-
-        Therefore all of the terms in B exist in E and we can expand
-        B to E by Lemma 5.8.
-
-        The greatest possible length of B is k - 1 and we know only one
-        term gets appended in each step by Lemma 5.8 so we only have to
-        process clauses with a maximum length of k - 1 to derive E.
+        Since the length of $B$ is given as shorter than $k$, we can derive $E$ by processing clauses with a maximum length of $k - 1$.
 
         Consider case (3) the opposite form term exists in A and B.
 
@@ -2066,11 +1604,11 @@
 
         $E = [b, \beta, e, f, \phi, d, \delta, g, h, \gamma]$
 
-        In this case, by Lemma 5.7, A and B can imply a new clause:
+        In this case, by Lemma 5.9, $A$ and $B$ can imply a new clause:
 
         $F = [b, \beta, d, \delta]$
 
-        Want to show $F$ is shorter than $E$. 
+        Want to show $F$ is shorter than $k$.
 
         Consider two cases (3a) the length of $E$ is $k$ and (3b) the length of $E$ is $k-1$.
 
@@ -2110,29 +1648,31 @@
             - (\beta \phi \delta \gamma)
         $
 
-        For ease, let's represent the generic sets of terms on the R.H.S. as $y$. The inequality becomes:
+        Which is true as long as at least one term exists on the R.H.S.
 
-        $0 < e + f + g + h + y$
+        Want to show at least one term exists on the R.H.S.
 
-        Which is true as long as at least one term exists in {$e, f, g, h, y$}.
+        Suppose not, then no terms exist on the R.H.S.
 
-        Suppose not. Then no terms exist in {$e, f, g, h, y$}.
-
-        We can redefine some clauses: 
-
-        $C := [a, b, \beta]$
-
-        Notice that no terms may exist ibn $\phi$ because any term in $\phi$ could be extracted and treated as $e$ or $f$, but we know these do not exist.
-
-        Now we have the clauses:
-
-        $C := [a, b, \beta]$
+        Recall we have the clauses
 
         $A := [a, b, \beta]$
 
-        Notice the length of $C$ is the same as the length of $A$. Recall we defined the length of $C$ as $k$ and the length of $A$ as $k-1$. This is a contradiction so at least one term has to exist in {$e, f, g, h, y$}.
+        $C := [a, b, \beta, e, f, \phi]$
 
-        Therefore the inequality holds and you can derive $E$ by processing clauses with a maximum length of $k-1$ if the length of $E$ is $k$.
+        Since the terms on the R.H.S. do not exist, we can redefine the clause:
+
+        $C := [a, b, \beta]$
+
+        Notice no more terms may exist in $C$ because any new term could be treated as $e$ or $f$ and we know those don't exist.
+
+        Notice $C$ is exactly $A$.
+
+        This is a contradiction because the length of $A$ is given as less than $k$ and the length of $C$ is given as $k$.
+
+        Therefore at least one term must exist on the R.H.S. and the inequality is true.
+
+        Therefore $F$ is shorter than $k$ when $E$ is of length $k$.
 
         Consider (3b) the length of $E$ is $k - 1$.
 
@@ -2143,6 +1683,7 @@
             - (\beta \phi) - (\beta \delta) - (\beta \gamma) - (\phi \delta) - (\phi \gamma) - (\delta \gamma)
             + (\beta \phi \delta) + (\beta \phi \gamma) + (\phi \delta \gamma)
             - (\beta \phi \delta \gamma)
+            + 1
             $
 
         And the length of $F$ is:
@@ -2158,21 +1699,27 @@
             - (\beta \phi) - (\beta \delta) - (\beta \gamma) - (\phi \delta) - (\phi \gamma) - (\delta \gamma)
             + (\beta \phi \delta) + (\beta \phi \gamma) + (\phi \delta \gamma)
             - (\beta \phi \delta \gamma)
+            + 1
         $
 
         Similarly to before, this will derive
 
-        $0 < e + f + g + h + y + 1$
+        $\rightarrow$
+        $0$
+        $<$
+        $e + f + g + h 
+            + \phi + \gamma
+            - (\beta \phi) - (\beta \gamma) - (\phi \delta) - (\phi \gamma) - (\delta \gamma)
+            + (\beta \phi \delta) + (\beta \phi \gamma) + (\phi \delta \gamma)
+            - (\beta \phi \delta \gamma)
+            + 1
+        $
 
         Which is always true.
 
-        Therefore the inequality holds and you can derive $E$ by processing clauses with a maximum length of $k-1$ if the length of $E$ is $k - 1$.
+        Therefore $F$ is shorter than $k$ when the length of $E$ is $k - 1$.
 
-        Therefore both cases will allow you to derive $E$ by processing clauses of length no greater than $k$ - 1.        
-
-        Since all three cases work, if you have clauses, A, B, C, D, and E, as described,
-        then E can be derived by processing clauses with a maximum length
-        of k - 1.
+        Since we can derive $E$ by processing clauses with a maximum length of $k - 1$ for all possible cases of the lemma, then the lemma holds
     \end{proof}
 
     \section{Algorithm}
@@ -2184,19 +1731,20 @@
             \begin{enumerate}
                 \item Get all clauses implied by C and D according to Lemma 5.9 
                 and add them to the instance
+                \item Check this new clause is not in the instance
             \end{enumerate}
-            \item For each clause in the instance, E, of length 1:
-            \begin{enumerate}
-                \item For each clause in the instance, F, of length 1:
-                \begin{enumerate}
-                    \item if E and F contain the same terminal in which it is 
-                    positive in one clause and negated in the other, the 
-                    clauses are contradicting and the instance is unsatisfiable, end
-                \end{enumerate}
-            \end{enumerate}
-        \item Expand clauses to get all possible clauses of length 3 and add them to the instance
+            \item Expand C to get all possible clauses of length 3 and add them to the instance
         \end{enumerate}
-        \item Repeat (1) until no new clauses are added
+        \item For each clause in the instance, E, of length 1:
+        \begin{enumerate}
+            \item For each clause in the instance, F, of length 1:
+            \begin{enumerate}
+                \item if E and F contain the same terminal in which it is 
+                positive in one clause and negated in the other, the 
+                clauses are contradicting and the instance is unsatisfiable, end
+            \end{enumerate}
+        \end{enumerate}
+        \item Repeat (1)-(2) until no new clauses are added
         \item If it reaches here, the instance is satisfiable, end
     \end{enumerate}
 
@@ -2218,25 +1766,27 @@
 
     $O(1)$
 
-    (1.b) At most ${\binom{n}{1}} * 2$ clauses of length 1 exist, which is on the order of
+    (1.a.ii) For each clause in the instance, iterate through the instance to check if it exists already
 
-    $O(n)$
+    $O(n^3)$
 
-    (1.b.i) At most ${\binom{n}{1}} * 2$ clauses of length 1 exist, which is on the order of
-
-    $O(n)$
-
-    (1.b.i.A) Constant time to check if two 1-terminal clauses contain the same terminal in the opposite form
-
-    $O(1)$
-
-    (1.c) For a 2-terminal clause, there are $2*n$ possible 3-terminal clauses that could be 
-    expanded to. For a 1-terminal clause, there are $4*n^2$ possible 3-terminal clauses that
-    could be expanded to. This is upper bounded by the latter case.
+    (1.b) For a 2-terminal clause, there are $2*n$ possible 3-terminal clauses that could be expanded to. For a 1-terminal clause, there are $4*n^2$ possible 3-terminal clauses that could be expanded to. This is upper bounded by the latter case.
 
     $O(n^2)$
 
-    (2) Worst case, we add one new clause each time so we have to do (1) ${\binom{n}{3}} * 8 + {\binom{n}{2}} * 8 + {\binom{n}{1}} * 2$ times which is on the order of
+    (2) At most ${\binom{n}{1}} * 2$ clauses of length 1 exist, which is on the order of
+
+    $O(n)$
+
+    (2.a) At most ${\binom{n}{1}} * 2$ clauses of length 1 exist, which is on the order of
+
+    $O(n)$
+
+    (2.b.i) Constant time to check if two 1-terminal clauses contain the same terminal in the opposite form
+
+    $O(1)$
+
+    (2) Worst case, we add one new clause each time so we have to loop ${\binom{n}{3}} * 8 + {\binom{n}{2}} * 8 + {\binom{n}{1}} * 2$ times which is on the order of
 
     $O(n^3)$
 
@@ -2246,32 +1796,22 @@
 
     The time complexity breaks down:
 
-    $(2) * ((1) * ((1.a) * ((1.a.i)) + (1.b) * ((1.b.i) * (1.b.i.A)) + (1.c))) + (3)$
+    $(3) * ((1) * ((1.a) * ((1.a.i) + (1.a.ii)) + (1.b)) + (2) * (2.a) * (2.a.i)) + (4)$
 
-    $= O(n^3) * (O(n^3) * (O(n^3) * (O(1)) + O(n) * (O(n) * O(1)) + O(n^2))) + O(1)$
+    It is seen the most computationally expensive steps are 
 
-    $= O(n^3) * (O(n^3) * (O(n^3) * (O(1)) + O(n) * O(n) + O(n^2))) + O(1)$
+    $(3) * (1) * (1.a) * (1.a.oii)$
 
-    $= O(n^3) * (O(n^3) * (O(n^3) * (O(1)) + O(n^2) + O(n^2))) + O(1)$
+    $ = O(n^3) * O(n^3) * O(n^3) * O(n^3)$
 
-    $= O(n^3) * (O(n^3) * (O(n^3) + O(n^2) + O(n^2))) + O(1)$
-
-    $= O(n^3) * (O(n^3) * (O(n^3) + O(n^2))) + O(1)$
-
-    $= O(n^3) * (O(n^3) * O(n^3)) + O(1)$
-
-    $= O(n^3) * O(n^6) + O(1)$
-
-    $= O(n^9) + O(1)$
-
-    $= O(n^9)$
+    $= O(n^{12})$
 
     \section{Proof of Correctness}
 
-    Want to show an instance is unsatifiable iff we can derive contradicting
+    Want to show an instance is unsatisfiable iff we can derive contradicting
     1-terminal clauses by the algorithm.
 
-    WTS Contradicting 1-terminal clauses can be derived $\implies$ the instance is unsatifiable
+    WTS Contradicting 1-terminal clauses can be derived $\implies$ the instance is unsatisfiable
 
     Contradicting 1-terminal clauses take the form:
 
@@ -2287,7 +1827,7 @@
     If $a$ is False, the clause $[a]$ will be False and the assignment does not satisfy the instance.
 
     Since all possible assignments do not allow both clauses to be true, 
-    the instance is unsatifiable.
+    the instance is unsatisfiable.
 
     Want to show an unsatisfiable instance $\implies$ the algorithm will derive contradicting 1-terminal clauses
 

@@ -1,0 +1,1 @@
+update algorithm - move (b) outside (1)
