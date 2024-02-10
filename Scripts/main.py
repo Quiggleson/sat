@@ -186,11 +186,10 @@ def check_redun(assignments, clauses, n):
 # ]
 
 
-n = 5
+n = 3
 clauses = [
-  [1, 2, 3],
-  [4, 5, -3],
-  [1, 2, 4, 5]
+  [1, 2],
+  [1, 2, 3]
 ]
 
 for clause in clauses:
