@@ -205,11 +205,15 @@
     \begin{proof}
         Recall an assignment is blocked if it does not allow the clause to evaluate to True.
 
-        Since terms in a clause are combined by logical OR operators, a clause cannot evaluate to True if all terms evaluate to False.
+        Since terms in a clause are combined by logical OR operators, a clause cannot evaluate to True if all terms in the clause evaluate to False.
 
         A term evaluates to False if it's either (1) negated and the terminal's value is True or (2) positive and the terminal's value is False.
 
-        Given a clause, we know there are some number of unique terminals and we can find assignments where all terms evaluate to False.
+        Given a clause, we know there are some number of unique terminals.
+        
+        Want to find an assignment where all the terms are assigned a value of False.
+
+        Since an assignment exists for all possible values for each terminal, then there exists an assignment such that all the terms in the clause evaluate to False.
 
         Since all the terms evaluate to False and are combined by logical OR operators, the clause will evaluate to False.
 
@@ -279,7 +283,9 @@
 
         By Lemma 5.4, $C$ blocks $2^{n-k}$ assignments. 
 
-        If we fix the value of $t$, then there are only $n-k-1$ terminals whose values could be 0 or 1. Since we have two choices per terminal and there are $n-k-1$ terminals, then there are $2^{n-k-1}$ assignments blocked by $C$ where the value of $t$ is fixed.
+        If we fix the value of $t$, then there are only $n-k-1$ terminals whose values could be 0 or 1. 
+        
+        Since there are two choices per terminal and there are $n-k-1$ terminals, then there are $2^{n-k-1}$ assignments blocked by $C$ where the value of $t$ is fixed.
 
         Divide to get the ratio of the number of assignments blocked by adding $t$ to the number of assignments blocked by $C$ without $t$:
         
@@ -294,8 +300,6 @@
         This shows that half of the assignments blocked by $C$ assign a fixed value to $t$.
 
         Since there are two possible values for $t$ and each block mutually exclusive halves of the assignments blocked by $C$, the lemma holds.
-
-        For any clause, $C$, if we select a terminal, $t$, that's not in $C$ then half of the assignments blocked by $C$ will assign True to $t$ and the other half will assign False to $C$.
     \end{proof}
 
     \begin{lemma}
@@ -365,7 +369,7 @@
 
         We know that $B$ blocks all assignments blocked by $C$ where $i$ is assigned the value of True.
 
-        Since $A$ and $B$ both block mutually exclusive halves of the assignments blocked by $C$, we can say that $A$ and $B$ imply $C$.
+        Since $A$ and $B$ both block mutually exclusive halves of the assignments blocked by $C$, then all of the assignments blocked by $C$ are blocked by $A$ and/or $B$ and we can say that $A$ and $B$ imply $C$.
     \end{proof}
 
     \begin{lemma}[Expansion]
@@ -382,7 +386,7 @@
 
         $E := [a, b, c, ..., -t]$
 
-        Since D and E both contain all the terminals from C, by Lemma 5.6 then D and E are implied by C.   
+        Since all of the terms in $C$ exist in $D$ and $E$, then by Lemma 5.6 all of the assignments blocked by $D$ or $E$ are blocked by $C$ and we can say $D$ and $E$ are implied by $C$.   
     \end{proof}
 
     \begin{lemma}[General Lemma 5.7]
@@ -429,7 +433,7 @@
     \end{proof}
 
     \begin{lemma}
-        Given two clauses of lengths $k$ and $m$ imply another clause by Lemma 5.9, the implied clause will be of length $max(k, m)-1$ to $(k + m - 2)$ where the function $max(k, m)$ represents the parameter with the greatest value.
+        Given two clauses of lengths $k$ and $m$ that imply another clause by Lemma 5.9, the length of the implied clause will fall in the range $max(k, m)-1$ to $(k + m - 2)$ where the $max(k, m)$ represents the parameter with the greatest value.
     \end{lemma}
     \begin{proof}
         The smallest clause that can be implied by clauses of length $k$ and $m$ using Lemma 5.9 occur when all but one of the terms in one clause exist in the other.
@@ -449,6 +453,7 @@
             \item A clause, $B$, of length less than $k$
             \item A clause, $C$, of length less than $k$
             \item A clause, $D$, of length $k$ or $k - 1$
+            \item A clause, $E$, of length $k$
             \item $A$ and $B$ imply $E$ by Lemma 5.9
             \item $C$ and $E$ imply $D$ by Lemma 5.9
         \end{itemize}
@@ -456,16 +461,6 @@
     \end{lemma}
     \begin{proof}
         
-        Consider the following figure:
-        
-        \begin{figure}[h]
-            \includegraphics[scale=0.8]{511a}        
-            \caption{A graph illustrating the derivations described by the lemma}
-            \label{fig:one}
-            \Description[A graph illustrating the derivations described by the lemma]
-            {A graph illustrating the derivations described by the lemma}
-        \end{figure}
-
         Define the clauses in the following manner:
 
         A := [a, b, $\beta$, i]
@@ -484,17 +479,25 @@
 
         Where $\beta, \delta, $ and $\phi$ are generic sets of terms in the instance.
 
+        Consider the following figure:    
+        
+        \begin{figure}[H]
+            \includegraphics[scale=0.8]{511a}        
+            \caption{A graph illustrating the derivations described by the lemma}
+            \Description[A graph illustrating the derivations described by the lemma]{A graph illustrating the derivations described by the lemma}
+        \end{figure}
+
         Note that since $C$ and $E$ imply $D$, then $C$ and $E$ must share the same terminal such that it is positive in one clause and negated in the other.
         
         Since all of the terms in $E$ came from $A$ or $B$ (not including $i$), then such a term in $C$ must have the same term of the opposite form in $A$ or $B$.
         
-        And since $A$ and $B$ are fixed yet arbitrary sets, it does not matter which clause we pick as long as it is fixed for the rest of the proof. Let's pick a the terminal, $a$, from clause $A$. Now $C$ contains $-a$.
+        And since $A$ and $B$ are fixed yet arbitrary clauses treated in the same way, it does not matter which clause we pick as long as it is fixed for the rest of the proof. Let's pick a the terminal, $a$, from clause $A$. Now $C$ contains $-a$.
  
         Recall from Lemma 5.3 that if a clause blocks any assignments, it cannot contain the same term in both forms, so if $\beta, \delta$, or $\phi$ contain the same terminal in both forms then $D$ blocks no assignments and the resulting clause may be disregarded.
 
-        We know $C$ is of length $k$ and $D$ is of length (1) $k$ or (2) $k-1$.
+        We know $C$ is of length $k$ and there are two cases for $D$: (1) $D$ is of length $k$ or (2) $D$ is of length $k-1$.
 
-        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in both sets.
+        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in the intersection of both sets.
 
         Consider (1) the case where $D$ has length $k$ then we can define $k$ in terms of $D$:
         
@@ -536,15 +539,18 @@
         Recall we have the clauses:
 
         $A := [a, b, \beta, i]$
+        
         $B := [c, d, \delta, -i]$
+        
         $E := [a, b, \beta, c, d, \delta]$
 
         And since only $c$ or $d$ exist, we can redefine some clauses:
 
         $B := [x, -i]$
+        
         $E := [a, b, \beta, x]$
 
-        Where x is represents either $c$ or $d$.
+        Where x is represents either $c$ or $d$, but not both.
 
         Note that no terms may exist in $\delta$ because any terms in $\delta$ could be extracted and treated as $c$ or $d$, but we know $x$ already represents the one of these terms that exist and the other term cannot exist.
 
@@ -563,18 +569,25 @@
         $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) - 
         (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
 
+        length of $F = b + i + e + f + \beta + \phi - (\beta \phi)$
+
+        Want to show length of $F$ is less than $k$
+
+        $b + i + e + f + \beta + \phi - (\beta \phi) < 
+        b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) - 
+        (\beta \phi) - (\delta \phi) + (\beta \delta \phi) + 1$
+
         Similarly as before, the inequality will become:
 
         $\rightarrow$ $i < c + d + 1$
 
         Which is true as long as at least $c$ or $d$ exist.
 
-        It was seen that both $c$ and $d$ must exist and since the proof does not rely on the length of $D$, the inequality holds.
+        It was seen that both $c$ and $d$ must exist and since the proof does not rely on the length of $D$, the inequality is true.
 
         Therefore the length of $F$ is shorter than $k$ when the length of $D$ is $k - 1$.
 
-        Since the length of $F$ is less than $k$ in all cases, you can derive
-        $D$ by processing only clauses with a maximum length of $k-1$.
+        Since the length of $F$ is less than $k$ in all cases, you can derive $D$ by processing only clauses with a maximum length of $k-1$.
     \end{proof}
 
     \begin{lemma}
@@ -590,14 +603,6 @@
         Then $D$ can be implied by processing clauses of at most length $k - 1$.
     \end{lemma}
     \begin{proof}
-
-        Consider the following figure
-
-        \begin{figure}[h]
-            \includegraphics[scale=0.8]{318}
-            \caption{An illustration of the derivations described in the lemma}
-            \Description[An illustration of the derivations described in the lemma]{An illustration of the derivations described in the lemma}
-        \end{figure}
 
         Let the clauses be defined as follows:
 
@@ -615,7 +620,15 @@
 
         E := [b, $\beta$, e, f, $\phi$]
 
-        Where $\beta, \delta$, and $\phi$ are fixed, yet arbitrary sets of terms such that the clauses block at least one assignment (see Lemma 5.3).
+        Where $\beta, \delta$, and $\phi$ are fixed, yet arbitrary sets of terms such that the clauses block at least one assignment.
+
+        Consider the following figure
+
+        \begin{figure}[h]
+            \includegraphics[scale=0.8]{318}
+            \caption{An illustration of the derivations described in the lemma}
+            \Description[An illustration of the derivations described in the lemma]{An illustration of the derivations described in the lemma}
+        \end{figure}
 
         Notice that $C$ has to contain a term from $B$ in the opposite form by Lemma 5.9.
 
@@ -625,11 +638,23 @@
         The term in $C$ which is opposite from the term in $B$ can therefore
         be opposite (1) from a term in $A$ (in this case, use $C_1$ and $D_1$) or (2) a term not in $A$ (in this case use $C_2$ and $D_2$).
         
-        (1) Consider the opposite form term in $C$ is in $A$, ie, use $C_1$
-        and $D_1$:
+        (1) Consider the opposite form term in $C$ is in $A$ (use $C_1$ and $D_1$):
 
-        Notice $A$ and $C_1$ share an opposite term, then they can derive
-        a clause, $E$, by Lemma 5.9. And $E$ can imply a clause $D_1$ by Lemma 5.8:
+        Recall the clauses:
+
+        $A := [a, b, \beta]$
+        
+        $C_1$ := [-a, e, f, $\phi$]
+
+        $D_1$ := [b, $\beta$, c, d, $\delta$, e, f, $\phi$]
+
+        $E := [b, \beta, e, f, \phi]$
+
+        Notice $A$ and $C_1$ share an opposite term, so they can derive a clause, $E$, by Lemma 5.9. 
+        
+        Notice all the terms in $E$ exist in $D_1$ so $E$ can be expanded to derive $D_1$ by Lemma 5.8.
+
+        Consider the path of implication in the following figure:
 
         \begin{figure}[h]
             \includegraphics[scale=0.8]{318b.png}
@@ -642,14 +667,13 @@
 
         Since $D_1$ is derived using only $A$, $C_1$, and $E$ and $A$ and $C$ are given to be shorter than $k$, want to show length of $E$ is less than $k$.
 
-        Consider two cases: (1a) $D$ is of length $k$ and 
-        (1b) $D$ is of length $k - 1$
+        Consider two cases: (1a) $D_1$ is of length $k$ and (1b) $D_1$ is of length $k - 1$
         
-        Consider (1a) where $D$ is of length $k$:
+        Consider (1a) where $D_1$ is of length $k$:
 
-        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in both sets.
+        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in the intersection of both sets.
 
-        Since $D$ is of length $k$, we can define $k$ as follows:
+        Since $D_1$ is of length $k$, we can define $k$ as follows:
 
         $k = b + c + d + e + f + \beta + \delta + \phi - (\beta \delta) 
         - (\beta \phi) - (\delta \phi) + (\beta \delta \phi)$
@@ -688,9 +712,9 @@
 
         Therefore at least one term must exist on the R.H.S. and the inequality holds.
 
-        Therefore $E$ is shorter than $k$ when $D$ is of length $k$ and we use $D_1$.
+        Therefore $E$ is shorter than $k$ when $D$ is of length $k$ and we use $C_1$ and $D_1$.
 
-        Consider (1b) $D$ is of length $k - 1$:
+        Consider (1b) $D_1$ is of length $k - 1$:
 
         Then the length of $k$ is redefined as:
 
@@ -701,7 +725,7 @@
 
         $\rightarrow 0 < c + d + 1$
 
-        Which is always true so the length of $E$ is indeed less than $k$ when $D$ is of length $k - 1$ and we use $D_1$.
+        Which is always true so the length of $E$ is indeed less than $k$ when $D$ is of length $k - 1$ and we use $C_1$ and $D_1$.
 
         (2) Consider the case using $C_2$ and $D_2$:
         
@@ -726,7 +750,7 @@
     \begin{proof}
         Given an instance of 3SAT, we know all clauses are of length 3.
 
-        If we want to consider a generic $n$-terminal clause, $B$, that's implied by a given clause, $A$, then by Lemma 5.6 we know it's implied iff $B$ contains all of the terms in $A$.
+        If we want to consider a generic $n$-terminal clause, $B$, that's implied by a given clause, $A$, then by Lemma 5.6 we know it's implied if all the terms in $A$ exist in $B$.
     \end{proof}
 
     \begin{lemma}
@@ -741,12 +765,9 @@
         Recall an instance is unsatisfiable iff all $2^n$ assignments are
         blocked.
 
-        If a 3-terminal clause blocks an assignment, then it also implies
-        the corresponding n-terminal assignment because there is one possible n-terminal clause for any assignment.
+        If a 3-terminal clause blocks an assignment, then it also implies the corresponding n-terminal assignment because there is one possible n-terminal clause for any given assignment.
 
-        Notice that for each of these n-terminal clauses, they must contain
-        three terms from at least one given clause. If they didn't, then
-        the assignment blocked by that n-terminal clause would not be blocked and the instance would be satisfiable.
+        Notice that for each of these n-terminal clauses, they must contain three terms from at least one given clause. If they didn't, then the assignment blocked by that n-terminal clause would not be blocked and the instance would be satisfiable.
 
         Since each n-terminal clause blocks one assignment, blocking all assignments requires $2^n$ n-terminal clauses.
 
@@ -780,7 +801,7 @@
 
         Therefore, there must exist another clause that shares all of the same terms, but where that one terminal is assigned the value of False.
 
-        Using these two terms, we can create a new clause by lemma 5.7.
+        Using these two clauses, we can create a new clause by lemma 5.7.
 
         Now all of the clauses of length n - 1 do not contain that terminal.
 
@@ -800,9 +821,9 @@
 
         $[-a]$
 
-        Any other clause could either contain $a$, $-a$, or neither.
+        Any possible clause could either contain $a$, $-a$, or neither.
 
-        By lemma 5.6, we can expand to any clause that contains $a$ or $-a$.
+        By lemma 5.8, we can expand to any clause that contains $a$ or $-a$.
 
         Now want to show these clauses imply another clause that does not contain  $a$ or $-a$.
 
@@ -864,13 +885,15 @@
         
         Where $\beta, \delta, \phi,$ and $\gamma$ are fixed yet arbitrary sets of terms such that the clauses block at least one assignment.
 
-        Notice that $E$ and $F$ have to share a term of the opposite form in order to imply $G$ by Lemma 5.9. All of the terms in $E$ and $F$ came from $A, B, C,$ and $D$. Since $A, B, C,$ and $D$ are all arbitrary clauses, selecting which term to negate does not have an effect on the outcome as long as one form of the term exists in $E$
-        and the other form exists in $F$.
+        Notice that $E$ and $F$ have to share a term of the opposite form in order to imply $G$ by Lemma 5.9. 
         
-        Here the opposite term is shared between $A$ and $D$, but any term that appears positive in $A$ or $B$ and negated in $C$ or $D$ will yield the same results.
+        All of the terms in $E$ and $F$ came from $A, B, C,$ and $D$. 
+        
+        Since $A, B, C,$ and $D$ are all arbitrary clauses, selecting which term to negate does not have an effect on the outcome as long as one form of the term exists in $E$ and the other form exists in $F$.
+        
+        Here the opposite term is shared between $A$ and $D$, but any term that appears positive in $A$ or $B$ and negated in $C$ or $D$ or vice versa will yield the same results.
  
-        Want to show $G$ can be derived by processing clauses with a 
-        maximum length of $k - 1$.
+        Want to show $G$ can be derived by processing clauses with a maximum length of $k - 1$.
 
         Define additional implications by Lemma 5.9:
 
@@ -896,8 +919,7 @@
 
         (1a) $G$ is of length $k$
 
-        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number
-        of terms found in both sets.
+        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in the intersection of both sets.
 
         Since $G$ is of length $k$ we can define $k$ as follows:
 
@@ -977,6 +999,8 @@
 
         Recall at least one term must exist on the R.H.S., specifically either $c$ or $d$ must exist, but not both.
 
+        We know $c$ or $d$ must exist because if neither exist, there's a contradiction (see case 1).
+
         Since these terms are treated in the same way, let's pick $c$ to be the term that exists.
 
         We can redefine some clauses as follows:
@@ -1005,7 +1029,7 @@
 
         $F := [-a, f, \phi]$
 
-        But since no terms on the R.H.S. exist, then $g$, $h$, and $\gamma$ may not exist. 
+        But since no terms on the R.H.S. exist besides $c$ and $d$, then $g$, $h$, and $\gamma$ may not exist. 
 
         Notice that no terms in $\gamma$ may exist because if any terms in $\gamma$ exist, then they can be extracted and treated as $g$ or $h$.
 
@@ -1231,11 +1255,11 @@
             \end{itemize}
         Either way the opposite term must exist in A or B since it must exist in D and D is composed of terms from A or B.
         
-        Since A and B are both generic clauses, it does not matter which clause the term exists in as long as it is fixed.
+        Since A and B are both generic clauses treated in the same way, it does not matter which clause the term exists in as long as it is fixed.
         
-        Let's $A$ to contain the opposite form term from $C$.
+        Let's pick $A$ to contain the opposite form term from $C$.
         
-        Consider (1) the opposite form term exists in C (use $E_1$ and $F_1$).
+        Consider (1) the opposite form term exists in C (use $C_1$, $E_1$, and $F_1$).
 
         Want to show $F_1$ can be derived by processing clauses with a maximum length of k - 1.
 
@@ -1249,13 +1273,13 @@
 
         Want to show (1a) $G$ is shorter than $k$ and (1b) $H$ is shorter than $k$
 
-        (1a) $G$ is shorter than $k$.
+        (1a) $G$ is shorter than $k$
 
         Consider two cases (1ai) $F_1$ is of length $k$ and (1aii) $F_1$ is of length $k-1$.
 
         (1ai) $F_1$ is of length $k$
 
-        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in both sets.
+        In the following equations, let the presence of a term represent a count of one, and the presence of a set of terms represent the number of terms in that set. If multiple sets of terms are shown in parentheses, let this represent the number of terms found in the intersection of both sets.
         
         Recall $F_1$ is of length $k$ so $k$ can be defined as follows:
         
@@ -1316,9 +1340,9 @@
 
         Therefore $G$ is shorter than $k$ when using $F_1$ and the length of $F_1$ is $k$.
 
-        (1aii) F is of length k - 1
+        (1aii) $F_1$ is of length $k - 1$
 
-        Recall $F$ is of length k - 1 so k can be defined as follows:
+        Recall $F_1$ is of length $k - 1$ so $k$ can be defined as follows:
         
         $k = b + c + d + f + g + h 
         + \beta + \delta + \phi + \gamma
@@ -1330,7 +1354,7 @@
 
         Length of $G = b + i + f + \beta + \phi - (\beta \phi)$
 
-        Want to show length of G is less than k:
+        Want to show length of $G$ is less than $k$:
 
         $b + i + f + \beta + \phi - (\beta \phi)$
         $<$
@@ -1356,7 +1380,7 @@
 
         Which is true as long as at least one term exists on the R.H.S.
 
-        We already showed at least two terms exist on the R.H.S. and the proof does not rely on the length of $F$.
+        We already showed at least two terms exist on the R.H.S. and the proof does not rely on the length of $F_1$.
 
         Therefore at least one term exists on the R.H.S. and the inequality is true.
 
@@ -1434,7 +1458,7 @@
 
         Note that no other terms may exist in $E_1$ because any other terms could be used as $g$ or $h$, but we know these don't exist.
 
-        Notice $E$ is exactly $C_1$.
+        Notice $E_1$ is exactly $C_1$.
 
         This is a contradiction because the length of $C$ is given as less than $k$ while the length of $E$ is given as $k$.
 
@@ -1444,7 +1468,7 @@
 
         Consider (1bii) $F_1$ is of length $k-1$
 
-        Recall $F_1$ is of length $k - 1$, so we can define $k$ as follows:
+        Since $F_1$ is of length $k - 1$, we can define $k$ as follows:
 
         $k = b + c + d + f + g + h 
         + \beta + \delta + \phi + \gamma
@@ -1489,7 +1513,7 @@
 
         Which is always true.
         
-        Therefore the length of $H$ is less than $k$ when the length of $F_1$ is $k - 1$.
+        Therefore the length of $H$ is less than $k$ when using $F_1$ and the length of $F_1$ is $k - 1$.
 
         Consider (2) the opposite form term does not exist in $C$, use $C_2$, $E_2$, and $F_2$.
 
@@ -1529,28 +1553,20 @@
             \Description[An illustration of the derivations described in this lemma]{An illustration of the derivations described in this lemma}            
         \end{figure}
 
-        Let the clauses be defined as follows:
+        In the following clause definitions let $\beta, \delta, \phi,$ and $\gamma$ be fixed yet arbitrary set of terms in which the clauses block at least one assignment by Lemma 5.3.
 
-        $A := [a, b, \beta]$
+        In order for $C$ and $D$ to imply E by Lemma 5.9, they have to share a terminal which is positive in one clause and negated in the other.
 
-        $B := [c, d, \delta]$
+        Note that $C$ is composed of terms in $A$ and terms not in $A$.
 
-        Then the following clauses are derived:
+        Similarly $D$ is composed of terms in $B$ and terms not in $B$.
 
-        $C = [a, b, \beta, e, f, \phi]$
-
-        $D = [c, d, \delta, g, h, \gamma]$
-
-        % $E = [a, b, \beta, e, f, \phi, c, d, \delta, g, h, \gamma]$
-
-        Where $\beta, \delta, \phi,$ and $\gamma$ are fixed yet arbitrary set of terms in which the clauses block at least one assignment by Lemma 5.3.
-
-        In order for C and D to imply E by Lemma 5.7, they have to be identical except for one term which is positive in one clause and negated in the other.
-
-        There are 3 cases:
-        (1) the opposite form term does not exist in A or B
-        (2) the opposite form term exists in A or B
-        (3) the opposite form term exists in A and B
+        There are 3 cases for this opposite form term existing in regards to $A$ and $B$:
+        \begin{enumerate}
+            \item the opposite form term does not exist in $A$ or $B$
+            \item the opposite form term exists in either $A$ or $B$ but not both
+            \item the opposite form term exists in $A$ and $B$
+        \end{enumerate}
         
         Consider case (1) the opposite form term does not exist in A or B.
 
@@ -1719,7 +1735,7 @@
 
         Therefore $F$ is shorter than $k$ when the length of $E$ is $k - 1$.
 
-        Since we can derive $E$ by processing clauses with a maximum length of $k - 1$ for all possible cases of the lemma, then the lemma holds
+        Since we can derive $E$ by processing clauses with a maximum length of $k - 1$ for all possible cases of the lemma, then the lemma holds.
     \end{proof}
 
     \section{Algorithm}
@@ -1731,9 +1747,13 @@
             \begin{enumerate}
                 \item Get all clauses implied by C and D according to Lemma 5.9 
                 and add them to the instance
-                \item Check this new clause is not in the instance
+                \item Check if this new clause is in the instance and update a flag accordingly
             \end{enumerate}
-            \item Expand C to get all possible clauses of length 3 and add them to the instance
+            \item Expand C to get all possible clauses with a maximum length of 3 and add them to the instance
+            \item For each new clause from the last step
+            \begin{enumerate}
+                \item Check if this new clause is in the instance and update a flag accordingly
+            \end{enumerate}
         \end{enumerate}
         \item For each clause in the instance, E, of length 1:
         \begin{enumerate}
@@ -1752,51 +1772,33 @@
 
     In this section I will analyze the time complexity of the algorithm in section 4
 
-    (1) At most ${\binom{n}{3}}*8 + {\binom{n}{2}}*4 + {\binom{n}{1}}*2$ clauses to iterate which is on the order of
+    (1) - $O(n^3)$ - At most ${\binom{n}{3}}*8 + {\binom{n}{2}}*4 + {\binom{n}{1}}*2$ clauses to iterate which is on the order of $O(n^3)$
 
-    $O(n^3)$
+    (1.a) - $O(n^3)$ -  At most ${\binom{n}{3}}*8 + {\binom{n}{2}}*4 + {\binom{n}{1}}*2$ clauses to iterate which is on the order of $O(n^3)$
 
-    (1.a) At most ${\binom{n}{3}}*8 + {\binom{n}{2}}*4 + {\binom{n}{1}}*2$ clauses to iterate which is on the order of
+    (1.a.i) - $O(1)$ - For each terminal in C, check if it's opposite form is in D. Since each clause is of length 3 or less, the worst case we iterate over 3 terms in C and check each term in D. If it's a match, we iterate over each clause again and create a new clause as described in Lemma 5.9. This time complexity is intuitively $O(3^2 + 3^2)$ which is constant time.
 
-    $O(n^3)$
+    (1.a.ii) - $O(n^3)$ - For each clause in the instance, iterate through the instance to check if it exists already. There are on the order of $O(n^3)$ clauses in the instance.
 
-    (1.a.i) For each terminal in C, check if it's opposite form is in D
+    (1.b) - $O(n^2)$ - For a 2-terminal clause, there are $2*n$ possible 3-terminal clauses that could be expanded to. For a 1-terminal clause, there are $4*n^2$ possible 3-terminal clauses that could be expanded to. This is upper bounded by the latter case.
 
-    $O(3^2)$ which is just constant time which is on the order of 
+    (1.c) - $O(n^2)$ - Upper bounded by at most $O(n^2)$ new clauses from the last step
 
-    $O(1)$
+    (1.c.i) - $O(n^3)$ - At most ${\binom{n}{3}}*8 + {\binom{n}{2}}*4 + {\binom{n}{1}}*2$ clauses to iterate which is on the order of $O(n^3)$
 
-    (1.a.ii) For each clause in the instance, iterate through the instance to check if it exists already
+    (2) - $O(n^3)$ - Iterating through an instance where there are on the order of $O(n^3)$ clauses
 
-    $O(n^3)$
+    (2.a) - $O(n^3)$ - Iterating through an instance where there are on the order of $O(n^3)$ clauses
 
-    (1.b) For a 2-terminal clause, there are $2*n$ possible 3-terminal clauses that could be expanded to. For a 1-terminal clause, there are $4*n^2$ possible 3-terminal clauses that could be expanded to. This is upper bounded by the latter case.
+    (2.b.i) - $O(1)$ - Constant time to check if two 1-terminal clauses contain the same terminal in the opposite form
 
-    $O(n^2)$
+    (3) - $O(n^3)$ - Worst case, we add one new clause each time so we have to loop ${\binom{n}{3}} * 8 + {\binom{n}{2}} * 8 + {\binom{n}{1}} * 2$ times which is on the order of $O(n^3)$
 
-    (2) At most ${\binom{n}{1}} * 2$ clauses of length 1 exist, which is on the order of
-
-    $O(n)$
-
-    (2.a) At most ${\binom{n}{1}} * 2$ clauses of length 1 exist, which is on the order of
-
-    $O(n)$
-
-    (2.b.i) Constant time to check if two 1-terminal clauses contain the same terminal in the opposite form
-
-    $O(1)$
-
-    (2) Worst case, we add one new clause each time so we have to loop ${\binom{n}{3}} * 8 + {\binom{n}{2}} * 8 + {\binom{n}{1}} * 2$ times which is on the order of
-
-    $O(n^3)$
-
-    (3) Constant time to check and return satisfiable
-
-    $O(1)$
+    (4) - $O(1)$ - Constant time to check and return satisfiable
 
     The time complexity breaks down:
 
-    $(3) * ((1) * ((1.a) * ((1.a.i) + (1.a.ii)) + (1.b)) + (2) * (2.a) * (2.a.i)) + (4)$
+    $(3) * ((1) * ((1.a) * ((1.a.i) + (1.a.ii)) + (1.b) + (1.c) * (1.c.i)) + (2) * (2.a) * (2.a.i)) + (4)$
 
     It is seen the most computationally expensive steps are 
 
@@ -1826,49 +1828,41 @@
     If $a$ is True, the clause $[-a]$ will be False and the assignment does not satisfy the instance.
     If $a$ is False, the clause $[a]$ will be False and the assignment does not satisfy the instance.
 
-    Since all possible assignments do not allow both clauses to be true, 
-    the instance is unsatisfiable.
+    Since all possible assignments do not allow both clauses to be true, the instance is unsatisfiable.
+
+    Therefore contradicting 1-terminal clauses can be derived $\implies$ the instance is unsatisfiable
 
     Want to show an unsatisfiable instance $\implies$ the algorithm will derive contradicting 1-terminal clauses
 
-    By Lemma 5.14, the given 3-terminal clauses can be expanded to every
-    possible $n$-terminal clause.
+    By Lemma 5.14, since the instance is unsatisfiable, the given 3-terminal clauses can be expanded to every possible $n$-terminal clause.
 
-    By Lemma 5.15 these $n$-terminal clauses can be reduced by Lemma 5.7
-    to derive contradicting 1-terminal clauses.
+    By Lemma 5.15 these $n$-terminal clauses can be reduced by Lemma 5.7 to derive contradicting 1-terminal clauses.
 
-    So we know if we can derive these $n$-terminal clauses, we can derive
-    contradicting 1-terminal clauses.
+    So we know if we can derive these $n$-terminal clauses, we can derive contradicting 1-terminal clauses.
 
-    The way in which we derive these 1-terminal clauses is we use
-    Lemma 5.7 to reduce the current set of $k$-terminal clauses to
-    a set of $(k-1)$-terminal clauses. We repeat for all $k$ from $n$ to $2$
-    inclusive.
+    The idea behind the proof is that we know the $n$-terminal clauses can be used to derive the $1$-terminal via reduction but we'll show that we don't ever have to process a clause above length 3 to derive these contradicting 1-terminal clauses.
+
+    This relies on the fact that all clauses of length 4 or greater, say of length $k$, have to be derived by shorter clauses and we can process the shorter clauses to derive any clauses that the clauses of length $k$ would derive.
+
+    We can do this without processing a clause of length $k$ or greater.
+
+    The way in which we derive these 1-terminal clauses is we use Lemma 5.7 to reduce the $n$-terminal clauses to $(n-1)$-terminal clauses which are reduced to $(n-2)$-terminal clauses which are reduced to ... which are reduced to $2$-terminal clauses and which finally get reduced to $1$-terminal clauses.
 
     Notice this passes through every possible $k$ from length $2$ to $n$.
 
-    Recall that deriving all of the $n$-terminal clauses was done by using
-    Lemma 5.8.
+    Recall that deriving all of the $n$-terminal clauses was done by using Lemma 5.8.
 
-    These $n$-terminal clauses were then used to derive clauses of length $(n - 1)$
-    by Lemma 5.7.
+    These $n$-terminal clauses were then used to derive clauses of length $(n - 1)$ by Lemma 5.7.
 
-    By Lemma 5.18, such a case allows us to derive the clauses of length $(n - 1)$
-    without ever having to process a clause of length $n$.
+    By Lemma 5.18, such a case allows us to derive the clauses of length $(n - 1)$ without ever having to process a clause of length $n$.
 
-    Now we have all of the clauses of length $(n - 1)$ that we would have derived
-    if we processed clauses of length $n$.
+    Now we have all of the clauses of length $(n - 1)$ that we would have derived if we processed clauses of length $n$.
 
-    Note how each of these clauses are either derived from given clauses
-    by Lemma 5.8 or by Lemma 5.9 (all Lemma 5.7 derivations are a subset
-    of all Lemma 5.9 derivations).
+    Note how each of these clauses are either derived from given clauses by Lemma 5.8 or by Lemma 5.9 (all Lemma 5.7 derivations are a subset of all Lemma 5.9 derivations).
 
-    We now want to use these $(n-1)$-terminal clauses to derive clauses
-    of length $(n-2)$, but we want to do it without processing clauses
-    whose length is larger than $(n-2)$.
+    We now want to use these $(n-1)$-terminal clauses to derive clauses of length $(n-2)$, but we want to do it without processing clauses whose length is greater than $(n-2)$.
 
-    Since it takes two $(n-1)$-terminal clauses to derive a $(n-2)$-terminal
-    clause by Lemma 5.7, the possible clauses could be of the form:
+    Since it takes two $(n-1)$-terminal clauses to derive a $(n-2)$-terminal clause by Lemma 5.7, the possible clauses could be of the form:
 
     \begin{enumerate}
         \item both clauses were derived by Lemma 5.8 (expansion)
@@ -1876,8 +1870,7 @@
         \item each clause was derived in a different manner
     \end{enumerate}
 
-    Note that this list is exhaustive because these are the only manner
-    of implications used in the Lemmas that allowed us to derive these clauses.
+    Note that this list is exhaustive because these are the only manner of implications used in the lemmas that allowed us to derive these clauses.
 
     We can use the following lemmas to handle each case:
 
@@ -1887,61 +1880,47 @@
         \item Lemma 5.18
     \end{enumerate}
 
-    As such we can derive the clauses of length $(n - 2)$ without processing
-    a clause whose length is greater than $(n - 2)$.
+    As such we can derive the clauses of length $(n - 2)$ without processing a clause whose length is greater than $(n - 2)$.
 
-    In a more general sense, for every $w$ from $1$ to $n-4$, 
-    we know we have clauses of length $(n-w)$ that we want to use to
-    derive clauses of length $(n-w-1)$ and since we derived the clauses
-    of length $(n-w)$ only using Lemma 5.9 (which is a more general form
-    of 5.7) and Lemma 5.8, we know all clauses of length $(n-w)$ have to
-    be derived one of those two ways. We use two $(n-w)$-terminal clauses to 
-    derive a clause of length $(n-w-1)$ so the list of three ways these
-    clauses could be derived is exhaustive. Since we have Lemmas 5.17, 
-    5.18, and 5.19, all of these cases allow us to derive the clause
-    of length $(n-w-1)$ without processing a clause longer than $(n-w-1)$.
-    As such, we can derive all of the clauses we need down to clauses
-    of length 4. Again all clauses of length 4 or greater were
-    implied either by Lemma 5.8 (expansion) or Lemma 5.9 (reduction/implication).
+    In a more general sense, for any implied clause of length $k$, say $C$, that is used to derive a clause of length $k$ or $k - 1$, say $D$, then we can use the fact that $C$ is derived by shorter clauses and we can use these shorter clauses to directly derive $D$ without ever processing a clause of length $k$ or greater.
 
-    At this point, we have 4-terminal clauses and we want to derive 3-terminal
-    clauses. We need two clauses and we can either include a 3-terminal clause
-    or we cannot.
+    At this point, we have 4-terminal clauses and we want to derive 3-terminal clauses. 
+    
+    Notice that Lemmas 5.17, 5.18, and 5.19 require the input clauses to be derived so we cannot use those lemmas to derive all the clauses of length 3 we need.
 
-    If we don't include a 3-terminal clause, then the clauses used in the 
-    implication were themselves derived and Lemmas 5.17-5.19 can be
-    used to imply the 3-terminal clause without processing clauses
-    of length 3 or higher.
+    We need two input clauses to derive the necessary 3-terminal clauses and we have three cases:
 
-    If we do use a 3-terminal clause, then the other clause has to be a
-    4-terminal clause because we are using 4-terminal clause(s) to derive
-    a 3-terminal clause,
-    but Lemma's 5.17-5.19 only cover cases where the implying clauses were
-    themselves derived. Since we are given 3-terminal clauses, there are some
-    clauses which are not derived. Now we want to show any 3-terminal clause
-    implied by a 4-terminal clause can be derived by processing clauses of length
-    no more than 3. The 4-terminal clause can either be derived by Lemma 5.9 or
-    expanded to by Lemma 5.8. In the former case, we can use Lemma 5.11 and in 
-    the latter case we can use Lemma 5.12. In both cases, we can derive all the 
-    necessary 3-terminal clauses while processing clauses with a maximum length
-    of 3.
+    \begin{enumerate}
+        \item Both inputs are of length 4
+        \item One input is of length 4, the other is of length 3
+        \item Both inputs are of length 3
+    \end{enumerate}
 
-    Now we have all the 3-terminal clauses that would have been derived
-    while the $n$-terminal clauses were being reduced to contradicting 1-terminal
-    clauses.
+    We can disregard the last point because we want to derive a 3-terminal clause without processing a clause of length 4 or greater so the claim is vacuously true in this case.
+
+    In the case where both inputs are of length 4, we know they are both derived using smaller clauses and we can use Lemmas 5.17, 5.18, or 5.19.
+
+    In the case where one input is of length 4 and the other is of length 3, there are two cases for how the 4-terminal clause was derived:
+
+    \begin{enumerate}
+        \item It was derived using Lemma 5.9 (reduction/implication)
+        \item It was derived using Lemma 5.8 (expansion)
+    \end{enumerate}
+
+    We can handle the cases in the following ways:
+
+    \begin{enumerate}
+        \item Using Lemma 5.11
+        \item Using Lemma 5.12
+    \end{enumerate}
+
+    Now we have all the 3-terminal clauses that would have been derived while the $n$-terminal clauses were being reduced to contradicting 1-terminal clauses.
 
     We can now reduce the 3-terminal clauses to 1-terminal clauses.
 
-    Since we have all the necessary 3-terminal clauses without having
-    to process a 4-terminal clause, this clearly shows we do not
-    have to process any clauses of length 4 or greater to derive contradicting 1-terminal
-    clauses.
+    Since we have all the necessary 3-terminal clauses without having to process a clause of length 4 or greater, this shows we do not have to process any clauses of 4 or greater to derive contradicting 1-terminal clauses.
     
-    Even though the algorithm only explicitly uses Lemma 5.9 and Lemma 5.8, this will
-    cover cases where reduction is needed because Lemma 5.9 is a more
-    general case of Lemma 5.7. Notice, too, that Lemmas 5.11, 5.12, 5.17,
-    5.18, and 5.19 rely on Lemmas 5.8 and 5.9 so we do not have to 
-    explicitly capture the cases where the former lemmas would apply.
+    Even though the algorithm only explicitly uses Lemma 5.9 and Lemma 5.8, this will cover cases where reduction is needed because Lemma 5.9 is a more general case of Lemma 5.7. Notice, too, that Lemmas 5.11, 5.12, 5.17, 5.18, and 5.19 rely on Lemmas 5.8 and 5.9 so we do not have to explicitly capture the cases where the intermediate lemmas would apply.
 
     Therefore, this coincides with the described algorithm.
 
@@ -1949,21 +1928,11 @@
 
     In this paper, we present an algorithm to solve 3SAT in polynomial time.
 
-    This algorithm relies on Lemmas 5.8 and 5.9. The former of which says a clause
-    can expand to imply another clause by adding on any term that's not in the original clause.
-    The latter of which says two clauses sharing one terminal which is positive in one
-    clause and negated in the other can imply a new clause composed of the rest of the terms
-    in either clause. Using these strategies, we can process an instance of 3SAT 
-    while only considering clauses of length 3 or less
-    are guaranteed to derive a pair of contradicting 1-terminal clauses if and only if
-    the instance is unsatisfiable.
+    This algorithm relies on Lemmas 5.8 and 5.9. The former of which says a clause can expand to imply another clause by appending any term that's not in the original clause. The latter of which says two clauses sharing one terminal which is positive in one clause and negated in the other can imply a new clause composed of the rest of the terms in either clause. Using these strategies, we can process an instance of 3SAT  while only considering clauses of length 3 or less and are guaranteed to derive a pair of contradicting 1-terminal clauses if and only if the instance is unsatisfiable.
 
-    According to 
-    \cite{Karp1972}, 3SAT is NP-complete, every problem in NP can be represented
-    as an instance of 3SAT and such a conversion can happen in polynomial time.
+    According to \cite{Karp1972}, 3SAT is NP-complete so if 3SAT can be solved in polynomial time then every problem in NP can be solved in polynomial time.
     
-    Since we have an algorithm to solve 3SAT in polynomial time, then all problems
-    in NP can be solved in polynomial time.
+    Since such an algorithm exists, all problems in NP can be solved in polynomial time.
 
     Thus, P = NP. 
 
