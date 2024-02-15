@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import copy
 
 # use frozen sets and rope sorting to get O(n^6)
 
@@ -153,7 +154,7 @@ def search_clauses(rope: dict, found:set[frozenset] = set(), clause=None):
         elif key != "0":
 
             # search for clauses in child
-            search_clauses(rope[key], found) # check that items get appended to list in place
+            found = search_clauses(rope[key], found, clause) # check that items get appended to list in place
             
     # return found clauses
     return found
@@ -189,6 +190,8 @@ def check_sat(rope: dict):
                 # see if contra 1-t clause exists
                 if str(-1 * term) in rope and "0" in rope[str(-1 * term)]:
 
+                    # print(f'contradicting terms: {clause} and {rope[str(-1 * term)]["0"]}')
+                    # print([list(x) for x in search_clauses(rope)])
                     # return unsatisfiable
                     return False
 
@@ -211,7 +214,7 @@ def check_sat(rope: dict):
     return True
 
 # given a list of clauses, return the clauses that block no assignments
-def get_bad_clauses(clauses: list[list[int]] | list[frozenset]):
+def get_bad_clauses(clauses: list[list[int]] | list[frozenset]): 
 
     # list of bad clauses
     bad_clauses = set()
@@ -234,14 +237,25 @@ def get_bad_clauses(clauses: list[list[int]] | list[frozenset]):
     # return bad clauses
     return bad_clauses
 
-instance1 = [[-4, 8, 9], [1, -2, -10], [1, 10, -10], [1, -8, 11], [2, 8, -9], [-1, -3, -7], [8, 9, 10], [-5, 8, -10], [-2, 5, 9], [3, -3, -6], [1, -5, 5], [2, -6, 9], [-3, -4, 10], [1, -1, 2], [6, -9, -11], [-1, -4, 7], [6, -7, 11], [1, 5, -9], [2, -3, 9], [2, -4, 4], [-3, -5, -9], [4, -9, -11], [-3, -4, -6], [1, -1, 5], [-4, 6, 10], [3, 4, -9], [-6, -10, -11], [-2, -4, -10], [-2, 5, -9], [-3, -8, -9], [4, 5, 11], [2, 7, -10], [-1, 2, -4], [3, -5, 8], [6, -7, -11], [-3, 4, 11], [4, -5, 7], [-1, -10, 11], [5, -6, 11], [-2, -8, -9], [4, 7, -8], [5, -5, 7], [-1, 9, -10], [-2, 3, 5], [-1, 3, -9], [-4, -7, -11], [-5, 11, -11], [-3, -6, -7], [-2, -4, 9], [-7, 9, 10], [-3, 7, 11], [2, -3, 3], [-1, 9, -11], [4, -6, 11], [-2, -6, 8], [1, -2, 6], [-7, -10, -11], [-7, 7, 10], [-1, -7, 10], [4, -7, 9]]
+# input list of list, preprocess and call all functions
+def process(instance: list[list[int]]):
 
-instance1 = [x for x in instance1.copy() if frozenset(x) not in get_bad_clauses(instance1.copy())]
+    # print(f'input instance: {instance}')
+    
+    instance = copy.deepcopy(instance)
 
-rope = todict(instance1)
+    instance = [x for x in instance if frozenset(x) not in get_bad_clauses(instance)]
 
-# print(f"Rope: {rope}")
+    rope = todict(instance)
 
-sat = check_sat(rope)
+    # print(f"Rope: {rope}")
 
-print(f'is it satisfiable? {sat}')
+    sat = check_sat(rope)
+
+    return sat
+
+instance = [[17, 16, 19], [-8, -14, -13], [-4, 2, 19], [-5, 16, -8], [-4, -9, 2], [8, -13, 5], [10, 5, -19], [-14, 6, -16], [2, 8, 13], [1, -9, 10], [-11, -6, -20], [1, 2, -19], [16, -10, 9], [-9, 1, -18], [-18, -14, -9], [10, -19, -15], [-4, -12, -3], [-10, -4, 5], [6, 17, 8], [-1, 16, 15], [-9, -6, -5], [17, 7, -19], [10, -4, 20], [-13, -16, 17], [-16, -13, 18], [-4, 6, 12], [-13, 8, -14], [7, -18, -6], [-18, -14, -12], [9, 4, -13], [8, 9, -12], [16, 17, 12], [14, -3, -20], [-5, 14, 7], [6, -8, -14], [-16, 20, 5], [-15, -6, -3], [-13, 3, 16], [-4, -16, 1], [-7, 10, -15], [17, 7, 9], [11, 5, 6], [-13, 6, 17], [-16, 4, -2], [-2, 10, -8], [-7, 3, 18], [20, -19, -11], [7, 12, 1], [-10, -19, -12], [-10, -17, -4], [8, -20, 14], [12, -15, -20], [-17, 7, -9], [-6, -20, 11], [-12, -20, -2], [6, -15, 20], [2, 6, -20], [-1, 12, -6], [4, -20, -8], [12, 11, -16], [-13, -6, 3], [1, 13, 8], [-17, -16, 7], [18, -1, 10], [-19, 9, -6], [-5, 14, 1], [1, 19, 13], [3, -4, -8], [19, -17, 7], [-5, -19, -18], [9, 3, -13], [14, 3, 19], [-7, -12, 10], [-11, -2, 18], [-1, 11, 4], [20, -11, -15], [4, 16, -13], [-17, 16, -8], [-2, -18, 14], [6, 16, -9], [-6, 15, 7], [19, 3, -13], [-5, 3, -19], [-17, 8, -6], [1, 18, 7], [1, 10, -5], [8, -3, -14], [-12, 15, -3], [3, 6, 20], [19, -2, 20], [-15, -13, -12]]
+
+ans = process(instance)
+
+print(f'instance is satisfiable? {ans}')

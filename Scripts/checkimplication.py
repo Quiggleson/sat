@@ -5,8 +5,9 @@ import itertools
 from tqdm import tqdm
 import random
 from main import write_blockages
-from optimize import todict, check_sat, get_bad_clauses
+from optimize import process
 import time
+import copy
 
 # Return clauses not contributing to implications
 def get_complete_data(instance, implications):
@@ -653,25 +654,21 @@ instances = gen_random_instance(n, instance_count, instance_length)
 sat_count = 0
 unsat_count = 0
 
-instance = [[-4, 8, 9], [1, -2, -10], [1, 10, -10], [1, -8, 11], [2, 8, -9], [-1, -3, -7], [8, 9, 10], [-5, 8, -10], [-2, 5, 9], [3, -3, -6], [1, -5, 5], [2, -6, 9], [-3, -4, 10], [1, -1, 2], [6, -9, -11], [-1, -4, 7], [6, -7, 11], [1, 5, -9], [2, -3, 9], [2, -4, 4], [-3, -5, -9], [4, -9, -11], [-3, -4, -6], [1, -1, 5], [-4, 6, 10], [3, 4, -9], [-6, -10, -11], [-2, -4, -10], [-2, 5, -9], [-3, -8, -9], [4, 5, 11], [2, 7, -10], [-1, 2, -4], [3, -5, 8], [6, -7, -11], [-3, 4, 11], [4, -5, 7], [-1, -10, 11], [5, -6, 11], [-2, -8, -9], [4, 7, -8], [5, -5, 7], [-1, 9, -10], [-2, 3, 5], [-1, 3, -9], [-4, -7, -11], [-5, 11, -11], [-3, -6, -7], [-2, -4, 9], [-7, 9, 10], [-3, 7, 11], [2, -3, 3], [-1, 9, -11], [4, -6, 11], [-2, -6, 8], [1, -2, 6], [-7, -10, -11], [-7, 7, 10], [-1, -7, 10], [4, -7, 9]]
-
-instances = [instance]
-
 for instance in tqdm(instances):
 
-    sat_blockages = write_blockages(instance.copy(), n, False)
+    print(f'testing instance: {instance}')
 
-    processed = [x for x in instance.copy() if frozenset(x) not in get_bad_clauses(instance.copy())]
+    instance_copy = copy.deepcopy(instance)
 
-    rope = todict(processed)
+    sat_blockages = write_blockages(instance_copy, n, False)
 
-    sat_check = check_sat(rope)
+    instance_copy = copy.deepcopy(instance)
+
+    sat_check = process(instance_copy)
     
     # relies on returning bool
-    print(f"is it satisfiable by satcheck? {sat_check}")
     if (not sat_check) and sat_blockages:
         print(f'False negative on instance {instance}')
-        print(f'Proc instance: {processed}')
     elif sat_check and (not sat_blockages):
         print(f'False positive on instance {instance}')
 
