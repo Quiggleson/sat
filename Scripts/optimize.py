@@ -17,6 +17,8 @@ def todict(instance: list[list[int]]):
         # add clause to rope sort
         rope = add_clause(rope, set_clause)[0]
 
+    # print(f'from todict, rope len: {len(search_clauses(rope))}')
+
     # return processed rope dict
     return rope
 
@@ -117,7 +119,10 @@ def imply(rope: dict, clause: frozenset):
     return rope, clause_flag
 
 # get all clauses in section of rope dict, valid compared to search clause
-def search_clauses(rope: dict, found:set[frozenset] = set(), clause=None):
+def search_clauses(rope: dict, found:set[frozenset]=None, clause=None):
+
+    if found is None:
+        found = set()
 
     # iterate keys in rope
     for key in rope:
@@ -210,6 +215,8 @@ def check_sat(rope: dict):
         # get clauses in the instance
         instance = search_clauses(rope)
 
+        # print(f'current len: {len(instance)}')
+
     # no new clauses and no contra 1-t clauses, return satisfiable
     return True
 
@@ -246,7 +253,11 @@ def process(instance: list[list[int]]):
 
     instance = [x for x in instance if frozenset(x) not in get_bad_clauses(instance)]
 
+    # print(f'processed instance: {instance}')
+
     rope = todict(instance)
+
+    # print(f'rope len: {len(search_clauses(rope))}')
 
     # print(f"Rope: {rope}")
 
@@ -254,8 +265,8 @@ def process(instance: list[list[int]]):
 
     return sat
 
-instance = [[17, 16, 19], [-8, -14, -13], [-4, 2, 19], [-5, 16, -8], [-4, -9, 2], [8, -13, 5], [10, 5, -19], [-14, 6, -16], [2, 8, 13], [1, -9, 10], [-11, -6, -20], [1, 2, -19], [16, -10, 9], [-9, 1, -18], [-18, -14, -9], [10, -19, -15], [-4, -12, -3], [-10, -4, 5], [6, 17, 8], [-1, 16, 15], [-9, -6, -5], [17, 7, -19], [10, -4, 20], [-13, -16, 17], [-16, -13, 18], [-4, 6, 12], [-13, 8, -14], [7, -18, -6], [-18, -14, -12], [9, 4, -13], [8, 9, -12], [16, 17, 12], [14, -3, -20], [-5, 14, 7], [6, -8, -14], [-16, 20, 5], [-15, -6, -3], [-13, 3, 16], [-4, -16, 1], [-7, 10, -15], [17, 7, 9], [11, 5, 6], [-13, 6, 17], [-16, 4, -2], [-2, 10, -8], [-7, 3, 18], [20, -19, -11], [7, 12, 1], [-10, -19, -12], [-10, -17, -4], [8, -20, 14], [12, -15, -20], [-17, 7, -9], [-6, -20, 11], [-12, -20, -2], [6, -15, 20], [2, 6, -20], [-1, 12, -6], [4, -20, -8], [12, 11, -16], [-13, -6, 3], [1, 13, 8], [-17, -16, 7], [18, -1, 10], [-19, 9, -6], [-5, 14, 1], [1, 19, 13], [3, -4, -8], [19, -17, 7], [-5, -19, -18], [9, 3, -13], [14, 3, 19], [-7, -12, 10], [-11, -2, 18], [-1, 11, 4], [20, -11, -15], [4, 16, -13], [-17, 16, -8], [-2, -18, 14], [6, 16, -9], [-6, 15, 7], [19, 3, -13], [-5, 3, -19], [-17, 8, -6], [1, 18, 7], [1, 10, -5], [8, -3, -14], [-12, 15, -3], [3, 6, 20], [19, -2, 20], [-15, -13, -12]]
+# instance = [[-4, -7, -9], [-7, 7, 9], [3, 7, 10], [4, 11, -11], [7, -8, -9], [-5, -10, 10], [1, -3, 9], [-6, 7, 10], [-2, 9, -9], [-1, 3, -11], [-2, 7, 10], [-2, -3, -5], [-1, -9, 10], [1, -3, 4], [-2, -3, -11], [1, -1, 4], [-8, 11, -11], [4, 8, -11], [1, 5, 10], [-5, 7, 8], [4, 5, -5], [2, 3, -9], [-4, -5, 11], [8, -8, 11], [-2, 5, -6], [3, -5, 10], [1, -2, -6], [4, -6, -10], [-10, 10, 11], [5, -5, -10], [-3, 9, 11], [-5, -6, -8], [-1, 2, 5], [-6, 7, 8], [-1, 7, -8], [1, 5, 6], [-5, 9, 11], [2, -5, 8], [1, -10, -11], [-4, -8, 11], [-1, 7, 11], [3, -7, -9], [-6, 9, 10], [4, -8, 10], [4, 5, -10], [-2, 6, -10], [1, 10, -11], [2, -3, -4], [-6, -10, -11], [-5, -7, -9], [2, 6, 10], [8, -9, 10], [3, 4, -8], [1, -8, 8], [-2, -7, -8], [3, -4, -5], [1, 6, 7], [1, -2, 9], [-1, -5, 6], [3, 7, -10]]
 
-ans = process(instance)
+# ans = process(instance)
 
-print(f'instance is satisfiable? {ans}')
+# print(f'instance is satisfiable? {ans}')

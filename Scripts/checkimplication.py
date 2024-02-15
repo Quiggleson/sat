@@ -646,17 +646,21 @@ def gen_random_instance(n, instance_count, instance_length):
     return instances
 
 instance_length = 60
-instance_count = 2
+instance_count = 100
 n = 11
 
 instances = gen_random_instance(n, instance_count, instance_length)
+
+# instance = [[6, 7, 11], [-1, -8, -9], [6, -7, 11], [1, 2, 9], [2, -3, -11], [-4, -5, 5], [-7, -10, 10], [2, -3, 6], [9, 10, -11], [-3, -4, -10], [-1, 4, 8], [-2, -3, 10], [5, -6, -11], [-1, 2, 5], [1, -3, 11], [-6, 8, -8], [-3, -7, -10], [2, -3, 3], [3, -6, 6], [1, -4, -11], [-2, 5, 11], [-1, 4, 9], [3, 6, 11], [-5, -8, -10], [1, -2, 5], [1, -9, -11], [-4, -5, 8], [5, -7, 11], [1, -1, 7], [-3, -8, -10], [3, -9, 11], [-4, -6, 7], [1, -7, 10], [-2, -6, 6], [-5, 5, 10], [-2, -4, 4], [1, -8, 11], [-6, 6, -10], [2, -3, -7], [2, -4, 11], [-2, 3, 6], [1, -4, 11], [-1, 5, -8], [2, 10, 11], [-5, -9, -11], [-1, 3, -8], [1, 10, 11], [-2, 7, -7], [1, -1, -7], [-4, 7, 10], [-2, 6, 11], [5, -9, 11], [7, -9, 9], [1, -4, 4], [4, 6, 8], [-5, -11, 11], [-2, -3, 6], [-3, -6, 6], [3, 10, 11], [-3, 4, -6]]
+
+# instances = [instance]
 
 sat_count = 0
 unsat_count = 0
 
 for instance in tqdm(instances):
 
-    print(f'testing instance: {instance}')
+    # print(f'testing instance: {instance}')
 
     instance_copy = copy.deepcopy(instance)
 
