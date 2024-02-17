@@ -4,13 +4,9 @@
 
 A list of benchmark problems can be found [here](https://www.cs.ubc.ca/~hoos/SATLIB/benchm.html)
 
-Currently, it only supports satisfiable instances but you could probably modify ``readcnf.py`` to read both kinds of instances
+Run ``readcnf.py`` to iterate through the files in ``/inputs`` or ``/UUF50.218.1000`` (you have to unzip satisfiable instances into ``/inputs`` or unsatisfiable instances into ``/UUF50.218.1000`` and call the function at the bottom of the file)
 
-Download the .tar.gz file from the list of benchmark problems and unpack them into a directory called /inputs in the /Scripts directory
-
-Then run ``python3 readcnf.py`` to test all the instances
-
-It takes around 60 seconds to process a 20-terminal instance
+Currently there's a bug with the unsatisfiable benchmark problems with the ``optimize.py`` solution, but it's being looked into
 
 ## Script Usage
 

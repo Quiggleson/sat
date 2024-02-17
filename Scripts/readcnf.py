@@ -36,17 +36,35 @@ def process_directory(directory_path):
 
     return instances
 
-# Parse the .cnf file
-instances = process_directory('./inputs/uf20-91/')
+def process_unsats():
 
-# iterate instances
-for instance in tqdm(instances):
+    instances = process_directory('./UUF50.218.1000')[:10]
 
-    instance_copy = copy.deepcopy(instance)
+    for instance in tqdm(instances):
 
-    # check satisfiability 
-    sat = process(instance_copy)
+        print(f'testing instance of len {len(instance)}')
 
-    # all instances in this collection are satisfiable
-    if not sat:
-        print(f"False negative on instance {instance}")
+        instance_copy = copy.deepcopy(instance)
+
+        sat = process(instance_copy)
+
+        if sat:
+            print(f'False positive on instance {instance}')
+
+def process_sat():
+    # Parse the .cnf file
+    instances = process_directory('./inputs/uf20-91/')[516:]
+
+    # iterate instances
+    for instance in tqdm(instances):
+
+        instance_copy = copy.deepcopy(instance)
+
+        # check satisfiability 
+        sat = process(instance_copy)
+
+        # all instances in this collection are satisfiable
+        if not sat:
+            print(f"False negative on instance {instance}")
+
+process_unsats()

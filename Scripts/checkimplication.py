@@ -645,9 +645,9 @@ def gen_random_instance(n, instance_count, instance_length):
 
     return instances
 
-instance_length = 60
-instance_count = 100
-n = 11
+instance_length = 80
+instance_count = 500
+n = 15
 
 instances = gen_random_instance(n, instance_count, instance_length)
 
@@ -657,6 +657,8 @@ instances = gen_random_instance(n, instance_count, instance_length)
 
 sat_count = 0
 unsat_count = 0
+
+print('testing instances')
 
 for instance in tqdm(instances):
 
@@ -675,6 +677,13 @@ for instance in tqdm(instances):
         print(f'False negative on instance {instance}')
     elif sat_check and (not sat_blockages):
         print(f'False positive on instance {instance}')
+
+    
+    if sat_blockages:
+        sat_count += 1
+    else:
+        unsat_count += 1
+
 
 
 # for instance in tqdm(instances):

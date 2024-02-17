@@ -1,7 +1,4 @@
 from tqdm import tqdm
-import copy
-
-# use frozen sets and rope sorting to get O(n^6)
 
 # given list of lists, return instance as rope sorted dict
 def todict(instance: list[list[int]]):
@@ -12,18 +9,14 @@ def todict(instance: list[list[int]]):
     # iterate clauses
     for clause in instance:
 
-        set_clause = frozenset(clause)
-
         # add clause to rope sort
-        rope = add_clause(rope, set_clause)[0]
-
-    # print(f'from todict, rope len: {len(search_clauses(rope))}')
+        add_clause(rope, frozenset(clause))
 
     # return processed rope dict
     return rope
 
 # given a clause an existing rope dict, 
-# return updated rope dict and True if new clause, False otherwise
+# update rope dict in place and return True if new clause, False otherwise
 def add_clause(rope: dict, clause: frozenset, remaining=None):
 
     # flag for new clause
@@ -31,50 +24,43 @@ def add_clause(rope: dict, clause: frozenset, remaining=None):
 
     # initial case - populate remaining
     if remaining is None:
-        remaining = clause.copy()
+        remaining = clause
 
-    # base case - add end of path
+    # base case - at end of path
     if len(remaining) == 0:
         # if rope["0"] exists, it's not a new clause
         if "0" in rope:
-            return rope, False
+            return False
         rope["0"] = clause
-        return rope, True
+        return True
 
     # iterate terms in remaining
     for term in remaining:
 
-        # use existing subdict if able
-        if str(term) in rope:
-            subdict = rope[str(term)]
-        else:
-            subdict = {}
+        # add term to rope if not present
+        if str(term) not in rope:
+            rope[str(term)] = {}
 
         # update remaining
-        r = [x for x in remaining if x != term]
+        r = frozenset([x for x in remaining if x != term])
 
-        # try adding new clause
-        try_clause = add_clause(subdict, clause, r)
-
-        # update the subdict
-        subdict = try_clause[0]
-
-        # add subdict to current
-        rope[str(term)] = subdict
+        # add clause to rope[str(term)] in place with updated remaining
+        new_clause = add_clause(rope[str(term)], clause, r)
 
         # update flag
-        new_flag = new_flag or try_clause[1]
+        new_flag = new_flag or new_clause
 
     # return ans
-    return rope, new_flag
+    return new_flag
 
 # given rope dict and clause, add all clauses implied by lemma 5.9
+# modify rope in place, return true if new clauses are added
 def imply(rope: dict, clause: frozenset):
 
     # flag to indicate if a new clause is added
     clause_flag = False
 
-    # iterate terms
+    # iterate terms in clause
     for term in clause:
 
         # search for a clause with the opposite term
@@ -85,38 +71,34 @@ def imply(rope: dict, clause: frozenset):
             partial = set([x for x in clause if x is not term])
 
             # populate found with clauses with at most one opposite form term from clause
-            found = search_clauses(rope[str(-1 * term)], clause=clause)
+            found_clauses = search_clauses(rope[str(-1 * term)], clause=clause)
 
             # print(f"using clause {clause} found the clauses: {found}")
 
             # no longer required, all clauses in found contain at most one opposite form term
-            # # iterate terms in partial
+            # iterate terms in partial
             # for partial_term in partial:
 
             # # remove found clauses with an opposite form term in partial
-            #     found = [x for x in found if (-1 * partial_term) not in found]
+            #     found_clauses = [x for x in found_clauses if (-1 * partial_term) not in x]
 
             # iterate found, adding new clauses to rope
-            for found_clause in found:
+            for found_clause in found_clauses:
 
                 # make implied clause out of partial and found w/o opposite form terms
-                implied_clause = frozenset(partial.union([x for x in found_clause if x != -1 * term]))
+                implied_clause = frozenset(partial.union([x for x in found_clause if x != (-1 * term)]))
 
                 # if the new clause is of length 3 or less, add it
-                if len(implied_clause) <= 3:
+                if len(implied_clause) < 4:
 
-                    # try adding new clause
-                    try_clause = add_clause(rope, implied_clause)
-
-                    # add clause to rope dict
-                    rope = try_clause[0]
+                    # add the implied clause, remember if it's really new or old
+                    new_clause = add_clause(rope, implied_clause)
 
                     # update the new_clause flag 
-                    if try_clause[1]:
-                        clause_flag = True
+                    clause_flag = new_clause or clause_flag
 
-    # return updated rope and flag if new clause is added
-    return rope, clause_flag
+    # return true iff new clauses were added
+    return clause_flag
 
 # get all clauses in section of rope dict, valid compared to search clause
 def search_clauses(rope: dict, found:set[frozenset]=None, clause=None):
@@ -128,14 +110,13 @@ def search_clauses(rope: dict, found:set[frozenset]=None, clause=None):
     for key in rope:
 
         # if key is 0 and clause is none and clause does not exist in found
-        if key == "0" and clause is None and rope[key] not in found:
+        if (key == "0") and (clause is None) and (rope[key] not in found):
 
             # add clause to found
-            # found.append(rope[key])
             found.add(rope[key])
 
         # if key is 0 and search clause is given and the new clause is not in found
-        elif key == "0" and clause is not None and rope[key] not in found:
+        elif (key == "0") and (clause is not None) and (rope[key] not in found):
 
             # count opposite form terms
             opp_term_count = 0
@@ -144,7 +125,7 @@ def search_clauses(rope: dict, found:set[frozenset]=None, clause=None):
             for term in clause:
 
                 # if the new clause contains an opposite form term
-                if -1 * term in rope[key]:
+                if (-1 * term) in rope[key]:
 
                     # update opp term count
                     opp_term_count += 1
@@ -158,11 +139,37 @@ def search_clauses(rope: dict, found:set[frozenset]=None, clause=None):
         # else if the key is not 0, a subdictionary exists
         elif key != "0":
 
-            # search for clauses in child
-            found = search_clauses(rope[key], found, clause) # check that items get appended to list in place
+            # search for clauses in child - found gets modified in place
+            search_clauses(rope[key], found, clause)
             
     # return found clauses
     return found
+
+# count the total number of "0" keys in rope - should be 6 * len(instance) for debugging
+def count_rope(rope: dict, length=-1):
+
+    # track count
+    count = 0
+
+    # iterate keys in rope
+    for key in rope:
+
+        # if key is 0 
+        if key == "0":
+
+            # if counting the current length
+            if length == -1 or len(rope[key]) == length:
+                # count clause as found
+                count += 1
+
+        # else if the key is not 0, a subdictionary exists
+        elif key != "0":
+
+            # search for clauses in child - found gets modified in place
+            count += count_rope(rope[key], length)
+            
+    # return found clauses
+    return count
 
 # keep getting implications until no new clauses or contra 1-t clauses
 # return true iff satisfiable
@@ -170,9 +177,6 @@ def check_sat(rope: dict):
 
     # flag to control looping
     new_flag = True
-
-    # count how many new clauses are added
-    new_clause_count = 0
 
     # loop until no new clauses
     while new_flag:
@@ -184,7 +188,7 @@ def check_sat(rope: dict):
         instance = search_clauses(rope)
 
         # iterate clauses in instance
-        for clause in instance.copy():
+        for clause in instance:
 
             # if clause is of length 1, look for contra 1-t clause
             if len(clause) == 1:
@@ -193,29 +197,29 @@ def check_sat(rope: dict):
                 term, = clause
 
                 # see if contra 1-t clause exists
-                if str(-1 * term) in rope and "0" in rope[str(-1 * term)]:
+                if (str(-1 * term) in rope) and ("0" in rope[str(-1 * term)]):
 
-                    # print(f'contradicting terms: {clause} and {rope[str(-1 * term)]["0"]}')
-                    # print([list(x) for x in search_clauses(rope)])
                     # return unsatisfiable
                     return False
 
             # imply new clauses
-            imply_tuple = imply(rope, clause)
+            clause_flag = imply(rope, clause)
 
             # update new_flag
-            new_flag = imply_tuple[1] or new_flag
+            new_flag = clause_flag or new_flag
 
-            if new_flag:
-                new_clause_count += 1
+            # if clause has 2 or fewer terms, expand it
+            if len(clause) < 3:
 
-            # update rope dict
-            rope = imply_tuple[0]
+                # expand clauses
+                new_clause = expand(rope, clause)
 
-        # get clauses in the instance
-        instance = search_clauses(rope)
+                # update new_flag
+                new_flag = new_clause or new_flag
 
-        # print(f'current len: {len(instance)}')
+        # print(f'current len: {len(search_clauses(rope))}')
+
+        # print(f'total entries: {count_rope(rope, 3)}')
 
     # no new clauses and no contra 1-t clauses, return satisfiable
     return True
@@ -236,7 +240,7 @@ def get_bad_clauses(clauses: list[list[int]] | list[frozenset]):
         for term in set_clause:
 
             # if opposite form term is in clause, add it to bad clauses
-            if set_clause not in bad_clauses and -1 * term in set_clause:
+            if (set_clause not in bad_clauses) and ((-1 * term) in set_clause):
 
                 # append to bad_clauses
                 bad_clauses.add(set_clause)
@@ -249,8 +253,6 @@ def process(instance: list[list[int]]):
 
     # print(f'input instance: {instance}')
     
-    instance = copy.deepcopy(instance)
-
     instance = [x for x in instance if frozenset(x) not in get_bad_clauses(instance)]
 
     # print(f'processed instance: {instance}')
@@ -259,14 +261,43 @@ def process(instance: list[list[int]]):
 
     # print(f'rope len: {len(search_clauses(rope))}')
 
-    # print(f"Rope: {rope}")
-
     sat = check_sat(rope)
 
     return sat
 
-# instance = [[-4, -7, -9], [-7, 7, 9], [3, 7, 10], [4, 11, -11], [7, -8, -9], [-5, -10, 10], [1, -3, 9], [-6, 7, 10], [-2, 9, -9], [-1, 3, -11], [-2, 7, 10], [-2, -3, -5], [-1, -9, 10], [1, -3, 4], [-2, -3, -11], [1, -1, 4], [-8, 11, -11], [4, 8, -11], [1, 5, 10], [-5, 7, 8], [4, 5, -5], [2, 3, -9], [-4, -5, 11], [8, -8, 11], [-2, 5, -6], [3, -5, 10], [1, -2, -6], [4, -6, -10], [-10, 10, 11], [5, -5, -10], [-3, 9, 11], [-5, -6, -8], [-1, 2, 5], [-6, 7, 8], [-1, 7, -8], [1, 5, 6], [-5, 9, 11], [2, -5, 8], [1, -10, -11], [-4, -8, 11], [-1, 7, 11], [3, -7, -9], [-6, 9, 10], [4, -8, 10], [4, 5, -10], [-2, 6, -10], [1, 10, -11], [2, -3, -4], [-6, -10, -11], [-5, -7, -9], [2, 6, 10], [8, -9, 10], [3, 4, -8], [1, -8, 8], [-2, -7, -8], [3, -4, -5], [1, 6, 7], [1, -2, 9], [-1, -5, 6], [3, 7, -10]]
+# expand clause to all clauses of length 1 greater in place, return true iff it's a new clause
+def expand(rope: dict, clause: frozenset):
 
+    # flag for new clauses
+    new_flag = False
+
+    # get keys before modification - dict could change
+    keys = list(rope.keys())
+
+    # iterate keys
+    for key in keys:
+
+        # get int version
+        term = int(key)
+
+        # only add valid clauses
+        if (term not in clause) and ((-1 * term) not in clause):
+
+            # add clause w/ positive version of term
+            new_clause = add_clause(rope, frozenset(clause.union([term])))
+
+            # update flag
+            new_flag = new_clause or new_flag
+
+            # add clause w/ positive version of term
+            new_clause = add_clause(rope, frozenset(clause.union([-1 * term])))
+
+            # update flag
+            new_flag = new_clause or new_flag
+
+    return new_flag
+
+# instance = [[-5, -2, 28], [-22, 26, -9], [7, 32, -24], [23, -43, 39], [47, 27, 15], [30, 21, -7], [-29, 37, -23], [28, -20, -29], [36, 7, 42], [36, 8, 48], [6, 50, -34], [10, -36, -33], [1, 18, 8], [37, 9, 49], [-47, -28, -19], [2, 47, 16], [23, 40, -50], [-35, 13, 16], [50, -27, 49], [7, 24, 38], [5, 18, -34], [-41, 11, -48], [31, -36, -12], [23, 49, 6], [-40, 16, -26], [-46, -24, -14], [28, -33, 46], [-20, -9, 4], [10, -5, 2], [-18, -16, -27], [39, 38, 19], [-38, 44, 42], [1, 38, 30], [8, -29, -16], [-20, 12, -7], [41, -43, 36], [19, 32, 46], [31, 16, 2], [-21, -28, -49], [-28, 6, 5], [33, 43, -1], [20, -21, -27], [-29, 12, -7], [-50, -43, -4], [-42, -7, -45], [4, -23, -39], [-50, 9, -11], [18, -2, 4], [1, -32, -17], [-44, 22, -2], [35, 20, 14], [14, -23, -12], [-16, 37, -19], [-41, -50, 10], [-38, 50, -6], [-11, 37, 10], [47, -33, 24], [36, -47, 46], [48, 27, -13], [12, -8, 42], [-14, 44, -24], [-23, 36, 11], [-29, -13, -15], [-31, -26, -41], [49, -5, -23], [30, 31, -24], [-40, 30, -12], [-20, -2, -41], [12, 15, 16], [34, 1, 17], [37, -45, -35], [-36, -38, -21], [25, -7, -45], [6, 2, -44], [-34, -38, 47], [-4, -31, 7], [-29, 26, -43], [-42, 47, -37], [15, -18, -28], [5, 22, 20], [13, 26, -44], [25, -42, -9], [-47, 32, -28], [-9, -32, -7], [-19, -45, -17], [-1, -8, -14], [-27, 2, 18], [-16, -15, 39], [-32, -6, -37], [-34, -11, 22], [39, -50, 25], [-28, 21, 3], [-2, 21, -35], [-46, -45, -37], [-9, 17, -40], [48, 6, -37], [-25, -35, 50], [-48, 32, -26], [-14, -17, 34], [29, -8, 34], [6, 37, 42], [34, -47, -22], [-9, -8, -2], [4, -46, -24], [-33, -2, 25], [-5, -27, -31], [18, 40, -29], [24, 18, -28], [-49, 32, 35], [-45, 46, 17], [-11, -1, -18], [-14, -33, -25], [29, 22, 9], [36, 23, 48], [38, -10, -16], [-25, -5, -37], [28, 13, 12], [44, -32, 31], [18, -23, -27], [-35, -31, -1], [36, -8, -48], [1, -28, 10], [22, 24, -46], [-6, 43, -5], [23, -43, 29], [17, -28, 20], [12, 49, -47], [-34, -32, 50], [11, 39, 17], [-14, 44, 18], [4, -33, -38], [-42, -8, -35], [15, -12, 27], [39, 2, 49], [-30, 31, -13], [-7, -26, 11], [30, -40, -15], [-9, 43, -5], [-44, 47, 42], [-29, 45, 23], [-33, -42, 12], [7, 29, -34], [29, 49, -31], [-7, -49, -22], [-9, 26, -30], [-32, 35, -38], [-12, -18, 6], [21, -16, 12], [-27, -35, 14], [35, 41, -38], [-10, -4, -24], [-25, 8, -4], [43, 24, -7], [20, 2, -34], [-35, 43, 32], [8, 17, -45], [30, 21, 33], [3, 47, 31], [26, 23, -35], [-3, 8, -29], [-5, 14, 10], [30, 48, 43], [36, 10, -12], [32, -41, -5], [-3, -1, -35], [-24, -40, 4], [-5, -19, -20], [13, -17, 37], [7, -14, -42], [39, 32, -42], [13, 37, 16], [38, 24, 23], [35, 33, 19], [23, 14, -15], [-5, -14, -27], [-22, 50, -26], [42, 4, -17], [-18, 46, -20], [38, 39, 41], [48, 9, 29], [-14, 27, -15], [33, -6, -50], [38, 39, -7], [12, -44, -25], [-11, 6, -19], [-48, -36, 37], [5, 10, 19], [-12, -42, -36], [-40, 20, 10], [42, 28, 5], [-37, -9, 39], [40, -45, -26], [25, -39, -43], [6, 25, 8], [-36, 4, 44], [-43, -41, -13], [39, -15, -42], [-46, 3, 28], [-26, -18, -37], [-50, 20, 1], [47, -3, 46], [-7, -23, 36], [37, 33, -16], [-26, -46, 13], [28, 49, 11], [-17, -11, -26], [18, -17, 31], [37, 46, 31], [-3, -19, 31], [47, 39, -28], [16, -14, 20], [-29, -12, -32], [-20, 36, -30], [29, 28, -6], [-17, 22, -45], [41, -39, 9], [30, -44, -43], [-32, 21, -9]]
 # ans = process(instance)
 
 # print(f'instance is satisfiable? {ans}')
