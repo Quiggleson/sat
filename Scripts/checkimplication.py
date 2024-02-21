@@ -439,7 +439,7 @@ def solve(instance, n, assignment=[]):
 # See Plan Expansion in thoughts.md
 # given an instance, return the satisfying assignment
 # or "" if unsatisfiable
-# O(n^11)
+# O(n^12)
 def solve_expand(instance, n, assignment=[], processed=[]):
 
     # Update assignment if it's the first call

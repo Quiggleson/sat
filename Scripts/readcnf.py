@@ -25,6 +25,7 @@ def process_directory(directory_path):
 
     instances = []
 
+    print(f'whats the first instance')
     for filename in os.listdir(directory_path):
         if filename.endswith(".cnf"):
             file_path = os.path.join(directory_path, filename)
@@ -38,13 +39,17 @@ def process_directory(directory_path):
 
 def process_unsats():
 
-    instances = process_directory('./UUF50.218.1000')[:10]
+    # instances = process_directory('./UUF50.218.1000')[:10]
+
+    instances = process_directory('./temp_unsat')
 
     for instance in tqdm(instances):
 
-        print(f'testing instance of len {len(instance)}')
+        # print(f'testing instance of len {len(instance)}')
 
         instance_copy = copy.deepcopy(instance)
+
+        # print(f'instance: {instance}')
 
         sat = process(instance_copy)
 
