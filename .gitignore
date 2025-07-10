@@ -1,4 +1,10 @@
 .venv*
 __pycache__/
+.pytest_cache
+
+# benchmarks
 inputs/
 UUF50.218.1000/
+
+# output from a script
+blockages.md

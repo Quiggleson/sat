@@ -1,5 +1,5 @@
 import os
-from optimize import process
+from v2_utils import process
 from tqdm import tqdm
 import copy
 
@@ -51,7 +51,7 @@ def process_unsats():
 
         # print(f'instance: {instance}')
 
-        sat = process(instance_copy)
+        sat = process(instance_copy, 4)
 
         if sat:
             print(f'False positive on instance {instance}')
@@ -66,7 +66,7 @@ def process_sat():
         instance_copy = copy.deepcopy(instance)
 
         # check satisfiability 
-        sat = process(instance_copy)
+        sat = process(instance_copy, 4)
 
         # all instances in this collection are satisfiable
         if not sat:

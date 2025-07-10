@@ -1,0 +1,97 @@
+Step 1. Expand the given clauses to n-terminal clauses. Notice the following pattern exists
+
+C1 n - 2 -> n - 1 -> n
+C2 n - 2 -> n - 1 -> n -> n - 1
+C3 n - 2 -> n - 1 -> n 
+C4 n - 2 -> n - 1 -> n -> n - 1 -> n - 2
+
+By Lemma 5.19, we don't need to process the n-terminal clauses to derive all the n-1-terminal clauses needed.
+
+So we have
+
+n - 2 -> n - 1
+n - 2 -> n - 1 -> n - 1
+n - 2 -> n - 1
+n - 2 -> n - 1 -> n - 1 -> n - 2
+
+
+A n - 2 -> n - 1 ->
+B n - 2 -> n - 1 -> E n - 2 -> G n - 1
+C n - 2 -> n - 1 ->
+D n - 2 -> n - 1 ->         -> F n - 1 -> H n - 2
+
+A and B can derive E by processing clauses with a max length of n - 2
+Now we have 
+
+n - 2 -> n - 1
+         n - 1 -> n - 2
+
+therein lies the issue, F may need processing up to n - 1, is there any way to derive H without processing a clause of length n - 1?
+
+Hmm, but what if we accept that we need n - 1 to derive all the n - 2 we need
+
+okay, we have all the n-2-t clauses we need and we processed a clause of length n-1
+
+Now, can we derive all the n-3-terminal clauses needed by shortcutting the n-1-terminal clauses?
+
+n - 3 -> n - 2 -> n - 1 v
+n - 3 -> n - 2 -> n - 1 -> n - 2 -> n - 1
+n - 3 -> n - 2 -> n - 1 -----v
+n - 3 -> n - 2 -> n - 1 ----------> n - 1 -> n - 2 v
+n - 3 -> n - 2 -> n - 1 v
+n - 3 -> n - 2 -> n - 1 -> n - 2 -> n - 1
+n - 3 -> n - 2 -> n - 1 -----v
+n - 3 -> n - 2 -> n - 1 ----------> n - 1 -> n - 2 -> n - 3
+
+Can we derive the final n-3-t clause without deriving clauses of len n-1?
+
+There are 4 n-1-t clauses here, each can be derived one of four ways
+
+n - 3 -> n - 2 -> n - 1
+
+OR
+
+n - 3 -> n - 2 
+n - 3 -> n - 2 -> n - 1
+
+OR
+
+n - 3 -> n - 2 
+n - 3 -> n - 2 -> n - 2 -> n - 1
+
+OR
+
+n - 3 -> n - 2 
+n - 3 -> n - 2 -> n - 3 -> n - 2 -> n - 1
+
+
+Now we have 
+
+n - 1
+n - 1 -> n - 2
+n - 1
+n - 1 -> n - 2 -> n - 3
+
+And each of the n - 1 term can be derived one of four ways. Oh dear.
+
+4^4 :(
+
+This should be the last theorem, unless there are other ways to derive a clause.
+
+Are there any other ways to derive a clause besides the aforementioned 4-terminal clauses?
+
+Hope not, we'll find out in this ***196*** part proof
+
+frickin ay
+
+
+
+
+A n - 2 -> n - 1
+B n - 2 -> n - 1 -> E n - 2 -> n - 1
+C n - 2 -> n - 1
+D n - 2 -> n - 1 -> F n - 2 -> n - 1 -> G n - 2
+
+A and B can derive E by processing clauses with a max length of n - 2
+C and D can derive F similarly
+and F and G can derive G by processing clauses with a max length of n - 2
