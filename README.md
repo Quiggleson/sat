@@ -56,7 +56,7 @@ Run ``readcnf.py`` to iterate through the files in ``/inputs`` or ``/UUF50.218.1
      - Note: currently throws out false positives if `max_length == 3`
  - `todict(instance (as list of lists))`
    - Converts the given list of lists into an object similar to a [Trie](https://en.wikipedia.org/wiki/Trie) fine tuned to support sets
-   - See [[Dev Notes/ropeexample.txt]] for an example and explanation
+   - See [Rope Example](<Dev Notes/ropeexample.txt>) for an example and explanation
  - `check_sat(instance (as Trie-esque data structure))`
    - Keep adding implied clauses to the instance until you either
       a. derive contradicting 1-terminal clauses or
